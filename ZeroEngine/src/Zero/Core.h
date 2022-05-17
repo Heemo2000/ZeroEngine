@@ -10,3 +10,6 @@
 	#error Zero only supports Windows!
 
 #endif
+
+//Left shifted for easy comparing.
+#define BIT(x) (1<<x)

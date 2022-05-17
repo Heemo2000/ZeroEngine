@@ -1,5 +1,6 @@
 #include "Application.h"
-
+#include "Events/ApplicationEvent.h"
+#include "Log.h"
 namespace Zero
 {
 	Application::Application()
@@ -14,6 +15,13 @@ namespace Zero
 
 	void Application::Run()
 	{
+		Zero::WindowResizedEvent event(1280, 720);
+
+		if (event.IsInCategory(Zero::EventCategory::EventCategoryApplication))
+		{
+			ZERO_CORE_TRACE(event.ToString());
+		}
+
 		while (true);
 	}
 }
