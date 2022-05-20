@@ -1,6 +1,5 @@
 #pragma once
 #include "Event.h"
-#include<sstream>
 
 namespace Zero
 {
@@ -26,12 +25,12 @@ namespace Zero
 		KeyPressedEvent(int keyCode, int repeatCount) : KeyEvent(keyCode), m_RepeatCount(repeatCount) {}
 
 		inline int GetRepeatCount() { return m_RepeatCount; }
-
+		
 		std::string ToString() const override
 		{
-
+			
 			std::stringstream stream;
-			stream << "Key Pressed : " << m_RepeatCount << " key repeats";
+			stream << "KeyPressed : " << m_RepeatCount << " key repeats";
 			return stream.str();
 		}
 

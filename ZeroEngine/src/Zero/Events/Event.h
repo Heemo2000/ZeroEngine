@@ -1,6 +1,6 @@
 #pragma once
 #include "../Core.h"
-#include <string>
+
 namespace Zero
 {
 	enum class EventType

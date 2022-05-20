@@ -1,6 +1,5 @@
 #pragma once
 #include "Event.h"
-#include<sstream>
 
 namespace Zero
 {
@@ -16,7 +15,7 @@ namespace Zero
 		std::string ToString() const override
 		{
 			std::stringstream stream;
-			stream << "Mouse Scrolled : " << m_ScrolledX << " , " << m_ScrolledY;
+			stream << "MouseScrolled : " << m_ScrolledX << " , " << m_ScrolledY;
 			return stream.str();
 		}
 

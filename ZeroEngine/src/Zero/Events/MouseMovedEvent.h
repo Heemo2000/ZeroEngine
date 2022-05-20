@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include<sstream>
+
 
 namespace Zero
 {
@@ -19,7 +19,7 @@ namespace Zero
 		std::string ToString() const override
 		{
 			std::stringstream stream;
-			stream << "Mouse Moved : (" << m_MouseX << " , " << m_MouseY << " )" << std::endl;
+			stream << "MouseMoved : (" << m_MouseX << " , " << m_MouseY << " )";
 		}
 		EVENT_CLASS_CATEGORY(EventCategoryMouse);
 		EVENT_CLASS_TYPE(MouseMoved);

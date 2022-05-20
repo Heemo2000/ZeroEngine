@@ -1,8 +1,6 @@
 #pragma once
 #include "../Core.h"
 #include "Event.h"
-#include <functional>
-
 namespace Zero
 {
 	class ZERO_API EventDispatcher

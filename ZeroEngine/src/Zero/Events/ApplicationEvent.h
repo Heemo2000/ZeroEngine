@@ -1,6 +1,5 @@
 #pragma once
 #include "Event.h"
-#include<sstream>
 
 namespace Zero
 {
@@ -18,7 +17,7 @@ namespace Zero
 		std::string ToString() const override
 		{
 			std::stringstream stream;
-			stream << "Window Resized : Width = " << m_Width << " , Height = " << m_Height;
+			stream << "WindowResized : Width = " << m_Width << " , Height = " << m_Height;
 			return stream.str();
 		}
 		EVENT_CLASS_TYPE(WindowResized);
