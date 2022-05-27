@@ -7,12 +7,11 @@ namespace Zero
 	{
 	private:
 		Event& m_Event;
-
+	public:
 		EventDispatcher(Event& event) : m_Event(event)
 		{
 
 		}
-
 		template<typename T>
 		bool Dispatch(std::function<bool(T&)> func)
 		{

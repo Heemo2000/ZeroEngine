@@ -1,12 +1,13 @@
 #include "zeropch.h"
 #include "Application.h"
 #include "Events/ApplicationEvent.h"
-#include "Log.h"
 namespace Zero
 {
+#define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
 	Application::Application()
 	{
-
+		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 	}
 
 	Application::~Application()
@@ -16,13 +17,23 @@ namespace Zero
 
 	void Application::Run()
 	{
-		Zero::WindowResizedEvent event(1280, 720);
-
-		if (event.IsInCategory(Zero::EventCategory::EventCategoryApplication))
+		while (m_Running)
 		{
-			ZERO_CORE_TRACE(event.ToString());
+			m_Window->OnUpdate();
 		}
+	}
 
-		while (true);
+	void Application::OnEvent(Event& event)
+	{
+		EventDispatcher dispatcher(event);
+
+		dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FN(OnWindowClose));
+		ZERO_CORE_INFO("{0}", event.ToString());
+	}
+
+	bool Application::OnWindowClose(WindowClosedEvent& event)
+	{
+		m_Running = false;
+		return true;
 	}
 }
