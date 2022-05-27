@@ -10,6 +10,12 @@ workspace "ZeroEngine"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+IncludeDir = {}
+IncludeDir["GLFW"] = "ZeroEngine/vendor/GLFW/include"
+
+include "ZeroEngine/vendor/GLFW"
+
 project "ZeroEngine"
 	location "ZeroEngine"
 	kind "SharedLib"
@@ -30,7 +36,14 @@ project "ZeroEngine"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{IncludeDir.GLFW}"
+	}
+
+	links
+	{
+		"GLFW",
+		"opengl32.lib"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
