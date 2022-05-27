@@ -12,7 +12,7 @@ namespace Zero
 		KeyEvent(int keyCode) : m_KeyCode(keyCode) {}
 
 	public:
-		inline int GetKeyCode() { return m_KeyCode; }
+		inline int GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
 	};
@@ -28,9 +28,8 @@ namespace Zero
 		
 		std::string ToString() const override
 		{
-			
 			std::stringstream stream;
-			stream << "KeyPressed : " << m_RepeatCount << " key repeats";
+			stream << "KeyPressed(" << KeyEvent::GetKeyCode() << ") : " << m_RepeatCount << " key repeats";
 			return stream.str();
 		}
 
@@ -41,6 +40,13 @@ namespace Zero
 	{
 	public:
 		KeyReleasedEvent(int keyCode) : KeyEvent(keyCode) {}
+
+		std::string ToString() const override
+		{
+			std::stringstream stream;
+			stream << "KeyReleased(" << KeyEvent::GetKeyCode() << ")";
+			return stream.str();
+		}
 
 		EVENT_CLASS_TYPE(KeyReleased);
 	};
