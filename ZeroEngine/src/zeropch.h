@@ -9,6 +9,7 @@
 #include<vector>
 #include<unordered_set>
 #include<unordered_map>
+#include "Zero/Log.h"
 
 #ifdef ZERO_PLATFORM_WINDOWS
 	#include<Windows.h>
