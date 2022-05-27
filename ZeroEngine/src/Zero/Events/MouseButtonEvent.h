@@ -25,10 +25,29 @@ namespace Zero
 		std::string ToString() const override
 		{
 			std::stringstream stream;
-			stream << "MouseClicked : " << m_Button;
+			stream << "MouseButtonClicked : " << m_Button;
 			return stream.str();
 		}
 
-		EVENT_CLASS_TYPE(MouseClicked);
+		EVENT_CLASS_TYPE(MouseButtonClicked);
 	};
+
+	class ZERO_API MouseButtonReleasedEvent : public MouseButtonEvent
+	{
+
+	public:
+		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+
+
+		std::string ToString() const override
+		{
+			std::stringstream stream;
+			stream << "MouseButtonReleased : " << m_Button;
+			return stream.str();
+		}
+
+		EVENT_CLASS_TYPE(MouseButtonReleased);
+	};
+
+
 }
