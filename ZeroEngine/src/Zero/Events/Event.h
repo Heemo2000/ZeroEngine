@@ -1,5 +1,6 @@
 #pragma once
-#include "../Core.h"
+#include<zeropch.h>
+#include "Zero/Core.h"
 
 namespace Zero
 {
@@ -13,7 +14,8 @@ namespace Zero
 		KeyPressed,
 		KeyReleased,
 		MouseMoved,
-		MouseClicked,
+		MouseButtonClicked,
+		MouseButtonReleased,
 		MouseScrolled,
 		AppTick,
 		AppRender
