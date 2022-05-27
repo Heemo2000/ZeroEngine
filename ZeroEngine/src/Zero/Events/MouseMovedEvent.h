@@ -20,6 +20,7 @@ namespace Zero
 		{
 			std::stringstream stream;
 			stream << "MouseMoved : (" << m_MouseX << " , " << m_MouseY << " )";
+			return stream.str();
 		}
 		EVENT_CLASS_CATEGORY(EventCategoryMouse);
 		EVENT_CLASS_TYPE(MouseMoved);
