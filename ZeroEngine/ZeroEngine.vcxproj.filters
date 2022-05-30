@@ -49,6 +49,12 @@
     <ClInclude Include="src\Zero\Events\MouseScrolledEvent.h">
       <Filter>Zero\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Zero\Layer.h">
+      <Filter>Zero</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Zero\LayerStack.h">
+      <Filter>Zero</Filter>
+    </ClInclude>
     <ClInclude Include="src\Zero\Log.h">
       <Filter>Zero</Filter>
     </ClInclude>
@@ -62,6 +68,9 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Zero\Application.cpp">
+      <Filter>Zero</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Zero\LayerStack.cpp">
       <Filter>Zero</Filter>
     </ClCompile>
     <ClCompile Include="src\Zero\Log.cpp">

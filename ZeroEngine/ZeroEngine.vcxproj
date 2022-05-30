@@ -87,6 +87,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -113,6 +114,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -139,6 +141,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -165,6 +168,8 @@
     <ClInclude Include="src\Zero\Events\MouseButtonEvent.h" />
     <ClInclude Include="src\Zero\Events\MouseMovedEvent.h" />
     <ClInclude Include="src\Zero\Events\MouseScrolledEvent.h" />
+    <ClInclude Include="src\Zero\Layer.h" />
+    <ClInclude Include="src\Zero\LayerStack.h" />
     <ClInclude Include="src\Zero\Log.h" />
     <ClInclude Include="src\Zero\Window.h" />
     <ClInclude Include="src\zeropch.h" />
@@ -172,6 +177,7 @@
   <ItemGroup>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Zero\Application.cpp" />
+    <ClCompile Include="src\Zero\LayerStack.cpp" />
     <ClCompile Include="src\Zero\Log.cpp" />
     <ClCompile Include="src\zeropch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

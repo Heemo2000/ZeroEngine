@@ -64,15 +64,17 @@ project "ZeroEngine"
 		filter "configurations:Debug"
 			defines "ZERO_DEBUG"
 			optimize "On"
+			buildoptions "/MDd"
 
 		filter "configurations:Release"
 			defines "ZERO_RELEASE"
 			optimize "On"	
+			buildoptions "/MD"
 
 		filter "configurations:Dist"
 			defines "ZERO_DIST"
 			optimize "On"
-
+			buildoptions "/MD"
 
 project "Sandbox"
 	location "Sandbox"
@@ -110,11 +112,14 @@ project "Sandbox"
 		filter "configurations:Debug"
 			defines "ZERO_DEBUG"
 			optimize "On"
+			buildoptions "/MDd"
 
 		filter "configurations:Release"
 			defines "ZERO_RELEASE"
 			optimize "On"	
+			buildoptions "/MD"
 
 		filter "configurations:Dist"
 			defines "ZERO_DIST"
 			optimize "On"
+			buildoptions "/MD"

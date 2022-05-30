@@ -41,9 +41,8 @@ namespace Zero
 
 	class ZERO_API Event
 	{
-		friend class EventDispatcher;
-	protected:
-		bool m_Handled = false;
+	public:
+		bool Handled = false;
 	public:
 		virtual EventType GetEventType() const = 0;
 		virtual int GetCategoryFlags() const = 0;
