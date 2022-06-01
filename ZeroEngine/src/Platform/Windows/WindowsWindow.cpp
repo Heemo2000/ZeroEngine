@@ -34,6 +34,9 @@ namespace Zero
 		if (!s_GLFWInitialized)
 		{
 			int success = glfwInit();
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
 			ZERO_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
@@ -41,6 +44,10 @@ namespace Zero
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), NULL, NULL);
 		glfwMakeContextCurrent(m_Window);
+		int glLoaded = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+		ZERO_CORE_ASSERT(glLoaded, "Could not load OpenGL functions!");
+		
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVsync(true);
 

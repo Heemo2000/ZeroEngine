@@ -13,8 +13,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "ZeroEngine/vendor/GLFW/include"
+IncludeDir["Glad"] = "ZeroEngine/vendor/GLAD/include"
+
 
 include "ZeroEngine/vendor/GLFW"
+include "ZeroEngine/vendor/GLAD"
 
 project "ZeroEngine"
 	location "ZeroEngine"
@@ -37,12 +40,14 @@ project "ZeroEngine"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.Glad}"
 	}
 
 	links
 	{
 		"GLFW",
+		"Glad",
 		"opengl32.lib"
 	}
 	filter "system:windows"
@@ -53,7 +58,8 @@ project "ZeroEngine"
 		defines
 		{
 			"ZERO_PLATFORM_WINDOWS",
-			"ZERO_BUILD_DLL"
+			"ZERO_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands
