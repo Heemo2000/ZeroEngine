@@ -1,3 +1,6 @@
 [submodule "ZeroEngine/vendor/GLFW"]
 	path = ZeroEngine/vendor/GLFW
 	url = https://github.com/glfw/glfw
+[submodule "ZeroEngine/vendor/imgui"]
+	path = ZeroEngine/vendor/imgui
+	url = https://github.com/ocornut/imgui.git
