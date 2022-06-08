@@ -138,8 +138,6 @@ namespace Zero
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glClearColor(0, 1, 1, 1);
-		glClear(GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(m_Window);
 	}
 
