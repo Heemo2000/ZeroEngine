@@ -5,7 +5,6 @@ namespace Zero
 {
 	LayerStack::LayerStack()
 	{
-
 	}
 
 	LayerStack::~LayerStack()
@@ -18,7 +17,6 @@ namespace Zero
 	void LayerStack::PushLayer(Layer* layer)
 	{
 		m_Layers.emplace(m_Layers.begin(), layer);
-		//m_LayerInsertLoc = m_Layers.emplace(m_Layers.begin(), layer);
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -28,13 +26,12 @@ namespace Zero
 		if (it != m_Layers.end())
 		{
 			m_Layers.erase(it);
-
 		}
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-		m_Layers.push_back(overlay);
+		m_Layers.emplace_back(overlay);
 	}
 
 	void LayerStack::PopOverlay(Layer* overlay)
