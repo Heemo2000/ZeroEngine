@@ -4,7 +4,7 @@
 
 #include "Zero/Application.h"
 #include "Zero/Log.h"
-
+#include "Zero/ImGui/ImGuiLayer.h"
 
 //----Entry_Point---------------------------
 #include "Zero/EntryPoint.h"

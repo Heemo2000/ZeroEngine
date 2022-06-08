@@ -20,7 +20,8 @@ class Sandbox : public Zero::Application
 public:
 	Sandbox()
 	{
-		//PushLayer(new ExampleLayer1());
+		PushLayer(new ExampleLayer1());
+		PushOverlay(new Zero::ImGuiLayer());
 	}
 
 	~Sandbox()
