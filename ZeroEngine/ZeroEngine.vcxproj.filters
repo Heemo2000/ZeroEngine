@@ -79,6 +79,7 @@
     <ClInclude Include="src\zeropch.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3.h" />
     <ClInclude Include="vendor\GLFW\include\GLFW\glfw3native.h" />
+    <ClInclude Include="src\Platform\OpenGL\imgui_impl_glfw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
@@ -100,5 +101,6 @@
       <Filter>Zero</Filter>
     </ClCompile>
     <ClCompile Include="src\zeropch.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\imgui_impl_glfw.cpp" />
   </ItemGroup>
 </Project>
