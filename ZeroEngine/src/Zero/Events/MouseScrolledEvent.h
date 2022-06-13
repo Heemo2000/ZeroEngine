@@ -12,6 +12,9 @@ namespace Zero
 	public:
 		MouseScrolledEvent(float scrolledX, float scrolledY) : m_ScrolledX(scrolledX), m_ScrolledY(scrolledY) {}
 
+		inline float GetScrolledX() const { return m_ScrolledX; }
+		inline float GetScrolledY() const { return m_ScrolledY; }
+
 		std::string ToString() const override
 		{
 			std::stringstream stream;
