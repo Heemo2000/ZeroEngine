@@ -91,6 +91,14 @@ namespace Zero
 			}
 		});
 
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keyCode) 
+			{
+				WindowsData& data = *(WindowsData*)glfwGetWindowUserPointer(window);
+				KeyTypedEvent typedEvent(keyCode);
+
+				data.EventCallback(typedEvent);
+			});
+
 		glfwSetMouseButtonCallback(m_Window,[](GLFWwindow* window, int keyCode, int action, int mods)
 			{
 				WindowsData& data = *(WindowsData*)glfwGetWindowUserPointer(window);
