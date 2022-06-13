@@ -13,6 +13,7 @@ namespace Zero
 		WindowLostFocus,
 		KeyPressed,
 		KeyReleased,
+		KeyTyped,
 		MouseMoved,
 		MouseButtonClicked,
 		MouseButtonReleased,
