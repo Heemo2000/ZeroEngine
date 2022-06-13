@@ -31,7 +31,7 @@ namespace Zero
 		void PopOverlay(Layer* overlay);
 	public:
 		inline static Application& GetInstance() { return *s_Instance; }
-		inline Window& GetWindow() { return *m_Window; }
+		inline Window* GetWindow() { return m_Window.get(); }
 
 	
 	};
