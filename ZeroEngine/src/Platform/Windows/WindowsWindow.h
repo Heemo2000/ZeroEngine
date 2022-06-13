@@ -1,5 +1,5 @@
 #pragma once
-#include "zeropch.h"
+//#include "zeropch.h"
 
 #include "Zero/Events/ApplicationEvent.h"
 #include "Zero/Events/KeyEvent.h"
@@ -42,6 +42,7 @@ namespace Zero
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+		inline GLFWwindow* GetGLFWwindow() const { return m_Window; }
 
 		void OnUpdate() override;
 		bool IsVsync() const override;
