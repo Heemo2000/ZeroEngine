@@ -24,6 +24,7 @@ project "ZeroEngine"
 	location "ZeroEngine"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -55,7 +56,7 @@ project "ZeroEngine"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
+		--staticruntime "On"
 		systemversion "latest"
 
 		defines
@@ -73,22 +74,26 @@ project "ZeroEngine"
 		filter "configurations:Debug"
 			defines "ZERO_DEBUG"
 			optimize "On"
-			buildoptions "/MDd"
+			--buildoptions "/MDd"
+			runtime "Debug"
 
 		filter "configurations:Release"
 			defines "ZERO_RELEASE"
 			optimize "On"	
-			buildoptions "/MD"
+			--buildoptions "/MD"
+			runtime "Release"
 
 		filter "configurations:Dist"
 			defines "ZERO_DIST"
 			optimize "On"
-			buildoptions "/MD"
+			--buildoptions "/MD"
+			runtime "Release"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
+	staticruntime "On"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -106,7 +111,7 @@ project "Sandbox"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
-		staticruntime "On"
+		staticruntime "Off"
 		systemversion "latest"
 
 		defines
