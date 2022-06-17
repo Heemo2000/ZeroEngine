@@ -41,8 +41,8 @@ namespace Zero
 
 		inline unsigned int GetWidth() const override { return m_Data.Width; }
 		inline unsigned int GetHeight() const override { return m_Data.Height; }
+		inline virtual void* GetNativeWindow() const override{ return (void*)m_Window; }
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		inline GLFWwindow* GetGLFWwindow() const { return m_Window; }
 
 		void OnUpdate() override;
 		bool IsVsync() const override;

@@ -33,13 +33,13 @@ namespace Zero
 		ImGuiIO& io = ImGui::GetIO();
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		
 		Application& app = Application::GetInstance();
 		Window* window = app.GetWindow();
 
-		WindowsWindow* windowsWindow = dynamic_cast<WindowsWindow*>(window);
-		ImGui_ImplGlfw_InitForOpenGL(windowsWindow->GetGLFWwindow(), true);
+		GLFWwindow* nativeWindow = static_cast<GLFWwindow*>(window->GetNativeWindow());
+		ImGui_ImplGlfw_InitForOpenGL(nativeWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 460 core");
 
 
@@ -68,8 +68,14 @@ namespace Zero
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-
-		ImGui::ShowDemoWindow(&m_Show);
+		
+		static char buffer[256] = "";
+		ImGui::Begin("ImGui Test");
+		ImGui::InputText("Enter the text", buffer, IM_ARRAYSIZE(buffer));
+		//ImGui::Text("Its my life.");
+		ImGui::Button("Press");
+		ImGui::End();
+		
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -82,11 +88,12 @@ namespace Zero
 		dispatcher.Dispatch<WindowResizedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnWindowResized));
 		dispatcher.Dispatch<KeyPressedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnKeyPressed));
 		dispatcher.Dispatch<KeyReleasedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnKeyReleased));
-		//dispatcher.Dispatch<KeyTypedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnKeyTyped));
+		dispatcher.Dispatch<KeyTypedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnKeyTyped));
 		dispatcher.Dispatch<MouseMovedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnMouseMoved));
 		dispatcher.Dispatch<MouseButtonClickedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonClicked));
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleased));
 		dispatcher.Dispatch<MouseScrolledEvent>(ZERO_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolled));
+		
 	}
 
 	bool ImGuiLayer::OnWindowResized(WindowResizedEvent& event)
@@ -96,11 +103,12 @@ namespace Zero
 		io.DisplaySize = ImVec2(event.GetWidth(), event.GetHeight());
 		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 		glViewport(0, 0, event.GetWidth(), event.GetHeight());
-		return true;
+		return false;
 	}
 
 	bool ImGuiLayer::OnKeyPressed(KeyPressedEvent& event)
 	{
+		/*
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.KeysDown[event.GetKeyCode()] = true;
@@ -109,22 +117,30 @@ namespace Zero
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+		*/
+		
 		return true;
 	}
 
 	bool ImGuiLayer::OnKeyReleased(KeyReleasedEvent& event)
 	{
+		/*
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.KeysDown[event.GetKeyCode()] = false;
+		*/
+		
 		return true;
 	}
 
 	bool ImGuiLayer::OnKeyTyped(KeyTypedEvent& event)
 	{
+		/*
 		ImGuiIO& io = ImGui::GetIO();
 		
 		io.AddInputCharacter((unsigned int)event.GetKeyCode());
+		*/
+		
 		return true;
 	}
 
