@@ -1,19 +1,24 @@
 #include "zeropch.h"
 #include "Application.h"
 #include <glad/glad.h>
-//#include "Events/ApplicationEvent.h"
+#include <GLFW/glfw3.h>
 namespace Zero
 {
 #define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
 	
 	Application* Application::s_Instance = nullptr;
+	
 	Application::Application()
 	{
 		ZERO_CORE_ASSERT(!s_Instance, "Application already exists!");
 
 		s_Instance = this;
+		
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -27,15 +32,22 @@ namespace Zero
 			glClearColor(0, 1, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 			
-			std::vector<Layer*>::iterator it = m_LayerStack.end();
-			while (it != m_LayerStack.begin())
+			for (Layer* layer : m_LayerStack)
 			{
-				--it;
-				(*it)->OnUpdate();
-				//ZERO_CORE_INFO("Calling {0}", (*it)->GetLayerName());
+				layer->OnUpdate();
 			}
-						
+			
+
+			m_ImGuiLayer->Begin();
+			for (Layer* layer : m_LayerStack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_ImGuiLayer->End();
+			
 			m_Window->OnUpdate();
+
+
 		}
 	}
 
@@ -46,17 +58,14 @@ namespace Zero
 		dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FN(OnWindowClose));
 		ZERO_CORE_INFO("{0}", event.ToString());
 
-		std::vector<Layer*>::iterator it = m_LayerStack.end();
-		while (it != m_LayerStack.begin())
+		for (Layer* layer : m_LayerStack)
 		{
-			--it;
-			(*it)->OnEvent(event);
+			layer->OnEvent(event);
 			if (event.Handled)
 			{
 				break;
-			}	
+			}
 		}		
-		
 	}
 
 	void Application::PushLayer(Layer* layer)

@@ -1,4 +1,5 @@
 #include <Zero.h>
+#include "imgui.h"
 
 class ExampleLayer1 : public Zero::Layer
 {
@@ -14,6 +15,13 @@ public:
 	{
 		ZERO_CLIENT_TRACE("{0}", event.ToString());
 	}
+
+	void OnImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("ImGui working in Sandbox");
+		ImGui::End();
+	}
 };
 class Sandbox : public Zero::Application
 {
@@ -21,7 +29,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer1());
-		PushOverlay(new Zero::ImGuiLayer());
 	}
 
 	~Sandbox()

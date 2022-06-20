@@ -5,6 +5,10 @@
 #include "Window.h"
 #include "LayerStack.h"
 #include "Layer.h"
+#include "Input.h"
+#include "MouseButtonCodes.h"
+#include "KeyCodes.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace Zero
 {
@@ -12,10 +16,10 @@ namespace Zero
 	{
 	private:
 		static Application* s_Instance;
-
 	private:
 		
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		bool OnWindowClose(WindowClosedEvent& event);
 		LayerStack m_LayerStack;
