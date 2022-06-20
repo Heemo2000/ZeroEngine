@@ -16,7 +16,8 @@ namespace Zero
 	}
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_Layers.emplace(m_Layers.begin(), layer);
+		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+		m_LayerInsertIndex++;
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
@@ -26,6 +27,7 @@ namespace Zero
 		if (it != m_Layers.end())
 		{
 			m_Layers.erase(it);
+			m_LayerInsertIndex--;
 		}
 	}
 

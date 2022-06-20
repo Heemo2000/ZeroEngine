@@ -17,7 +17,7 @@ namespace Zero
 		virtual void OnEvent(Event& event) {}
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-
+		virtual void OnImGuiRender() {}
 		inline const std::string GetLayerName() const { return m_LayerName; }
 	};
 }
