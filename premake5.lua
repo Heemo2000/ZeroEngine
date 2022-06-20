@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "ZeroEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "ZeroEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "ZeroEngine/vendor/imgui"
+IncludeDir["GLM"] = "ZeroEngine/vendor/GLM"
 
 include "ZeroEngine/vendor/GLFW"
 include "ZeroEngine/vendor/GLAD"
@@ -35,7 +36,9 @@ project "ZeroEngine"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/GLM/glm/**.hpp",
+		"%{prj.name}/vendor/GLM/glm/**.inl"
 	}
 
 	includedirs
@@ -44,7 +47,8 @@ project "ZeroEngine"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.GLM}"
 	}
 
 	links
@@ -107,7 +111,9 @@ project "Sandbox"
 	includedirs
 	{
 		"ZeroEngine/vendor/spdlog/include",
-		"ZeroEngine/src"
+		"ZeroEngine/src",
+		"%{IncludeDir.GLM}",
+		"ZeroEngine/vendor/imgui"
 	}
 	filter "system:windows"
 		cppdialect "C++20"
