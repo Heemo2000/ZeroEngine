@@ -16,25 +16,6 @@ namespace Zero
 	
 	class WindowsWindow : public Window
 	{
-	private:
-		struct WindowsData
-		{
-			std::string Title;
-
-			unsigned int Width;
-			unsigned int Height;
-			bool Vsync;
-
-			EventCallbackFn EventCallback;
-		};
-	private:
-		GLFWwindow* m_Window;
-		WindowsData m_Data;
-		
-		
-		void Init(const WindowProps& props);
-		void Shutdown();
-
 	public:
 		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
@@ -48,6 +29,25 @@ namespace Zero
 		bool IsVsync() const override;
 		void SetVsync(bool enabled) override;
 
+	private:
+		struct WindowsData
+		{
+			std::string Title;
+
+			unsigned int Width;
+			unsigned int Height;
+			bool Vsync;
+
+			EventCallbackFn EventCallback;
+		};
+	
+	private:
+		GLFWwindow* m_Window;
+		WindowsData m_Data;
+
+	private:
+		void Init(const WindowProps& props);
+		void Shutdown();
 	};
 }
 

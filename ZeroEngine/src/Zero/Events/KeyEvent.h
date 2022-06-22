@@ -5,22 +5,21 @@ namespace Zero
 {
 	class ZERO_API KeyEvent : public Event
 	{
-	private:
-		int m_KeyCode;
-
-	protected:
-		KeyEvent(int keyCode) : m_KeyCode(keyCode) {}
-
+	
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput);
+	
+	protected:
+		KeyEvent(int keyCode) : m_KeyCode(keyCode) {}
+
+	private:
+		int m_KeyCode;
 	};
 
 	class ZERO_API KeyPressedEvent : public KeyEvent
 	{
-	private:
-		int m_RepeatCount;
 	public:
 		KeyPressedEvent(int keyCode, int repeatCount) : KeyEvent(keyCode), m_RepeatCount(repeatCount) {}
 
@@ -34,6 +33,9 @@ namespace Zero
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed);
+
+	private:
+		int m_RepeatCount;
 	};
 
 	class ZERO_API KeyReleasedEvent : public KeyEvent

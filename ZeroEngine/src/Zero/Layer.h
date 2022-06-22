@@ -8,8 +8,6 @@ namespace Zero
 {
 	class ZERO_API Layer
 	{
-	private:
-		std::string m_LayerName;
 	public:
 		Layer(const std::string& layerName = "Layer") : m_LayerName(layerName) {}
 		virtual ~Layer() {}
@@ -19,5 +17,8 @@ namespace Zero
 		virtual void OnDetach() {}
 		virtual void OnImGuiRender() {}
 		inline const std::string GetLayerName() const { return m_LayerName; }
+	private:
+		std::string m_LayerName;
+	
 	};
 }

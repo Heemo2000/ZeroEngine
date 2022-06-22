@@ -6,9 +6,6 @@ namespace Zero
 {
 	class ZERO_API LayerStack
 	{
-	private:
-		std::vector<Layer*> m_Layers;
-		unsigned int m_LayerInsertIndex = 0;
 	public:
 		LayerStack();
 		~LayerStack();
@@ -19,6 +16,11 @@ namespace Zero
 
 		inline std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
 		inline std::vector<Layer*>::iterator end() { return m_Layers.end(); }
+	
+	private:
+		std::vector<Layer*> m_Layers;
+		unsigned int m_LayerInsertIndex = 0;
+	
 	};
 }
 

@@ -14,16 +14,7 @@ namespace Zero
 {
 	class ZERO_API Application
 	{
-	private:
-		static Application* s_Instance;
-	private:
-		
-		std::unique_ptr<Window> m_Window;
-		ImGuiLayer* m_ImGuiLayer;
-		bool m_Running = true;
-		bool OnWindowClose(WindowClosedEvent& event);
-		LayerStack m_LayerStack;
-
+	
 	public:
 		Application();
 		virtual ~Application();
@@ -37,7 +28,15 @@ namespace Zero
 		inline static Application& GetInstance() { return *s_Instance; }
 		inline Window* GetWindow() { return m_Window.get(); }
 
-	
+	private:
+		static Application* s_Instance;
+
+	private:
+		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running = true;
+		bool OnWindowClose(WindowClosedEvent& event);
+		LayerStack m_LayerStack;
 	};
 
 	//To be defined in client.

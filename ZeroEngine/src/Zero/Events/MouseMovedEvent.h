@@ -6,9 +6,7 @@ namespace Zero
 {
 	class ZERO_API MouseMovedEvent : public Event
 	{
-	private:
-		float m_MouseX;
-		float m_MouseY;
+	
 
 	public:
 		MouseMovedEvent(float mouseX, float mouseY) : m_MouseX(mouseX), m_MouseY(mouseY) {}
@@ -24,5 +22,9 @@ namespace Zero
 		}
 		EVENT_CLASS_CATEGORY(EventCategoryMouse);
 		EVENT_CLASS_TYPE(MouseMoved);
+	
+	private:
+		float m_MouseX;
+		float m_MouseY;
 	};
 }

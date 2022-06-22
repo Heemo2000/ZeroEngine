@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 	ZERO_CLIENT_INFO("Hello");
 	auto app = Zero::CreateApplication();
 	app->Run();
-	delete app;
+	delete app; 
 	//return 0;
 }
 

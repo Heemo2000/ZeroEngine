@@ -5,14 +5,16 @@ namespace Zero
 {
 	class ZERO_API MouseButtonEvent : public Event
 	{
-	protected:
-		int m_Button;
+	
 	public:
 		MouseButtonEvent(int button) : m_Button(button) {}
 
 		inline int GetMouseButton() { return m_Button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouseButton);
+	protected:
+		int m_Button;
+	
 	};
 
 	class ZERO_API MouseButtonClickedEvent : public MouseButtonEvent
