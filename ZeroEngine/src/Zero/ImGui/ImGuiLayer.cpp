@@ -83,15 +83,15 @@ namespace Zero
 	}
 
 	void ImGuiLayer::End()
-	{
+	{ 
 		ImGuiIO& io = ImGui::GetIO();
 
 		Application& app = Application::GetInstance();
 		Window* window = app.GetWindow();
-		io.DisplaySize = ImVec2(window->GetWidth(), window->GetHeight());
+		io.DisplaySize = ImVec2((float)window->GetWidth(), (float)window->GetHeight());
 
-		io.DeltaTime = (m_Time > 0) ? glfwGetTime() - m_Time : 1.0f / 60.0f;
-		m_Time = glfwGetTime();
+		io.DeltaTime = (m_Time > 0.0f) ? (float)glfwGetTime() - m_Time : 1.0f / 60.0f;
+		m_Time = (float)glfwGetTime();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -23,9 +23,10 @@ include "ZeroEngine/vendor/imgui"
 
 project "ZeroEngine"
 	location "ZeroEngine"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++20"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -59,45 +60,38 @@ project "ZeroEngine"
 		"opengl32.lib"
 	}
 	filter "system:windows"
-		cppdialect "C++20"
-		--staticruntime "On"
 		systemversion "latest"
 
 		defines
 		{
 			"ZERO_PLATFORM_WINDOWS",
 			"ZERO_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-		}
 
 		filter "configurations:Debug"
 			defines "ZERO_DEBUG"
-			optimize "On"
-			--buildoptions "/MDd"
 			runtime "Debug"
+			symbols "on"
 
 		filter "configurations:Release"
-			defines "ZERO_RELEASE"
-			optimize "On"	
-			--buildoptions "/MD"
+			defines "ZERO_RELEASE"	
 			runtime "Release"
+			optimize "on"
 
 		filter "configurations:Dist"
 			defines "ZERO_DIST"
-			optimize "On"
-			--buildoptions "/MD"
 			runtime "Release"
+			optimize "on"
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "On"
+	cppdialect "C++20"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -116,8 +110,7 @@ project "Sandbox"
 		"ZeroEngine/vendor/imgui"
 	}
 	filter "system:windows"
-		cppdialect "C++20"
-		staticruntime "Off"
+		--staticruntime "Off"
 		systemversion "latest"
 
 		defines
@@ -131,15 +124,17 @@ project "Sandbox"
 		}
 		filter "configurations:Debug"
 			defines "ZERO_DEBUG"
-			optimize "On"
-			buildoptions "/MDd"
+			runtime "Debug"
+			symbols "on"
 
 		filter "configurations:Release"
 			defines "ZERO_RELEASE"
-			optimize "On"	
-			buildoptions "/MD"
+			runtime "Release"
+			optimize "on"	
+
 
 		filter "configurations:Dist"
 			defines "ZERO_DIST"
-			optimize "On"
-			buildoptions "/MD"
+			runtime "Release"
+			optimize "on"
+
