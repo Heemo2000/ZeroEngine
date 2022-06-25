@@ -4,3 +4,6 @@
 [submodule "ZeroEngine/vendor/imgui"]
 	path = ZeroEngine/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "ZeroEngine/vendor/GLM"]
+	path = ZeroEngine/vendor/GLM
+	url = https://github.com/g-truc/glm.git

@@ -37,6 +37,9 @@ namespace Zero
 		bool m_Running = true;
 		bool OnWindowClose(WindowClosedEvent& event);
 		LayerStack m_LayerStack;
+		unsigned int m_VertexArray;
+		unsigned int m_VertexBuffer;
+		unsigned int m_IndexBuffer;
 	};
 
 	//To be defined in client.

@@ -1353,6 +1353,8 @@
     <ClInclude Include="vendor\GLM\glm\vector_relational.hpp">
       <Filter>vendor\GLM\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Zero\Renderer\RenderingContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRenderingContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
@@ -1379,5 +1381,6 @@
     <ClCompile Include="src\zeropch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRenderingContext.cpp" />
   </ItemGroup>
 </Project>
