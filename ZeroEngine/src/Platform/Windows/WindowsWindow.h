@@ -10,6 +10,8 @@
 #include "Zero/Window.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include "Platform/OpenGL/OpenGLRenderingContext.h"
 namespace Zero
 {
 
@@ -44,7 +46,7 @@ namespace Zero
 	private:
 		GLFWwindow* m_Window;
 		WindowsData m_Data;
-
+		OpenGLRenderingContext* m_Context;
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
