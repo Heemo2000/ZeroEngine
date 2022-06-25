@@ -13,7 +13,11 @@ namespace Zero
 		int glLoaded = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		ZERO_CORE_ASSERT(glLoaded, "Could not load OpenGL functions!");
 		
-		ZERO_CORE_INFO("OpenGL version : {0}", glGetString(GL_VERSION));
+		ZERO_CORE_INFO("OpenGL Info :");
+		ZERO_CORE_INFO("    Vendor : {0}", glGetString(GL_VENDOR));
+		ZERO_CORE_INFO("    Renderer : {0}", glGetString(GL_RENDERER));
+		ZERO_CORE_INFO("    Version : {0}", glGetString(GL_VERSION));
+
 	}
 
 	void OpenGLRenderingContext::SwapBuffers()

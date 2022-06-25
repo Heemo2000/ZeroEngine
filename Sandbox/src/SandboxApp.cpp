@@ -8,7 +8,7 @@ public:
 
 	void OnUpdate() override
 	{
-		ZERO_CLIENT_INFO("ExampleLayer1 : Update");
+		//ZERO_CLIENT_INFO("ExampleLayer1 : Update");
 	}
 
 	void OnEvent(Zero::Event& event) override
