@@ -35,28 +35,46 @@ namespace Zero
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 		
-		glGenBuffers(1, &m_VertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices),vertices,GL_STATIC_DRAW);
+		m_VertexBuffer.reset(VertexBuffer::Create(vertices,sizeof(vertices)));
 		
-		glGenBuffers(1, &m_IndexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
 		glEnableVertexAttribArray(0);
 
 		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		m_IndexBuffer->Unbind();
+		m_VertexBuffer->Unbind();
 
+		std::string vertexSource = R"(
+			#version 460 core
+			layout(location = 0) in vec3 a_Position;
+
+			out vec3 v_Position;
+		    void main()
+			{
+				v_Position = a_Position * 0.25 + 1.0f;
+				gl_Position = vec4(a_Position,1.0);
+			}
+		)";
+		
+		std::string fragmentSource = R"(
+			#version 460 core
+			out vec4 outColor;
+			
+			in vec3 v_Position;
+		    void main()
+			{
+				outColor = vec4(v_Position,1.0);
+			}
+		)";
+
+		m_Shader.reset(Shader::Create(vertexSource,fragmentSource));
+		m_Shader->Bind();
 	}
 
 	Application::~Application()
 	{
-		glDeleteBuffers(1, &m_IndexBuffer);
-		glDeleteBuffers(1, &m_VertexBuffer);
 		glDeleteVertexArrays(1, &m_VertexArray);
 	}
 
@@ -64,11 +82,11 @@ namespace Zero
 	{
 		while (m_Running)
 		{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			glBindVertexArray(m_VertexArray);
-			glDrawElements(GL_TRIANGLES, 3 * 3, GL_UNSIGNED_INT, (void*)0);
+			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, (void*)0);
 
 			for (Layer* layer : m_LayerStack)
 			{

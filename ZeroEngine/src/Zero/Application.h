@@ -10,6 +10,10 @@
 #include "KeyCodes.h"
 #include "ImGui/ImGuiLayer.h"
 
+#include "Renderer/Shader.h"
+#include "Renderer/Buffer.h"
+
+
 namespace Zero
 {
 	class ZERO_API Application
@@ -38,8 +42,9 @@ namespace Zero
 		bool OnWindowClose(WindowClosedEvent& event);
 		LayerStack m_LayerStack;
 		unsigned int m_VertexArray;
-		unsigned int m_VertexBuffer;
-		unsigned int m_IndexBuffer;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<IndexBuffer> m_IndexBuffer;
+		std::unique_ptr<Shader> m_Shader;
 	};
 
 	//To be defined in client.

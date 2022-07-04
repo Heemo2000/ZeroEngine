@@ -140,7 +140,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderingContext.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Zero.h" />
@@ -161,7 +163,10 @@
     <ClInclude Include="src\Zero\LayerStack.h" />
     <ClInclude Include="src\Zero\Log.h" />
     <ClInclude Include="src\Zero\MouseButtonCodes.h" />
+    <ClInclude Include="src\Zero\Renderer\Renderer.h" />
     <ClInclude Include="src\Zero\Renderer\RenderingContext.h" />
+    <ClInclude Include="src\Zero\Renderer\Shader.h" />
+    <ClInclude Include="src\Zero\Renderer\Buffer.h" />
     <ClInclude Include="src\Zero\Window.h" />
     <ClInclude Include="src\zeropch.h" />
     <ClInclude Include="vendor\GLM\glm\common.hpp" />
@@ -581,7 +586,9 @@
     <ClInclude Include="vendor\GLM\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderingContext.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Zero\Application.cpp" />
@@ -592,6 +599,9 @@
     <ClCompile Include="src\zeropch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Zero\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

@@ -13,14 +13,17 @@ public:
 
 	void OnEvent(Zero::Event& event) override
 	{
-		ZERO_CLIENT_TRACE("{0}", event.ToString());
+		//ZERO_CLIENT_TRACE("{0}", event.ToString());
 	}
 
 	void OnImGuiRender() override
 	{
+		/*
 		ImGui::Begin("Test");
 		ImGui::Text("ImGui working in Sandbox");
 		ImGui::End();
+		*/
+		
 	}
 };
 class Sandbox : public Zero::Application
