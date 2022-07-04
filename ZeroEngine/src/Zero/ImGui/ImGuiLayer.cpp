@@ -10,14 +10,15 @@
 #include "backends/imgui_impl_glfw.h"
 
 #include "Zero/Application.h"
-#include "Platform/Windows/WindowsWindow.h"
+
 
 
 namespace Zero
 {
 	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
 	{
-
+		Application& app = Application::GetInstance();
+		m_Window = app.GetWindow();
 	}
 
 	ImGuiLayer::~ImGuiLayer()
@@ -44,10 +45,9 @@ namespace Zero
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 
-		Application& app = Application::GetInstance();
-		Window* window = app.GetWindow();
+		
 
-		GLFWwindow* nativeWindow = static_cast<GLFWwindow*>(window->GetNativeWindow());
+		GLFWwindow* nativeWindow = static_cast<GLFWwindow*>(m_Window->GetNativeWindow());
 		
 		ZERO_CORE_ASSERT(nativeWindow != nullptr, "Error in checking native window!!");
 		
@@ -86,9 +86,12 @@ namespace Zero
 	{ 
 		ImGuiIO& io = ImGui::GetIO();
 
-		Application& app = Application::GetInstance();
-		Window* window = app.GetWindow();
-		io.DisplaySize = ImVec2((float)window->GetWidth(), (float)window->GetHeight());
+		//Application& app = Application::GetInstance();
+		//Window* window = app.GetWindow();
+
+
+
+		io.DisplaySize = ImVec2((float)m_Window->GetWidth(), (float)m_Window->GetHeight());
 
 		io.DeltaTime = (m_Time > 0.0f) ? (float)glfwGetTime() - m_Time : 1.0f / 60.0f;
 		m_Time = (float)glfwGetTime();

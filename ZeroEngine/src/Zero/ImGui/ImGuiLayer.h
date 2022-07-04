@@ -2,13 +2,12 @@
 #include "Zero/Core.h"
 #include "Zero/Layer.h"
 
-
+#include "Zero/Window.h"
 
 namespace Zero
 {
 	class ZERO_API ImGuiLayer : public Layer
 	{
-	
 
 	public:
 		ImGuiLayer();
@@ -24,6 +23,7 @@ namespace Zero
 	private:
 		bool m_Show = true;
 		float m_Time = 0.0f;
+		Window* m_Window;
 	};
 }
 
