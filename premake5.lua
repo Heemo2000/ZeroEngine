@@ -16,6 +16,7 @@ IncludeDir["GLFW"] = "ZeroEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "ZeroEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "ZeroEngine/vendor/imgui"
 IncludeDir["GLM"] = "ZeroEngine/vendor/GLM"
+IncludeDir["stb_image"] = "ZeroEngine/vendor/stb_image"
 
 include "ZeroEngine/vendor/GLFW"
 include "ZeroEngine/vendor/GLAD"
@@ -39,7 +40,8 @@ project "ZeroEngine"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/GLM/glm/**.hpp",
-		"%{prj.name}/vendor/GLM/glm/**.inl"
+		"%{prj.name}/vendor/GLM/glm/**.inl",
+		"%{prj.name}/vendor/stb_image/**.h"
 	}
 
 	includedirs
@@ -49,7 +51,8 @@ project "ZeroEngine"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.GLM}"
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.stb_image}"
 	}
 
 	links
