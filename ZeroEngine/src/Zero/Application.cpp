@@ -20,11 +20,11 @@ namespace Zero
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		float vertices[3 * 3] =
+		float vertices[] =
 		{
-			-0.5f,-0.5f,0.0f,
-			0.5f,-0.5f,0.0f,
-			0.0f,0.5f,0.0f
+			-0.5f,-0.5f,0.0f, 0.0f,0.0f,0.0f,1.0f,
+			0.5f,-0.5f,0.0f,  1.0f,0.0f,0.0f,1.0f,
+			0.0f,0.5f,0.0f,   0.5f,0.5f,0.0f,1.0f
 		};
 
 		unsigned int indices[1 * 3] =
@@ -32,40 +32,53 @@ namespace Zero
 			0,1,2
 		};
 
+		BufferLayout layout = 
+		  { 
+			{"a_Position",ShaderDataType::Float3},
+			{"a_Color",ShaderDataType::Float4}
+		  };
+
 		glGenVertexArrays(1, &m_VertexArray);
 		glBindVertexArray(m_VertexArray);
 		
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices,sizeof(vertices)));
-		
+		m_VertexBuffer->SetLayout(layout);
+
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
-		glEnableVertexAttribArray(0);
+		uint32_t i = 0;
+		for (BufferElement& element : layout)
+		{
+
+			glVertexAttribPointer(i, element.GetComponentCount(), GL_FLOAT, element.Normalized ? GL_TRUE : GL_FALSE,
+								  layout.GetStride(), (void*)element.OffSet);
+			glEnableVertexAttribArray(i);
+			i++;
+		}
 
 		glBindVertexArray(0);
 		m_IndexBuffer->Unbind();
-		m_VertexBuffer->Unbind();
-
+		m_VertexBuffer->Unbind();		
+		
 		std::string vertexSource = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
-
-			out vec3 v_Position;
+			layout(location = 1) in vec4 a_Color;
+			out vec4 v_Color;
 		    void main()
-			{
-				v_Position = a_Position * 0.25 + 1.0f;
+			{				
+				v_Color = a_Color;
 				gl_Position = vec4(a_Position,1.0);
 			}
 		)";
 		
 		std::string fragmentSource = R"(
 			#version 460 core
+			in vec4 v_Color;
 			out vec4 outColor;
-			
-			in vec3 v_Position;
 		    void main()
 			{
-				outColor = vec4(v_Position,1.0);
+				outColor = v_Color;
 			}
 		)";
 

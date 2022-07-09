@@ -9,9 +9,12 @@ namespace Zero
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
 		virtual void Bind() override;
 		virtual void Unbind() override;
+		inline virtual const BufferLayout& GetLayout() const override { return m_Layout; }
+		inline virtual void SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
 		virtual ~OpenGLVertexBuffer() override;
 	private:
 		uint32_t m_RendererID;
+		BufferLayout m_Layout;
 	};
 
 
