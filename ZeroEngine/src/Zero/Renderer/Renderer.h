@@ -1,4 +1,5 @@
 #pragma once
+#include "Zero/Core.h"
 
 enum class RendererAPI
 {
@@ -7,7 +8,7 @@ enum class RendererAPI
 };
 
 
-class Renderer
+class ZERO_API Renderer
 {
 public:
 	static inline RendererAPI GetAPI() { return s_RendererAPI; }
