@@ -38,25 +38,18 @@ namespace Zero
 			{"a_Color",ShaderDataType::Float4}
 		  };
 
-		glGenVertexArrays(1, &m_VertexArray);
-		glBindVertexArray(m_VertexArray);
+		m_VertexArray.reset(VertexArray::Create());
+		m_VertexArray->Bind();
 		
 		m_VertexBuffer.reset(VertexBuffer::Create(vertices,sizeof(vertices)));
 		m_VertexBuffer->SetLayout(layout);
 
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		uint32_t i = 0;
-		for (BufferElement& element : layout)
-		{
+		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-			glVertexAttribPointer(i, element.GetComponentCount(), GL_FLOAT, element.Normalized ? GL_TRUE : GL_FALSE,
-								  layout.GetStride(), (void*)element.OffSet);
-			glEnableVertexAttribArray(i);
-			i++;
-		}
-
-		glBindVertexArray(0);
+		m_VertexArray->Unbind();
 		m_IndexBuffer->Unbind();
 		m_VertexBuffer->Unbind();		
 		
@@ -88,7 +81,7 @@ namespace Zero
 
 	Application::~Application()
 	{
-		glDeleteVertexArrays(1, &m_VertexArray);
+
 	}
 
 	void Application::Run()
@@ -98,8 +91,8 @@ namespace Zero
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glBindVertexArray(m_VertexArray);
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, (void*)0);
+			m_VertexArray->Bind();
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
 
 			for (Layer* layer : m_LayerStack)
 			{
@@ -147,6 +140,7 @@ namespace Zero
 
 	void Application::PopLayer(Layer* layer)
 	{
+		ZERO_CORE_INFO("Deleted {0}", layer->GetLayerName());
 		m_LayerStack.PopLayer(layer);
 		layer->OnDetach();
 	}
@@ -160,6 +154,7 @@ namespace Zero
 
 	void Application::PopOverlay(Layer* overlay)
 	{
+		ZERO_CORE_INFO("Deleted {0}", overlay->GetLayerName());
 		m_LayerStack.PopOverlay(overlay);
 		overlay->OnDetach();
 	}
