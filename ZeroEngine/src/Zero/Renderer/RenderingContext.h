@@ -3,7 +3,7 @@
 
 namespace Zero
 {
-	class RenderingContext
+	class ZERO_API RenderingContext
 	{
 	public:
 		virtual void Init() = 0;

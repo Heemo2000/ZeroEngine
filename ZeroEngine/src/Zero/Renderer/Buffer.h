@@ -74,7 +74,7 @@ struct BufferElement
 	}
 };
 
-class BufferLayout
+class ZERO_API BufferLayout
 {
 public:
 	BufferLayout() {};
@@ -105,7 +105,7 @@ private:
 };
 namespace Zero
 {
-	class VertexBuffer
+	class ZERO_API VertexBuffer
 	{
 	public:
 
@@ -118,7 +118,7 @@ namespace Zero
 	};
 
 
-	class IndexBuffer
+	class ZERO_API IndexBuffer
 	{
 	public:
 		static IndexBuffer* Create(uint32_t* indices, uint32_t count);

@@ -4,7 +4,7 @@
 
 namespace Zero
 {
-	class Shader
+	class ZERO_API Shader
 	{
 	public:
 
