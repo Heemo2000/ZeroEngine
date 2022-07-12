@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 namespace Zero
 {
+	//To be replaced with ZERO_BIND_EVENT_FN from Core.h wherever it's used.
 #define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
 	
 	Application* Application::s_Instance = nullptr;
@@ -13,60 +14,91 @@ namespace Zero
 		ZERO_CORE_ASSERT(!s_Instance, "Application already exists!");
 
 		s_Instance = this;
-		
+
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-		
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		float vertices[] =
+		float smallSquareVertices[] =
 		{
-			-0.5f,-0.5f,0.0f, 0.0f,0.0f,0.0f,1.0f,
-			0.5f,-0.5f,0.0f,  1.0f,0.0f,0.0f,1.0f,
-			0.0f,0.5f,0.0f,   0.5f,0.5f,0.0f,1.0f
+			-0.5f,-0.5f,0.0f,    0.0f,0.2f,0.0f,1.0f,
+			0.0f,-0.5f,0.0f,     0.0f,0.2f,0.0f,1.0f,
+			0.0f,0.5f,0.0f,	     0.0f,0.2f,0.0f,1.0f,
+			-0.5f,0.5f,0.0f,     0.0f,0.2f,0.0f,1.0f
 		};
 
-		unsigned int indices[1 * 3] =
+		float bigSquareVertices[] =
 		{
-			0,1,2
+			-0.5f,-0.5f,0.0f,    0.2f,0.2f,0.0f,1.0f,
+			0.5f,-0.5f,0.0f,     0.2f,0.2f,0.0f,1.0f,
+			0.5f,0.5f,0.0f,	     0.2f,0.2f,0.0f,1.0f,
+			-0.5f,0.5f,0.0f,     0.2f,0.2f,0.0f,1.0f
 		};
 
-		BufferLayout layout = 
+		unsigned int indices[] =
+		{
+			0,1,2,
+			0,2,3
+		};
+
+		BufferLayout squareLayout = 
 		  { 
 			{"a_Position",ShaderDataType::Float3},
 			{"a_Color",ShaderDataType::Float4}
 		  };
 
-		m_VertexArray.reset(VertexArray::Create());
-		m_VertexArray->Bind();
+		m_SmallSquareVA.reset(VertexArray::Create());
 		
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices,sizeof(vertices)));
-		m_VertexBuffer->SetLayout(layout);
+		m_smallSquareVBO.reset(VertexBuffer::Create(smallSquareVertices,sizeof(smallSquareVertices)));
+		m_smallSquareVBO->SetLayout(squareLayout);
 
 		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+		m_SmallSquareVA->AddVertexBuffer(m_smallSquareVBO);
+		m_SmallSquareVA->SetIndexBuffer(m_IndexBuffer);
 
-		m_VertexArray->Unbind();
-		m_IndexBuffer->Unbind();
-		m_VertexBuffer->Unbind();		
+		m_BigSquareVA.reset(VertexArray::Create());
+
+		m_BigSquareVBO.reset(VertexBuffer::Create(bigSquareVertices, sizeof(bigSquareVertices)));
+		m_BigSquareVBO->SetLayout(squareLayout);
+
+		m_BigSquareVA->AddVertexBuffer(m_BigSquareVBO);
+		m_BigSquareVA->SetIndexBuffer(m_IndexBuffer);
 		
-		std::string vertexSource = R"(
+		
+		std::string smallSquareVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 			out vec4 v_Color;
 		    void main()
-			{				
-				v_Color = a_Color;
+			{	
+				v_Color = a_Color;			
 				gl_Position = vec4(a_Position,1.0);
 			}
 		)";
 		
+
+		std::string bigSquareVS = R"(
+			#version 460 core
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec4 a_Color;
+			out vec4 v_Color;
+			
+			vec3 offset = vec3(1.0,0.0,0.0);
+			float scale = 1.2;
+		    void main()
+			{	
+				v_Color = a_Color;			
+				gl_Position = vec4((a_Position) * scale + offset,1.0);
+			}
+		)";
+
 		std::string fragmentSource = R"(
 			#version 460 core
+			
 			in vec4 v_Color;
 			out vec4 outColor;
 		    void main()
@@ -75,8 +107,10 @@ namespace Zero
 			}
 		)";
 
-		m_Shader.reset(Shader::Create(vertexSource,fragmentSource));
-		m_Shader->Bind();
+
+		m_SmallSquareShader.reset(Shader::Create(smallSquareVS,fragmentSource));
+		
+		m_BigSquareShader.reset(Shader::Create(bigSquareVS,fragmentSource));
 	}
 
 	Application::~Application()
@@ -91,8 +125,13 @@ namespace Zero
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
+			m_SmallSquareShader->Bind();
+			m_SmallSquareVA->Bind();
+			glDrawElements(GL_TRIANGLES, m_SmallSquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
+
+			m_BigSquareShader->Bind();
+			m_BigSquareVA->Bind();
+			glDrawElements(GL_TRIANGLES, m_BigSquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
 
 			for (Layer* layer : m_LayerStack)
 			{

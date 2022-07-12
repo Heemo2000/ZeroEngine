@@ -38,10 +38,16 @@ namespace Zero
 		bool m_Running = true;
 		bool OnWindowClose(WindowClosedEvent& event);
 		LayerStack m_LayerStack;
-		std::unique_ptr<VertexArray> m_VertexArray;
-		std::shared_ptr<VertexBuffer> m_VertexBuffer;
+		
+		std::unique_ptr<VertexArray> m_SmallSquareVA;
+		std::unique_ptr<VertexArray> m_BigSquareVA;
+
+		std::shared_ptr<VertexBuffer> m_smallSquareVBO;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
-		std::unique_ptr<Shader> m_Shader;
+		
+		std::shared_ptr<VertexBuffer> m_BigSquareVBO;
+		std::unique_ptr<Shader> m_SmallSquareShader;
+		std::unique_ptr<Shader> m_BigSquareShader;
 	};
 
 	//To be defined in client.
