@@ -7,7 +7,7 @@
 namespace Zero
 {
 
-	class VertexArray
+	class ZERO_API VertexArray
 	{
 	public:
 		static VertexArray* Create();
