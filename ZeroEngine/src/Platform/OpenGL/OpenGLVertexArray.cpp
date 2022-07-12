@@ -21,6 +21,8 @@ namespace Zero
 
 	void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
 	{
+		ZERO_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+
 		glBindVertexArray(m_RendererID);
 		m_VertexBuffers.push_back(vertexBuffer);
 		vertexBuffer->Bind();
