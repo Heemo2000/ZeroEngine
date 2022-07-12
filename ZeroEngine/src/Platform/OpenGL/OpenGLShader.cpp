@@ -22,13 +22,12 @@ namespace Zero
 		{
 			GLint logLength = 0;
 			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logLength);
-			std::vector<GLchar> infoLog;
+			std::vector<GLchar> infoLog(logLength);
 			glGetShaderInfoLog(vertexShader, logLength, &logLength, &infoLog[0]);
 
 			glDeleteShader(vertexShader);
-			ZERO_CORE_ASSERT(false, "Vertex shader compilation failure!!");
 			ZERO_CORE_ERROR("{0}", infoLog);
-
+			ZERO_CORE_ASSERT(false, "Vertex shader compilation failure!!");
 			return;
 		}
 
@@ -42,12 +41,12 @@ namespace Zero
 		{
 			GLint logLength = 0;
 			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logLength);
-			std::vector<GLchar> infoLog;
+			std::vector<GLchar> infoLog(logLength);
 			glGetShaderInfoLog(fragmentShader, logLength, &logLength, &infoLog[0]);
 			glDeleteShader(fragmentShader);
 
-			ZERO_CORE_ASSERT(false, "Fragment shader compilation failure!!");
 			ZERO_CORE_ERROR("{0}", infoLog);
+			ZERO_CORE_ASSERT(false, "Fragment shader compilation failure!!");
 			return;
 		}
 
@@ -64,7 +63,7 @@ namespace Zero
 			GLint infoLength = 0;
 			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &infoLength);
 
-			std::vector<GLchar> infoLog;
+			std::vector<GLchar> infoLog(infoLength);
 			glGetProgramInfoLog(m_RendererID, infoLength, &infoLength, &infoLog[0]);
 
 			// We don't need the program anymore.
@@ -73,8 +72,10 @@ namespace Zero
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
 
-			// Use the infoLog as you see fit.
 			ZERO_CORE_ERROR("{0}", infoLog);
+			ZERO_CORE_ASSERT(false, "Shader program Linking failed!!");
+			// Use the infoLog as you see fit.
+			
 			// In this simple program, we'll just leave
 			return;
 		}
