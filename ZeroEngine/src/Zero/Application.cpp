@@ -1,7 +1,9 @@
 #include "zeropch.h"
 #include "Application.h"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
+#include "Renderer/RenderCommand.h"
+#include "Renderer/Renderer.h"
+
 namespace Zero
 {
 	//To be replaced with ZERO_BIND_EVENT_FN from Core.h wherever it's used.
@@ -111,6 +113,8 @@ namespace Zero
 		m_SmallSquareShader.reset(Shader::Create(smallSquareVS,fragmentSource));
 		
 		m_BigSquareShader.reset(Shader::Create(bigSquareVS,fragmentSource));
+
+		m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 	}
 
 	Application::~Application()
@@ -122,17 +126,20 @@ namespace Zero
 	{
 		while (m_Running)
 		{
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
 
+			RenderCommand::SetClearColor(m_ClearColor);
+			RenderCommand::Clear();
+
+			Renderer::BeginScene();
 			m_SmallSquareShader->Bind();
-			m_SmallSquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SmallSquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
+			
+			Renderer::Submit(m_SmallSquareVA);
 
 			m_BigSquareShader->Bind();
-			m_BigSquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_BigSquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
 
+			Renderer::Submit(m_BigSquareVA);
+			
+			Renderer::EndScene();
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnUpdate();

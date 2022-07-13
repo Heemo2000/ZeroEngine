@@ -1,18 +1,17 @@
 #pragma once
-#include "Zero/Core.h"
+#include "RenderCommand.h"
 
-enum class RendererAPI
+namespace Zero
 {
-	None = 0,
-	OpenGL = 1
-};
+	class ZERO_API Renderer
+	{
+	public:
+		static void BeginScene();
+		static void Submit(std::shared_ptr<VertexArray>& vertexArray);
+		static void EndScene();
+		static inline RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
+	};
+}
 
 
-class ZERO_API Renderer
-{
-public:
-	static inline RendererAPI GetAPI() { return s_RendererAPI; }
-private:
-	static RendererAPI s_RendererAPI;
-};
 

@@ -11,11 +11,11 @@ namespace Zero
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:
+			case RenderAPI::API::None:
 						ZERO_CORE_ASSERT(false, "No Renderer API Selected!!");
 						return nullptr;
 			
-			case RendererAPI::OpenGL:
+			case RenderAPI::API::OpenGL:
 						return new OpenGLVertexBuffer(vertices, size);
 		}
 
@@ -27,11 +27,11 @@ namespace Zero
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::None:
+			case RenderAPI::API::None:
 						ZERO_CORE_ASSERT(false, "No Renderer API Selected!!");
 						return nullptr;
 			
-			case RendererAPI::OpenGL:
+			case RenderAPI::API::OpenGL:
 						return new OpenGLIndexBuffer(indices, count);
 		}
 
