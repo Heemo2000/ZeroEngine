@@ -3,8 +3,7 @@
 
 namespace Zero
 {
-	//To be replaced with ZERO_BIND_EVENT_FN from Core.h wherever it's used.
-#define BIND_EVENT_FN(x) std::bind(&Application::x,this,std::placeholders::_1)
+
 	
 	Application* Application::s_Instance = nullptr;
 	
@@ -15,7 +14,7 @@ namespace Zero
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
-		m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+		m_Window->SetEventCallback(ZERO_BIND_EVENT_FN(Application::OnEvent));
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -50,7 +49,7 @@ namespace Zero
 	{
 		EventDispatcher dispatcher(event);
 
-		dispatcher.Dispatch<WindowClosedEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowClosedEvent>(ZERO_BIND_EVENT_FN(Application::OnWindowClose));
 		ZERO_CORE_INFO("{0}", event.ToString());
 
 		for (Layer* layer : m_LayerStack)
