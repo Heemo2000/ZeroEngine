@@ -54,10 +54,12 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 			out vec4 v_Color;
+
+			uniform mat4 viewProjection;
 		    void main()
 			{	
 				v_Color = a_Color;			
-				gl_Position = vec4(a_Position,1.0);
+				gl_Position = viewProjection * vec4(a_Position,1.0);
 			}
 		)";
 
@@ -68,12 +70,13 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 			layout(location = 1) in vec4 a_Color;
 			out vec4 v_Color;
 			
+			uniform mat4 viewProjection;
 			vec3 offset = vec3(1.0,0.0,0.0);
 			float scale = 1.2;
 		    void main()
 			{	
 				v_Color = a_Color;			
-				gl_Position = vec4((a_Position) * scale + offset,1.0);
+				gl_Position = viewProjection * vec4((a_Position) * scale + offset,1.0);
 			}
 		)";
 
@@ -93,6 +96,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 
 	m_BigSquareShader.reset(Zero::Shader::Create(bigSquareVS, fragmentSource));
 
+	m_Camera.reset(Zero::OrthographicCamera::Create(1280, 720, glm::vec3(0.0f, 0.0f, -1.0f)));
 	m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
@@ -102,11 +106,14 @@ void SandboxLayer::OnUpdate()
 	Zero::RenderCommand::Clear();
 
 	Zero::Renderer::BeginScene();
-	m_SmallSquareShader->Bind();
+	Zero::Renderer::BeginScene(m_Camera);
+	Zero::Renderer::Submit(m_Camera,m_SmallSquareShader);
+	//m_SmallSquareShader->Bind();
 
 	Zero::Renderer::Submit(m_SmallSquareVA);
 
-	m_BigSquareShader->Bind();
+	Zero::Renderer::Submit(m_Camera,m_BigSquareShader);
+	//m_BigSquareShader->Bind();
 
 	Zero::Renderer::Submit(m_BigSquareVA);
 

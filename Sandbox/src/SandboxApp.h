@@ -18,9 +18,10 @@ private:
 	std::shared_ptr<Zero::IndexBuffer> m_IndexBuffer;
 
 	std::shared_ptr<Zero::VertexBuffer> m_BigSquareVBO;
-	std::unique_ptr<Zero::Shader> m_SmallSquareShader;
-	std::unique_ptr<Zero::Shader> m_BigSquareShader;
+	std::shared_ptr<Zero::Shader> m_SmallSquareShader;
+	std::shared_ptr<Zero::Shader> m_BigSquareShader;
 
+	std::shared_ptr<Zero::OrthographicCamera> m_Camera;
 	glm::vec4 m_ClearColor;
 };
 
