@@ -1,7 +1,7 @@
 #include "zeropch.h"
 #include "OpenGLShader.h"
 #include <glad/glad.h>
-
+#include <glm/gtc/type_ptr.hpp>
 namespace Zero
 {
 	OpenGLShader::OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource)
@@ -92,6 +92,23 @@ namespace Zero
 	void OpenGLShader::UnBind()
 	{
 		glUseProgram(0);
+	}
+
+	void OpenGLShader::UploadData(std::string name,const glm::mat4& value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+		
+		if (uniformLocation == -1)
+		{
+			ZERO_CORE_ASSERT(false,"Not able to upload matrix data to location named {0}", name);
+			return;
+		}
+		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	GLint OpenGLShader::GetUniformLocation(std::string name)
+	{
+		return glGetUniformLocation(m_RendererID, name.c_str());
 	}
 
 
