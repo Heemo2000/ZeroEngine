@@ -21,7 +21,6 @@ namespace Zero
 		void End();
 
 	private:
-		bool m_Show = true;
 		float m_Time = 0.0f;
 		Window* m_Window;
 	};

@@ -63,16 +63,7 @@ namespace Zero
 
 	void ImGuiLayer::OnImGuiRender()
 	{
-		/*
-		static char buffer[256] = "";
-		ImGui::Begin("ImGui Test");
-		ImGui::InputText("Enter the text", buffer, IM_ARRAYSIZE(buffer));
-		//ImGui::Text("Its my life.");
-		ImGui::Button("Press");
-		ImGui::End();
-		*/
-		
-		ImGui::ShowDemoWindow(&m_Show);
+
 	}
 
 	void ImGuiLayer::Begin()
@@ -85,12 +76,6 @@ namespace Zero
 	void ImGuiLayer::End()
 	{ 
 		ImGuiIO& io = ImGui::GetIO();
-
-		//Application& app = Application::GetInstance();
-		//Window* window = app.GetWindow();
-
-
-
 		io.DisplaySize = ImVec2((float)m_Window->GetWidth(), (float)m_Window->GetHeight());
 
 		io.DeltaTime = (m_Time > 0.0f) ? (float)glfwGetTime() - m_Time : 1.0f / 60.0f;
