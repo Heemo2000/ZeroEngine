@@ -1,7 +1,6 @@
 #pragma once
 #include "Zero/Input.h"
 #include "Platform/Windows/WindowsWindow.h"
-#include "Zero/Application.h"
 
 #include <GLFW/glfw3.h>
 namespace Zero

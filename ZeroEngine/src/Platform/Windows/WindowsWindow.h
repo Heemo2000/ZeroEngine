@@ -1,12 +1,4 @@
 #pragma once
-//#include "zeropch.h"
-
-#include "Zero/Events/ApplicationEvent.h"
-#include "Zero/Events/KeyEvent.h"
-#include "Zero/Events/MouseButtonEvent.h"
-#include "Zero/Events/MouseMovedEvent.h"
-#include "Zero/Events/MouseScrolledEvent.h"
-
 #include "Zero/Window.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

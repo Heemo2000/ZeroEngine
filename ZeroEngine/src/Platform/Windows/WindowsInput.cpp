@@ -1,6 +1,6 @@
 #include "zeropch.h"
 #include "WindowsInput.h"
-
+#include "Zero/Application.h"
 namespace Zero
 {
 	Input* Input::s_Instance = new WindowsInput();
