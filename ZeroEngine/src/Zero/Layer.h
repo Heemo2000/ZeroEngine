@@ -2,7 +2,7 @@
 #include "zeropch.h"
 #include "Core.h"
 #include "Events/Event.h"
-
+#include "Core/Timestep.h"
 
 namespace Zero
 {
@@ -11,7 +11,7 @@ namespace Zero
 	public:
 		Layer(const std::string& layerName = "Layer") : m_LayerName(layerName) {}
 		virtual ~Layer() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep timestep) {}
 		virtual void OnEvent(Event& event) {}
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}

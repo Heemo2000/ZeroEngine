@@ -6,7 +6,7 @@ class SandboxLayer : public Zero::Layer
 {
 public:
 	SandboxLayer();
-	void OnUpdate() override;
+	void OnUpdate(Zero::Timestep timestep) override;
 	void OnEvent(Zero::Event& event) override;
 	void OnImGuiRender() override;
 private:
@@ -31,9 +31,9 @@ private:
 	glm::vec4 m_ClearColor;
 	
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
-	float m_CameraMoveSpeed = 0.01f;
+	float m_CameraMoveSpeed = 1.0f;
 	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 2.0f;
+	float m_CameraRotationSpeed = 20.0f;
 };
 
 class Sandbox : public Zero::Application

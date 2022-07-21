@@ -1,6 +1,7 @@
 #include "zeropch.h"
 #include "Application.h"
-
+#include "Core/Timestep.h"
+#include <GLFW/glfw3.h>
 namespace Zero
 {
 
@@ -29,9 +30,12 @@ namespace Zero
 	{
 		while (m_Running)
 		{
+			float time = glfwGetTime();
+			Timestep timestep(time - m_LastDeltaTime);
+			m_LastDeltaTime = time;
 			for (Layer* layer : m_LayerStack)
 			{
-				layer->OnUpdate();
+				layer->OnUpdate(timestep);
 			}
 
 			m_ImGuiLayer->Begin();

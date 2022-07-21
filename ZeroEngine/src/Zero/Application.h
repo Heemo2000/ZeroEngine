@@ -36,7 +36,7 @@ namespace Zero
 		bool m_Running = true;
 		bool OnWindowClose(WindowClosedEvent& event);
 		LayerStack m_LayerStack;
-		
+		float m_LastDeltaTime = 0.0f;
 		
 	};
 

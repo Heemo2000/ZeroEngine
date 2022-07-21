@@ -100,7 +100,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
-void SandboxLayer::OnUpdate()
+void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 {
 	Zero::RenderCommand::SetClearColor(m_ClearColor);
 	Zero::RenderCommand::Clear();
@@ -109,32 +109,32 @@ void SandboxLayer::OnUpdate()
 	
 	if (Zero::Input::IsKeyPressed(ZERO_KEY_W))
 	{
-		m_CameraPosition.y += m_CameraMoveSpeed;
+		m_CameraPosition.y += m_CameraMoveSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	else if (Zero::Input::IsKeyPressed(ZERO_KEY_S))
 	{
-		m_CameraPosition.y -= m_CameraMoveSpeed;
+		m_CameraPosition.y -= m_CameraMoveSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	if (Zero::Input::IsKeyPressed(ZERO_KEY_A))
 	{
-		m_CameraPosition.x -= m_CameraMoveSpeed;
+		m_CameraPosition.x -= m_CameraMoveSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	else if (Zero::Input::IsKeyPressed(ZERO_KEY_D))
 	{
-		m_CameraPosition.x += m_CameraMoveSpeed;
+		m_CameraPosition.x += m_CameraMoveSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	if (Zero::Input::IsKeyPressed(ZERO_KEY_Q))
 	{
-		m_CameraRotation += m_CameraRotationSpeed;
+		m_CameraRotation += m_CameraRotationSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	else if (Zero::Input::IsKeyPressed(ZERO_KEY_E))
 	{
-		m_CameraRotation -= m_CameraRotationSpeed;
+		m_CameraRotation -= m_CameraRotationSpeed * timestep.GetFixedDeltaTimeInSec();
 	}
 
 	m_Camera->SetPosition(m_CameraPosition);
