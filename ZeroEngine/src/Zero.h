@@ -3,6 +3,13 @@
 //This will be used by Zero applications only.
 
 #include "Zero/Application.h"
+
+#include "Zero/Events/ApplicationEvent.h"
+#include "Zero/Events/KeyEvent.h"
+#include "Zero/Events/MouseButtonEvent.h"
+#include "Zero/Events/MouseMovedEvent.h"
+#include "Zero/Events/MouseScrolledEvent.h"
+
 #include "Zero/Log.h"
 #include "Zero/ImGui/ImGuiLayer.h"
 

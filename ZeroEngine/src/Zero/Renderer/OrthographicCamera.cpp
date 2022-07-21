@@ -6,7 +6,7 @@
 
 namespace Zero
 {
-	OrthographicCamera* OrthographicCamera::Create(unsigned int width, unsigned int height, glm::vec3 origin)
+	OrthographicCamera* OrthographicCamera::Create(float aspectRatio,float scale, glm::vec3 origin)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -15,7 +15,7 @@ namespace Zero
 			return nullptr;
 
 		case RenderAPI::API::OpenGL:
-			return new OpenGLOrthographicCamera(width,height,origin);
+			return new OpenGLOrthographicCamera(aspectRatio,scale,origin);
 		}
 
 		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");

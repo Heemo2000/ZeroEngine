@@ -1,9 +1,9 @@
 #include "zeropch.h"
 #include "Renderer.h"
-#include "Zero/Application.h"
 
 namespace Zero
 {
+	SceneData* Renderer::m_SceneData = new SceneData();
 	void Renderer::BeginScene()
 	{
 
@@ -11,20 +11,13 @@ namespace Zero
 
 	void Renderer::BeginScene(std::shared_ptr<OrthographicCamera>& camera)
 	{
-		Application& app = Application::GetInstance();
-		camera->SetWidth(app.GetWindow()->GetWidth());
-		camera->SetHeight(app.GetWindow()->GetHeight());
-	}
-	
-	void Renderer::Submit(std::shared_ptr<OrthographicCamera>& camera, std::shared_ptr<Shader>& shader)
-	{
-		camera->CalculateViewProjectionMatrix();
-		shader->Bind();
-		shader->UploadData("viewProjection", camera->GetViewProjectionMatrix());
+		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 	}
 
-	void Renderer::Submit(std::shared_ptr<VertexArray>& vertexArray)
+	void Renderer::Submit(std::shared_ptr<Shader>& shader,std::shared_ptr<VertexArray>& vertexArray)
 	{
+		shader->Bind();
+		shader->UploadData("viewProjection", m_SceneData->ViewProjectionMatrix);
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
 	}

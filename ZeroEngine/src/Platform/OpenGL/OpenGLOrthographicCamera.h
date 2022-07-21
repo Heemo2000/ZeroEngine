@@ -11,26 +11,29 @@ namespace Zero
 	{
 	public:
 		
-		OpenGLOrthographicCamera(unsigned int width, unsigned int height, glm::vec3 origin);
-		virtual void CalculateViewProjectionMatrix() override;
+		OpenGLOrthographicCamera(float aspectRatio,float scale, glm::vec3 origin);
 		virtual glm::mat4 GetViewProjectionMatrix() const override;
-		virtual void SetPosition(glm::vec3& position) override;
-		virtual void SetScale(float& scale) override;
-		virtual void SetWidth(unsigned int width) override;
-		virtual void SetHeight(unsigned int height) override;
+		virtual glm::vec3 GetPosition() const override;
+		virtual void SetPosition(const glm::vec3& position) override;
+		virtual float GetScale() const override;
+		virtual void SetScale(const float& scale) override;
+		virtual float GetRotation() const override;
+		virtual void SetRotation(const float& rotation) override;
+		virtual float GetAspectRatio() const override;
+		virtual void SetAspectRatio(const float& aspectRatio) override;
 		virtual ~OpenGLOrthographicCamera() override;
 
+	protected:
+		virtual void RecalculateViewProjectionMatrix() override;
 
 	private:
 		glm::vec3 m_Position;
-		glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 		glm::mat4 m_View = glm::mat4(1.0f);
 		glm::mat4 m_Projection = glm::mat4(1.0f);
-		CameraData m_CameraData;
 
 		float m_AspectRatio;
 		float m_Scale;
+		float m_Rotation;
 		float m_Left;
 		float m_Right;
 		float m_Top;

@@ -2,32 +2,34 @@
 #include "Platform/OpenGL/OpenGLOrthographicCamera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 namespace Zero
 {
-	OpenGLOrthographicCamera::OpenGLOrthographicCamera(unsigned int width, unsigned int height, glm::vec3 origin) :
-		m_Position(origin), 
-		m_CameraData(width, height, CameraMode::Orthographic),
-		m_Scale(1.0f),
-		m_AspectRatio((float)width / height),
-		m_Left(-m_AspectRatio * m_Scale),
-		m_Right(m_AspectRatio* m_Scale),
-		m_Top(m_Scale),
-		m_Bottom(-m_Scale)
-	{}
-	
-	void OpenGLOrthographicCamera::CalculateViewProjectionMatrix()
+	OpenGLOrthographicCamera::OpenGLOrthographicCamera(float aspectRatio,float scale, glm::vec3 origin) :
+		m_Position(origin),
+		m_Scale(scale),
+		m_AspectRatio(aspectRatio),
+		m_Left(-aspectRatio * scale),
+		m_Right(aspectRatio * scale),
+		m_Top(scale),
+		m_Bottom(-scale)
 	{
+		RecalculateViewProjectionMatrix();
+	}
+	
+	void OpenGLOrthographicCamera::RecalculateViewProjectionMatrix()
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::rotate(glm::mat4(1.0f), 
+											 glm::radians(m_Rotation), 
+											 glm::vec3(0.0f, 0.0f, 1.0f));
 
-		m_View = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
+		m_View = glm::inverse(transform);
 
-		m_AspectRatio = (float)(m_CameraData.Width / m_CameraData.Height);
 		m_Left = -m_AspectRatio * m_Scale;
 		m_Right = m_AspectRatio * m_Scale;
 		m_Top = m_Scale;
 		m_Bottom = -m_Scale;
 
-		m_Projection = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, 0.1f, 100.0f);
+		m_Projection = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -1.0f, 1.0f);
 	}
 
 	glm::mat4 OpenGLOrthographicCamera::GetViewProjectionMatrix() const
@@ -35,24 +37,52 @@ namespace Zero
 		return m_View * m_Projection;
 	}
 
-	void OpenGLOrthographicCamera::SetPosition(glm::vec3& position)
+	glm::vec3 OpenGLOrthographicCamera::GetPosition() const
+	{
+		return m_Position;
+	}
+
+	void OpenGLOrthographicCamera::SetPosition(const glm::vec3& position)
 	{
 		m_Position = position;
+		RecalculateViewProjectionMatrix();
 	}
 
-	void OpenGLOrthographicCamera::SetScale(float& scale)
+	float OpenGLOrthographicCamera::GetScale() const
 	{
+		return m_Scale;
+	}
+
+	void OpenGLOrthographicCamera::SetScale(const float& scale)
+	{
+		if (scale <= 0.5f)
+		{
+			return;
+		}
 		m_Scale = scale;
+		RecalculateViewProjectionMatrix();
 	}
 
-	void OpenGLOrthographicCamera::SetWidth(unsigned int width)
+	float OpenGLOrthographicCamera::GetRotation() const
 	{
-		m_CameraData.Width = width;
+		return m_Rotation;
 	}
 
-	void OpenGLOrthographicCamera::SetHeight(unsigned int height)
+	void OpenGLOrthographicCamera::SetRotation(const float& rotation)
 	{
-		m_CameraData.Height = height;
+		m_Rotation = rotation;
+		RecalculateViewProjectionMatrix();
+	}
+
+	float OpenGLOrthographicCamera::GetAspectRatio() const
+	{
+		return m_AspectRatio;
+	}
+
+	void OpenGLOrthographicCamera::SetAspectRatio(const float& aspectRatio)
+	{
+		m_AspectRatio = aspectRatio;
+		RecalculateViewProjectionMatrix();
 	}
 
 

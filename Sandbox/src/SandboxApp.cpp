@@ -96,7 +96,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 
 	m_BigSquareShader.reset(Zero::Shader::Create(bigSquareVS, fragmentSource));
 
-	m_Camera.reset(Zero::OrthographicCamera::Create(1280, 720, glm::vec3(0.0f, 0.0f, -1.0f)));
+	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f/9.0f,1.0f, m_CameraPosition));
 	m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 }
 
@@ -104,30 +104,87 @@ void SandboxLayer::OnUpdate()
 {
 	Zero::RenderCommand::SetClearColor(m_ClearColor);
 	Zero::RenderCommand::Clear();
-
-	Zero::Renderer::BeginScene();
+	
 	Zero::Renderer::BeginScene(m_Camera);
-	Zero::Renderer::Submit(m_Camera,m_SmallSquareShader);
-	//m_SmallSquareShader->Bind();
+	
+	if (Zero::Input::IsKeyPressed(ZERO_KEY_W))
+	{
+		m_CameraPosition.y += m_CameraMoveSpeed;
+	}
 
-	Zero::Renderer::Submit(m_SmallSquareVA);
+	else if (Zero::Input::IsKeyPressed(ZERO_KEY_S))
+	{
+		m_CameraPosition.y -= m_CameraMoveSpeed;
+	}
 
-	Zero::Renderer::Submit(m_Camera,m_BigSquareShader);
-	//m_BigSquareShader->Bind();
+	if (Zero::Input::IsKeyPressed(ZERO_KEY_A))
+	{
+		m_CameraPosition.x -= m_CameraMoveSpeed;
+	}
 
-	Zero::Renderer::Submit(m_BigSquareVA);
+	else if (Zero::Input::IsKeyPressed(ZERO_KEY_D))
+	{
+		m_CameraPosition.x += m_CameraMoveSpeed;
+	}
+
+	if (Zero::Input::IsKeyPressed(ZERO_KEY_Q))
+	{
+		m_CameraRotation += m_CameraRotationSpeed;
+	}
+
+	else if (Zero::Input::IsKeyPressed(ZERO_KEY_E))
+	{
+		m_CameraRotation -= m_CameraRotationSpeed;
+	}
+
+	m_Camera->SetPosition(m_CameraPosition);
+	m_Camera->SetRotation(m_CameraRotation);
+
+	Zero::Renderer::Submit(m_SmallSquareShader,m_SmallSquareVA);
+
+	Zero::Renderer::Submit(m_BigSquareShader,m_BigSquareVA);
 
 	Zero::Renderer::EndScene();
 }
 
 void SandboxLayer::OnEvent(Zero::Event& event)
 {
-
+	Zero::EventDispatcher eventDispatcher(event);
+	eventDispatcher.Dispatch<Zero::WindowResizedEvent>(ZERO_BIND_EVENT_FN(SandboxLayer::OnWindowResized));
+	eventDispatcher.Dispatch<Zero::KeyPressedEvent>(ZERO_BIND_EVENT_FN(SandboxLayer::OnKeyPressed));
+	eventDispatcher.Dispatch<Zero::KeyTypedEvent>(ZERO_BIND_EVENT_FN(SandboxLayer::OnKeyTyped));
+	eventDispatcher.Dispatch<Zero::MouseScrolledEvent>(ZERO_BIND_EVENT_FN(SandboxLayer::OnMouseScrolled));
+	
 }
 
 void SandboxLayer::OnImGuiRender()
 {
 
+}
+
+bool SandboxLayer::OnWindowResized(Zero::WindowResizedEvent& event)
+{
+	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
+	m_Camera->SetAspectRatio(aspectRatio);
+	return true;
+}
+
+bool SandboxLayer::OnKeyPressed(Zero::KeyPressedEvent& event)
+{
+	
+	return true;
+}
+
+bool SandboxLayer::OnKeyTyped(Zero::KeyTypedEvent& event)
+{
+	
+	return true;
+}
+
+bool SandboxLayer::OnMouseScrolled(Zero::MouseScrolledEvent& event)
+{
+	m_Camera->SetScale(m_Camera->GetScale() + event.GetScrolledY());
+	return true;
 }
 
 
