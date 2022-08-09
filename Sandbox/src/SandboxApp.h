@@ -34,6 +34,18 @@ private:
 	float m_CameraMoveSpeed = 1.0f;
 	float m_CameraRotation = 0.0f;
 	float m_CameraRotationSpeed = 20.0f;
+
+	glm::vec3 m_SmallSquarePosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	float m_SmallSquareRotation = 0.0f;
+	float m_SmallSquareMoveSpeed = 1.0f;
+	float m_SmallSquareRotationSpeed = 20.0f;
+
+	glm::vec4 m_LightColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+	float m_ElapsedTime = 0.0f;
+
+	Zero::Transform m_SmallSquareTransform = Zero::Transform(m_SmallSquarePosition);
+	
+	Zero::Transform m_BigSquareTransform = Zero::Transform(glm::vec3(1.0f,0.0f,0.0f));
 };
 
 class Sandbox : public Zero::Application

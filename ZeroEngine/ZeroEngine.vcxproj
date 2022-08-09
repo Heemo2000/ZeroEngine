@@ -152,6 +152,8 @@
     <ClInclude Include="src\Zero.h" />
     <ClInclude Include="src\Zero\Application.h" />
     <ClInclude Include="src\Zero\Core.h" />
+    <ClInclude Include="src\Zero\Core\Timestep.h" />
+    <ClInclude Include="src\Zero\Core\Transform.h" />
     <ClInclude Include="src\Zero\EntryPoint.h" />
     <ClInclude Include="src\Zero\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Zero\Events\Event.h" />
@@ -606,6 +608,7 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Zero\Application.cpp" />
+    <ClCompile Include="src\Zero\Core\Transform.cpp" />
     <ClCompile Include="src\Zero\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Zero\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Zero\LayerStack.cpp" />

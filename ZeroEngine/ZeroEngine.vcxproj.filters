@@ -1399,6 +1399,8 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
     <ClInclude Include="src\Zero\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLOrthographicCamera.h" />
+    <ClInclude Include="src\Zero\Core\Timestep.h" />
+    <ClInclude Include="src\Zero\Core\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1456,5 +1458,6 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
     <ClCompile Include="src\Zero\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLOrthographicCamera.cpp" />
+    <ClCompile Include="src\Zero\Core\Transform.cpp" />
   </ItemGroup>
 </Project>

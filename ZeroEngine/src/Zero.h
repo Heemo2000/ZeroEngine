@@ -26,6 +26,7 @@
 #include "Zero/Renderer/OrthographicCamera.h"
 
 #include "Zero/Core/Timestep.h"
+#include "Zero/Core/Transform.h"
 
 //----Entry_Point---------------------------
 #include "Zero/EntryPoint.h"

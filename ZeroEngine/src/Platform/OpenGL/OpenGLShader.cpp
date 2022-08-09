@@ -40,10 +40,12 @@ namespace Zero
 		if (!compileSuccess)
 		{
 			GLint logLength = 0;
-			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logLength);
+			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &logLength);
 			std::vector<GLchar> infoLog(logLength);
+
 			glGetShaderInfoLog(fragmentShader, logLength, &logLength, &infoLog[0]);
 			glDeleteShader(fragmentShader);
+			glDeleteShader(vertexShader);
 
 			ZERO_CORE_ERROR("{0}", infoLog);
 			ZERO_CORE_ASSERT(false, "Fragment shader compilation failure!!");
@@ -74,14 +76,11 @@ namespace Zero
 
 			ZERO_CORE_ERROR("{0}", infoLog);
 			ZERO_CORE_ASSERT(false, "Shader program Linking failed!!");
-			// Use the infoLog as you see fit.
-			
-			// In this simple program, we'll just leave
 			return;
 		}
 
-		glDetachShader(m_RendererID, fragmentShader);
 		glDetachShader(m_RendererID, vertexShader);
+		glDetachShader(m_RendererID, fragmentShader);
 	}
 
 	void OpenGLShader::Bind()
@@ -100,10 +99,64 @@ namespace Zero
 		
 		if (uniformLocation == -1)
 		{
-			ZERO_CORE_ASSERT(false,"Not able to upload matrix data to location named {0}", name);
+			std::string errorLog = "Not able to upload matrix data to location named " + name;
+			ZERO_CORE_ASSERT(false,errorLog);
 			return;
 		}
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void OpenGLShader::UploadData(std::string name, const float& value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+		
+		if (uniformLocation == -1)
+		{
+			std::string errorLog = "Not able to upload float data to location named " + name;
+			ZERO_CORE_ASSERT(false, errorLog);
+			return;
+		}
+		glUniform1f(uniformLocation, value);
+	}
+
+	void OpenGLShader::UploadData(std::string name, const int& value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+
+		if (uniformLocation == -1)
+		{
+			std::string errorLog = "Not able to upload int data to location named " + name;
+			ZERO_CORE_ASSERT(false, errorLog);
+			return;
+		}
+		glUniform1i(uniformLocation, value);
+	}
+
+	void OpenGLShader::UploadData(std::string name, const glm::vec4& value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+
+		if (uniformLocation == -1)
+		{
+			std::string errorLog = "Not able to upload vec4 data to location named " + name;
+			ZERO_CORE_ASSERT(false,name);
+			return;
+		}
+		glUniform4f(uniformLocation, value.x, value.y, value.z, value.w);
+	}
+
+	void OpenGLShader::UploadData(std::string name, const glm::vec3& value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+
+		if (uniformLocation == -1)
+		{
+			std::string errorLog = "Not able to upload vec3 data to location named " + name;
+			ZERO_CORE_ASSERT(false, errorLog);
+			return;
+		}
+
+		glUniform3f(uniformLocation, value.x, value.y, value.z);
 	}
 
 	GLint OpenGLShader::GetUniformLocation(std::string name)

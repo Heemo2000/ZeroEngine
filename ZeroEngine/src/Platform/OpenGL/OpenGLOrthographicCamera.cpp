@@ -18,11 +18,11 @@ namespace Zero
 	
 	void OpenGLOrthographicCamera::RecalculateViewProjectionMatrix()
 	{
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * glm::rotate(glm::mat4(1.0f), 
+		glm::mat4 transform = glm::inverse(glm::translate(glm::mat4(1.0f), m_Position)) * glm::rotate(glm::mat4(1.0f), 
 											 glm::radians(m_Rotation), 
 											 glm::vec3(0.0f, 0.0f, 1.0f));
 
-		m_View = glm::inverse(transform);
+		m_View = transform;//glm::inverse(transform);
 
 		m_Left = -m_AspectRatio * m_Scale;
 		m_Right = m_AspectRatio * m_Scale;

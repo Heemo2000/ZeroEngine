@@ -13,7 +13,12 @@ namespace Zero
 		virtual void Bind() override;
 		virtual void UnBind() override;
 		virtual void UploadData(std::string name,const glm::mat4& value) override;
+		virtual void UploadData(std::string name,const float& value) override;
+		virtual void UploadData(std::string name, const int& value) override;
+		virtual void UploadData(std::string name, const glm::vec4& value) override;
+		virtual void UploadData(std::string name, const glm::vec3& value) override;
 		~OpenGLShader();
+
 	private:
 		GLint GetUniformLocation(std::string name);
 		
