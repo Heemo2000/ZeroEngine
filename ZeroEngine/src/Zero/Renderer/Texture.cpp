@@ -7,7 +7,7 @@
 
 namespace Zero
 {
-	static Texture* Create(std::string& filePath, uint32_t textureSlot)
+	Texture* Texture::Create(const std::string& filePath,const uint32_t& textureSlot)
 	{
 		switch (RenderAPI::GetAPI())
 		{
@@ -23,5 +23,4 @@ namespace Zero
 		return nullptr;
 	}
 
-	
 }

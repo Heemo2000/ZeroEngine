@@ -1,21 +1,23 @@
 #include "SandboxApp.h"
+#include "backends/imgui_impl_opengl3.h"
+#include <glm/gtc/type_ptr.hpp>
 
 SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer") 
 {
 	float smallSquareVertices[] =
 	{
-		-0.5f,-0.5f,0.0f,    0.0f,0.6f,0.0f,1.0f,
-		0.0f,-0.5f,0.0f,     0.0f,0.4f,0.0f,1.0f,
-		0.0f,0.5f,0.0f,	     0.0f,0.6f,0.0f,1.0f,
-		-0.5f,0.5f,0.0f,     0.0f,0.4f,0.0f,1.0f
+		-0.5f,-0.5f,0.0f,
+		0.0f,-0.5f,0.0f, 
+		0.0f,0.5f,0.0f,	 
+		-0.5f,0.5f,0.0f
 	};
 
 	float bigSquareVertices[] =
 	{
-		-0.5f,-0.5f,0.0f,    1.0f,0.2f,0.0f,1.0f,
-		0.5f,-0.5f,0.0f,     0.6f,0.2f,0.0f,1.0f,
-		0.5f,0.5f,0.0f,	     1.0f,0.2f,0.0f,1.0f,
-		-0.5f,0.5f,0.0f,     0.6f,0.2f,0.0f,1.0f
+		-0.5f,-0.5f,0.0f,    0.0f,0.0f,
+		0.5f,-0.5f,0.0f,     1.0f,0.0f,
+		0.5f,0.5f,0.0f,	     1.0f,1.0f,
+		-0.5f,0.5f,0.0f,     0.0f,1.0f
 	};
 
 	unsigned int indices[] =
@@ -24,16 +26,21 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 		0,2,3
 	};
 
-	BufferLayout squareLayout =
+	BufferLayout smallSquareLayout =
+	{
+		{"a_Position",ShaderDataType::Float3}
+	};
+
+	BufferLayout bigSquareLayout =
 	{
 	  {"a_Position",ShaderDataType::Float3},
-	  {"a_Color",ShaderDataType::Float4}
+	  {"a_TexCoord",ShaderDataType::Float2}
 	};
 
 	m_SmallSquareVA.reset(Zero::VertexArray::Create());
 
 	m_smallSquareVBO.reset(Zero::VertexBuffer::Create(smallSquareVertices, sizeof(smallSquareVertices)));
-	m_smallSquareVBO->SetLayout(squareLayout);
+	m_smallSquareVBO->SetLayout(smallSquareLayout);
 
 	m_IndexBuffer.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
@@ -43,7 +50,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	m_BigSquareVA.reset(Zero::VertexArray::Create());
 
 	m_BigSquareVBO.reset(Zero::VertexBuffer::Create(bigSquareVertices, sizeof(bigSquareVertices)));
-	m_BigSquareVBO->SetLayout(squareLayout);
+	m_BigSquareVBO->SetLayout(bigSquareLayout);
 
 	m_BigSquareVA->AddVertexBuffer(m_BigSquareVBO);
 	m_BigSquareVA->SetIndexBuffer(m_IndexBuffer);
@@ -52,14 +59,12 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	std::string smallSquareVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-
-			out vec4 v_Color;
 
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_TransformationMatrix;
 			
 			vec4 cachedPos = vec4(0.0,0.0,0.0,1.0);
+			
 			void calculatePosition(in mat4 viewProjection,in mat4 transformationMatrix,in vec3 vertexPosition,out vec4 result)
 			{
 				result = viewProjection * transformationMatrix * vec4(vertexPosition,1.0);
@@ -67,7 +72,6 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 
 		    void main()
 			{	
-				v_Color = a_Color;
 				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,cachedPos);
 				gl_Position = cachedPos;
 			}
@@ -77,38 +81,54 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	std::string bigSquareVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
+			layout(location = 1) in vec2 a_TexCoord;
 
-			out vec4 v_Color;
-			
+			out vec2 v_TexCoord;
+
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_TransformationMatrix;
 		    void main()
 			{	
-				v_Color = a_Color;			
+				v_TexCoord = a_TexCoord;			
 				gl_Position = u_ViewProjection * u_TransformationMatrix * vec4(a_Position,1.0);
 			}
 		)";
 
-	std::string fragmentSource = R"(
+
+	std::string smallSquareFS = R"(
 			#version 460 core
 			
-			in vec4 v_Color;
 			out vec4 outColor;
+
+			uniform vec4 u_Color;
+			void main()
+			{
+				outColor = u_Color;
+			}
+	)";
+
+
+	std::string bigSquareFS = R"(
+			#version 460 core
+			in vec2 v_TexCoord;
+
+			uniform sampler2D texUnit;
+			out vec4 outColor;
+
 		    void main()
 			{
-				outColor = v_Color;
+				outColor = texture(texUnit,v_TexCoord);
 			}
 		)";
 
+	m_SmallSquareShader.reset(Zero::Shader::Create(smallSquareVS, smallSquareFS));
 
-	m_SmallSquareShader.reset(Zero::Shader::Create(smallSquareVS, fragmentSource));
-
-	m_BigSquareShader.reset(Zero::Shader::Create(bigSquareVS, fragmentSource));
+	m_BigSquareShader.reset(Zero::Shader::Create(bigSquareVS, bigSquareFS));
 
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f/9.0f,1.0f, m_CameraPosition));
 	m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 
+	m_BigSquareTexture.reset(Zero::Texture::Create("F://Projects_and_program_files/ZeroEngine/texture/logo.jpg",0));
 	m_BigSquareTransform.SetScale(glm::vec3(1.2f, 1.2f, 1.2f));
 }
 
@@ -192,9 +212,10 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	
 #pragma endregion SmallSquareControl
 
-	Zero::Renderer::Submit(m_BigSquareShader,m_BigSquareVA, m_BigSquareTransform.GetTransformationMatrix());
+	m_SmallSquareShader->UploadData("u_Color", m_SmallSquareColor);
 	
-	m_ElapsedTime += timestep;
+	m_BigSquareTexture->Bind();
+	Zero::Renderer::Submit(m_BigSquareShader,m_BigSquareVA, m_BigSquareTransform.GetTransformationMatrix());
 	Zero::Renderer::EndScene();
 }
 
@@ -209,7 +230,9 @@ void SandboxLayer::OnEvent(Zero::Event& event)
 
 void SandboxLayer::OnImGuiRender()
 {
-
+	ImGui::Begin("Settings");
+	ImGui::ColorEdit3("Small square color",glm::value_ptr(m_SmallSquareColor));
+	ImGui::End();
 }
 
 bool SandboxLayer::OnWindowResized(Zero::WindowResizedEvent& event)

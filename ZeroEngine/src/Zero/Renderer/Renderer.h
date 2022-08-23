@@ -13,8 +13,8 @@ namespace Zero
 	{
 	public:
 		static void BeginScene();
-		static void BeginScene(std::shared_ptr<OrthographicCamera>& camera);
-		static void Submit(std::shared_ptr<Shader>& shader,std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transformMatrix);
+		static void BeginScene(Ref<OrthographicCamera>& camera);
+		static void Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix);
 		static void EndScene();
 		static inline RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
 	

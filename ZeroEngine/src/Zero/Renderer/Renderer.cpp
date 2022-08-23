@@ -9,12 +9,12 @@ namespace Zero
 
 	}
 
-	void Renderer::BeginScene(std::shared_ptr<OrthographicCamera>& camera)
+	void Renderer::BeginScene(Ref<OrthographicCamera>& camera)
 	{
 		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
 	}
 
-	void Renderer::Submit(std::shared_ptr<Shader>& shader,std::shared_ptr<VertexArray>& vertexArray,const glm::mat4& transformMatrix)
+	void Renderer::Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray,const glm::mat4& transformMatrix)
 	{
 		shader->Bind();
 		shader->UploadData("u_TransformationMatrix", transformMatrix);

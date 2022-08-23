@@ -17,17 +17,17 @@ private:
 	
 
 private:
-	std::shared_ptr<Zero::VertexArray> m_SmallSquareVA;
-	std::shared_ptr<Zero::VertexArray> m_BigSquareVA;
+	Zero::Ref<Zero::VertexArray> m_SmallSquareVA;
+	Zero::Ref<Zero::VertexArray> m_BigSquareVA;
 
-	std::shared_ptr<Zero::VertexBuffer> m_smallSquareVBO;
-	std::shared_ptr<Zero::IndexBuffer> m_IndexBuffer;
+	Zero::Ref<Zero::VertexBuffer> m_smallSquareVBO;
+	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
 
-	std::shared_ptr<Zero::VertexBuffer> m_BigSquareVBO;
-	std::shared_ptr<Zero::Shader> m_SmallSquareShader;
-	std::shared_ptr<Zero::Shader> m_BigSquareShader;
+	Zero::Ref<Zero::VertexBuffer> m_BigSquareVBO;
+	Zero::Ref<Zero::Shader> m_SmallSquareShader;
+	Zero::Ref<Zero::Shader> m_BigSquareShader;
 
-	std::shared_ptr<Zero::OrthographicCamera> m_Camera;
+	Zero::Ref<Zero::OrthographicCamera> m_Camera;
 	glm::vec4 m_ClearColor;
 	
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -36,6 +36,8 @@ private:
 	float m_CameraRotationSpeed = 20.0f;
 
 	glm::vec3 m_SmallSquarePosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec4 m_SmallSquareColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	float m_SmallSquareRotation = 0.0f;
 	float m_SmallSquareMoveSpeed = 1.0f;
 	float m_SmallSquareRotationSpeed = 20.0f;
@@ -44,8 +46,8 @@ private:
 	float m_ElapsedTime = 0.0f;
 
 	Zero::Transform m_SmallSquareTransform = Zero::Transform(m_SmallSquarePosition);
-	
 	Zero::Transform m_BigSquareTransform = Zero::Transform(glm::vec3(1.0f,0.0f,0.0f));
+	Zero::Ref<Zero::Texture> m_BigSquareTexture;
 };
 
 class Sandbox : public Zero::Application

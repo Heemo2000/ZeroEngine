@@ -11,7 +11,7 @@ namespace Zero
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	}
-	void OpenGLRenderAPI::DrawIndexed(std::shared_ptr<VertexArray>& vertexArray)
+	void OpenGLRenderAPI::DrawIndexed(Ref<VertexArray>& vertexArray)
 	{
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
 	}

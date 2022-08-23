@@ -19,7 +19,7 @@ namespace Zero
 		glBindVertexArray(0);
 	}
 
-	void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
+	void OpenGLVertexArray::AddVertexBuffer(Ref<VertexBuffer> vertexBuffer)
 	{
 		ZERO_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!!");
 
@@ -39,14 +39,14 @@ namespace Zero
 		}
 	}
 
-	void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer)
+	void OpenGLVertexArray::SetIndexBuffer(Ref<IndexBuffer> indexBuffer)
 	{
 		glBindVertexArray(m_RendererID);
 		m_IndexBuffer = indexBuffer;
 		m_IndexBuffer->Bind();
 	}
 
-	std::shared_ptr<IndexBuffer> OpenGLVertexArray::GetIndexBuffer() const
+	Ref<IndexBuffer> OpenGLVertexArray::GetIndexBuffer() const
 	{
 		return m_IndexBuffer;
 	}
