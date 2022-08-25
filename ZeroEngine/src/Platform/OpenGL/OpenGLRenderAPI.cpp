@@ -1,8 +1,14 @@
 #include "zeropch.h"
 #include "OpenGLRenderAPI.h"
 
+#include <glad/glad.h>
 namespace Zero
 {
+	void OpenGLRenderAPI::Init()
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	}
 	void OpenGLRenderAPI::SetClearColor(glm::vec4& color)
 	{
 		glClearColor(color.r, color.g, color.b, color.a);

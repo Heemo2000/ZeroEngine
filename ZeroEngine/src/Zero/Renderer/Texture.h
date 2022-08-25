@@ -8,11 +8,18 @@ namespace Zero
 	class ZERO_API Texture
 	{
 	public:
-		static Texture* Create(const std::string& filePath,const uint32_t& textureSlot);
+		virtual int GetWidth() const = 0;
+		virtual int GetHeight() const = 0;
+		~Texture() {}
+	};
+
+	class ZERO_API Texture2D : Texture
+	{
+	public:
+		static Texture2D* Create(const std::string& filePath, const uint32_t& textureSlot);
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
-		virtual void SetTextureSlot(uint32_t textureSlot) = 0;
-		~Texture() {}
+		virtual void SetTextureSlot(const uint32_t& textureSlot) = 0;
 	};
 
 }

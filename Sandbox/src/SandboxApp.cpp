@@ -37,6 +37,8 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	  {"a_TexCoord",ShaderDataType::Float2}
 	};
 
+	Zero::Renderer::Init();
+
 	m_SmallSquareVA.reset(Zero::VertexArray::Create());
 
 	m_smallSquareVBO.reset(Zero::VertexBuffer::Create(smallSquareVertices, sizeof(smallSquareVertices)));
@@ -112,12 +114,12 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 			#version 460 core
 			in vec2 v_TexCoord;
 
-			uniform sampler2D texUnit;
+			uniform sampler2D u_TexUnit;
 			out vec4 outColor;
 
 		    void main()
 			{
-				outColor = texture(texUnit,v_TexCoord);
+				outColor = texture(u_TexUnit,v_TexCoord);
 			}
 		)";
 
@@ -128,7 +130,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f/9.0f,1.0f, m_CameraPosition));
 	m_ClearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
 
-	m_BigSquareTexture.reset(Zero::Texture::Create("F://Projects_and_program_files/ZeroEngine/texture/logo.jpg",0));
+	m_BigSquareTexture.reset(Zero::Texture2D::Create("textures/smily.png",0));
 	m_BigSquareTransform.SetScale(glm::vec3(1.2f, 1.2f, 1.2f));
 }
 

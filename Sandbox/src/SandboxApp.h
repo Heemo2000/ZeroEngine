@@ -47,7 +47,7 @@ private:
 
 	Zero::Transform m_SmallSquareTransform = Zero::Transform(m_SmallSquarePosition);
 	Zero::Transform m_BigSquareTransform = Zero::Transform(glm::vec3(1.0f,0.0f,0.0f));
-	Zero::Ref<Zero::Texture> m_BigSquareTexture;
+	Zero::Ref<Zero::Texture2D> m_BigSquareTexture;
 };
 
 class Sandbox : public Zero::Application

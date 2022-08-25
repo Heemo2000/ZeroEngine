@@ -12,6 +12,7 @@ namespace Zero
 	class ZERO_API Renderer
 	{
 	public:
+		static void Init();
 		static void BeginScene();
 		static void BeginScene(Ref<OrthographicCamera>& camera);
 		static void Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix);

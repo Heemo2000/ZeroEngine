@@ -5,4 +5,8 @@
 namespace Zero
 {
 	RenderAPI* RenderCommand::s_RenderAPI = new OpenGLRenderAPI();
+	void RenderCommand::Init()
+	{
+		s_RenderAPI->Init();
+	}
 }

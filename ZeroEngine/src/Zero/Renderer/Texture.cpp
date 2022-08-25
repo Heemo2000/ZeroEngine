@@ -3,11 +3,11 @@
 #include "Zero/Renderer/Texture.h"
 #include "Zero/Renderer/RenderAPI.h"
 
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLTexture2D.h"
 
 namespace Zero
 {
-	Texture* Texture::Create(const std::string& filePath,const uint32_t& textureSlot)
+	Texture2D* Texture2D::Create(const std::string& filePath,const uint32_t& textureSlot)
 	{
 		switch (RenderAPI::GetAPI())
 		{
@@ -16,7 +16,7 @@ namespace Zero
 			return nullptr;
 
 		case RenderAPI::API::OpenGL:
-			return new OpenGLTexture(filePath, textureSlot);
+			return new OpenGLTexture2D(filePath, textureSlot);
 		}
 
 		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");
