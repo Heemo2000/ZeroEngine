@@ -11,10 +11,16 @@ private:
 	Zero::Ref<Zero::VertexBuffer> m_VertexBuffer;
 	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
 	Zero::Ref<Zero::Shader> m_Shader;
+	bool m_Enabled;
 
 public:
 	Quad(glm::vec3 worldPosition);
+
+	bool IsEnabled();
+
 	void DrawQuad();
+	void SetEnabled(bool enabled);
+	void SetPosition(glm::vec3 position);
 };
 class SandboxLayer : public Zero::Layer
 {
@@ -31,11 +37,7 @@ private:
 	bool OnMouseClicked(Zero::MouseButtonClickedEvent& event);
 
 private:
-	Zero::Ref<Zero::VertexArray> m_SmallSquareVA;
-
-	
 	Zero::Ref<Zero::OrthographicCamera> m_Camera;
-	std::vector<Zero::Ref<Quad>> m_Quads;
 	glm::vec4 m_ClearColor;
 	
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -44,7 +46,11 @@ private:
 	float m_CameraRotationSpeed = 20.0f;
 
 	float m_ElapsedTime = 0.0f;
-
+	/*
+	std::vector<Zero::Ref<Quad>> m_Quads;
+	int m_MaxQuads = 16;
+	int m_QuadIndex = 0;
+	*/
 	Zero::Ref<Quad> m_Quad;
 };
 

@@ -4,8 +4,17 @@
 
 SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer") 
 {
+	Zero::Renderer::Init();
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
-	//m_Quads = std::make_shared<std::vector<Zero::Ref<Quad>>>();
+	/*
+	for (int i = 0; i < m_MaxQuads; i++)
+	{
+		Zero::Ref<Quad> quad;
+		quad.reset(new Quad(m_Camera->GetPosition()));
+		m_Quads.push_back(quad);
+	}
+	*/
+	m_Quad.reset(new Quad(m_Camera->GetPosition()));
 }
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
@@ -50,11 +59,14 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
 	
-	
+	/*
 	for (auto i = m_Quads.begin(); i != m_Quads.end(); i++)
 	{
-		(*i)->DrawQuad();
+		i->get()->DrawQuad();
 	}
+	*/
+	m_Quad->DrawQuad();
+
 	Zero::Renderer::EndScene();
 }
 
@@ -97,9 +109,16 @@ bool SandboxLayer::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 }
 
 bool SandboxLayer::OnMouseClicked(Zero::MouseButtonClickedEvent& event)
-{
-	
-	m_Quads.push_back(std::make_shared<Quad>(m_Camera->GetPosition()));
+{	
+	/*
+	if (m_QuadIndex < m_MaxQuads)
+	{
+		m_Quads[m_QuadIndex]->SetEnabled(true);
+		m_Quads[m_QuadIndex]->SetPosition(m_Camera->GetPosition());
+		m_QuadIndex++;
+	}
+	*/
+	m_Quad->SetEnabled(!m_Quad->IsEnabled());
 	return true;
 }
 
@@ -110,7 +129,7 @@ Zero::Application* Zero::CreateApplication()
 }
 
 /*---------------------Quad--------------------------*/
-Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition))
+Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)),m_Enabled(false)
 {
 	float quadVertices[] =
 	{
@@ -141,6 +160,7 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
+	/*
 	std::string quadVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
@@ -174,10 +194,32 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 	)";
 
 	m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
+	*/
+
+	m_Shader.reset(Zero::Shader::Create("src/shaders/quad.glsl"));
+}
+
+bool Quad::IsEnabled()
+{
+	return m_Enabled;
 }
 
 void Quad::DrawQuad()
 {
-	ZERO_CLIENT_TRACE("Rendering Quad...");
-	Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix());
+	if (m_Enabled)
+	{
+		ZERO_CLIENT_TRACE("Rendering Quad");
+		Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix());
+	}
+}
+
+void Quad::SetEnabled(bool enabled)
+{
+	ZERO_CLIENT_TRACE("Quad enabled : {0}", enabled);
+	this->m_Enabled = enabled;
+}
+
+void Quad::SetPosition(glm::vec3 position)
+{
+	this->m_Transform.SetPosition(position);
 }
