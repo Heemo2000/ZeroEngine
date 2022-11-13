@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/glad.h>
+#include<unordered_map>
 #include "Zero/Renderer/Shader.h"
 
 
@@ -9,6 +10,7 @@ namespace Zero
 	{
 	public:
 
+		OpenGLShader(const std::string& filePath);
 		OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
 		virtual void Bind() override;
 		virtual void UnBind() override;
@@ -21,7 +23,10 @@ namespace Zero
 
 	private:
 		GLint GetUniformLocation(std::string name);
-		
+		std::unordered_map<GLenum,std::string> PreProcess(const std::string& source);
+		void Compile(const std::unordered_map<GLenum, std::string> shaderSources);
+
+		static GLenum ShaderTypeFromString(const std::string& type);
 	private:
 		uint32_t m_RendererID;
 	};

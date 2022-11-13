@@ -1401,6 +1401,7 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLOrthographicCamera.h" />
     <ClInclude Include="src\Zero\Core\Timestep.h" />
     <ClInclude Include="src\Zero\Core\Transform.h" />
+    <ClInclude Include="src\Zero\Utility\FileContentsReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">

@@ -178,6 +178,7 @@
     <ClInclude Include="src\Zero\Renderer\Shader.h" />
     <ClInclude Include="src\Zero\Renderer\Texture.h" />
     <ClInclude Include="src\Zero\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Zero\Utility\FileContentsReader.h" />
     <ClInclude Include="src\Zero\Window.h" />
     <ClInclude Include="src\zeropch.h" />
     <ClInclude Include="vendor\GLM\glm\common.hpp" />
