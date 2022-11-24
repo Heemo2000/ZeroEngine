@@ -6,15 +6,8 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 {
 	Zero::Renderer::Init();
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
-	/*
-	for (int i = 0; i < m_MaxQuads; i++)
-	{
-		Zero::Ref<Quad> quad;
-		quad.reset(new Quad(m_Camera->GetPosition()));
-		m_Quads.push_back(quad);
-	}
-	*/
 	m_Quad.reset(new Quad(m_Camera->GetPosition()));
+	m_Quad->SetEnabled(true);
 }
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
@@ -58,15 +51,26 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	m_Camera->SetPosition(m_CameraPosition);
 	m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
-	
-	/*
-	for (auto i = m_Quads.begin(); i != m_Quads.end(); i++)
-	{
-		i->get()->DrawQuad();
-	}
-	*/
-	m_Quad->DrawQuad();
 
+	
+	glm::vec3 scale = glm::vec3(0.25f);
+	m_Quad->SetScale(scale);
+	m_Quad->SetColor(glm::vec4(1.0));
+
+	glm::vec3 currentQuadPos = origin;
+
+	for (int y = 0; y < 20; y++)
+	{
+		for (int x = 0; x < 20; x++)
+		{
+			m_Quad->SetPosition(currentQuadPos);
+			m_Quad->DrawQuad();
+			currentQuadPos.x += scale.x;
+		}
+
+		currentQuadPos.x = origin.x;
+		currentQuadPos.y -= scale.y;
+	}
 	Zero::Renderer::EndScene();
 }
 
@@ -109,16 +113,17 @@ bool SandboxLayer::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 }
 
 bool SandboxLayer::OnMouseClicked(Zero::MouseButtonClickedEvent& event)
-{	
+{
 	/*
-	if (m_QuadIndex < m_MaxQuads)
-	{
-		m_Quads[m_QuadIndex]->SetEnabled(true);
-		m_Quads[m_QuadIndex]->SetPosition(m_Camera->GetPosition());
-		m_QuadIndex++;
-	}
+		if (m_Positions.size() < m_MaxQuadPositions)
+		{
+			glm::vec3 newPosition = m_Camera->GetPosition();
+			m_Positions.push_back(newPosition);
+			m_Quad->SetPosition(newPosition);
+		}
 	*/
-	m_Quad->SetEnabled(!m_Quad->IsEnabled());
+	
+	
 	return true;
 }
 
@@ -133,16 +138,16 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 {
 	float quadVertices[] =
 	{
-		-0.5f,-0.25f,0.0f,
-		0.0f,-0.25f,0.0f,
-		0.0f,0.25f,0.0f,
-		-0.5f,0.25f,0.0f
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.5f,  0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f
 	};
 
 	unsigned int indices[] =
 	{
 		0,1,2,
-		0,2,3
+		2,3,0
 	};
 
 	BufferLayout quadLayout =
@@ -160,7 +165,6 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
 	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-	/*
 	std::string quadVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
@@ -186,17 +190,15 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 	std::string quadFS = R"(
 			#version 460 core
 			
+			uniform vec4 u_Color;
 			out vec4 outColor;
 			void main()
 			{
-				outColor = vec4(1.0f,1.0f,1.0,1.0f);
+				outColor = u_Color;
 			}
 	)";
 
 	m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
-	*/
-
-	m_Shader.reset(Zero::Shader::Create("src/shaders/quad.glsl"));
 }
 
 bool Quad::IsEnabled()
@@ -222,4 +224,14 @@ void Quad::SetEnabled(bool enabled)
 void Quad::SetPosition(glm::vec3 position)
 {
 	this->m_Transform.SetPosition(position);
+}
+
+void Quad::SetScale(glm::vec3 scale)
+{
+	m_Transform.SetScale(scale);
+}
+
+void Quad::SetColor(glm::vec4 color)
+{
+	m_Shader->UploadData("u_Color", color);
 }

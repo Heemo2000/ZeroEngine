@@ -2,7 +2,6 @@
 #include <Zero.h>
 #include <glm/glm.hpp>
 
-
 class Quad
 {
 private:
@@ -12,6 +11,7 @@ private:
 	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
 	Zero::Ref<Zero::Shader> m_Shader;
 	bool m_Enabled;
+	glm::vec4 m_Color;
 
 public:
 	Quad(glm::vec3 worldPosition);
@@ -21,6 +21,8 @@ public:
 	void DrawQuad();
 	void SetEnabled(bool enabled);
 	void SetPosition(glm::vec3 position);
+	void SetScale(glm::vec3 scale);
+	void SetColor(glm::vec4 color);
 };
 class SandboxLayer : public Zero::Layer
 {
@@ -46,12 +48,9 @@ private:
 	float m_CameraRotationSpeed = 20.0f;
 
 	float m_ElapsedTime = 0.0f;
-	/*
-	std::vector<Zero::Ref<Quad>> m_Quads;
-	int m_MaxQuads = 16;
-	int m_QuadIndex = 0;
-	*/
+	
 	Zero::Ref<Quad> m_Quad;
+	glm::vec3 origin = glm::vec3(0.0f,0.0f,0.0f);
 };
 
 class Sandbox : public Zero::Application
