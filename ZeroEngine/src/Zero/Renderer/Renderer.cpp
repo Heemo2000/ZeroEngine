@@ -27,6 +27,14 @@ namespace Zero
 		RenderCommand::DrawIndexed(vertexArray);
 	}
 
+	void Renderer::Submit(Ref<Shader>& shader, Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix, uint32_t instanceCount)
+	{
+		shader->Bind();
+		shader->UploadData("u_TransformationMatrix", transformMatrix);
+		shader->UploadData("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
+		vertexArray->Bind();
+		RenderCommand::DrawInstanced(vertexArray, instanceCount);
+	}
 	void Renderer::EndScene()
 	{
 

@@ -16,6 +16,7 @@ namespace Zero
 		static void BeginScene();
 		static void BeginScene(Ref<OrthographicCamera>& camera);
 		static void Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix);
+		static void Submit(Ref<Shader>& shader, Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix, uint32_t instanceCount);
 		static void EndScene();
 		static inline RenderAPI::API GetAPI() { return RenderAPI::GetAPI(); }
 	

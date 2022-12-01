@@ -49,7 +49,11 @@ private:
 
 	float m_ElapsedTime = 0.0f;
 	
-	Zero::Ref<Quad> m_Quad;
+	Zero::Ref<Zero::VertexArray> m_VertexArray;
+	Zero::Ref<Zero::VertexBuffer> m_VertexBuffer;
+	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
+	Zero::Ref<Zero::Shader> m_Shader;
+	Zero::Transform m_Transform = Zero::Transform(glm::vec3(0.0f,0.0f,0.0f));
 	glm::vec3 origin = glm::vec3(0.0f,0.0f,0.0f);
 };
 

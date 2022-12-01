@@ -6,8 +6,70 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 {
 	Zero::Renderer::Init();
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
-	m_Quad.reset(new Quad(m_Camera->GetPosition()));
-	m_Quad->SetEnabled(true);
+	float quadVertices[] =
+	{
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.5f,  0.5f, 0.0f,
+		-0.5f,  0.5f, 0.0f
+	};
+
+	unsigned int indices[] =
+	{
+		0,1,2,
+		2,3,0
+	};
+
+	BufferLayout quadLayout =
+	{
+		{"a_Position",ShaderDataType::Float3}
+	};
+
+	m_VertexArray.reset(Zero::VertexArray::Create());
+
+	m_VertexBuffer.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
+	m_VertexBuffer->SetLayout(quadLayout);
+
+	m_IndexBuffer.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+
+	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+
+	std::string quadVS = R"(
+			#version 460 core
+			layout(location = 0) in vec3 a_Position;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_TransformationMatrix;
+			uniform vec3 offsets[100];			
+
+			vec4 cachedPos = vec4(0.0,0.0,0.0,1.0);
+			
+			void calculatePosition(in mat4 viewProjection,in mat4 transformationMatrix,in vec3 vertexPosition,in vec3 offset,out vec4 result)
+			{
+				result = viewProjection * transformationMatrix * vec4(vertexPosition + offset,1.0);
+			}
+
+		    void main()
+			{	
+				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,offsets[gl_InstanceID],cachedPos);
+				gl_Position = cachedPos;
+			}
+		)";
+
+
+	std::string quadFS = R"(
+			#version 460 core
+			
+			uniform vec4 u_Color;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = u_Color;
+			}
+	)";
+
+	m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
 }
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
@@ -52,25 +114,25 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
 
-	
-	glm::vec3 scale = glm::vec3(0.25f);
-	m_Quad->SetScale(scale);
-	m_Quad->SetColor(glm::vec4(1.0));
+	m_Shader->Bind();
+	m_Shader->UploadData("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	glm::vec3 scale = glm::vec3(1.0f);
 
-	glm::vec3 currentQuadPos = origin;
-
-	for (int y = 0; y < 20; y++)
+	uint32_t instanceNo = 0;
+	for (int y = 0; y < 10; y++)
 	{
-		for (int x = 0; x < 20; x++)
+		for (int x = 0; x < 10; x++)
 		{
-			m_Quad->SetPosition(currentQuadPos);
-			m_Quad->DrawQuad();
-			currentQuadPos.x += scale.x;
+			m_Transform.SetScale(scale);
+			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y,0.0f);
+			m_Shader->UploadData("offsets[" + std::to_string(instanceNo) + "]", offSet);
+			instanceNo++;
 		}
-
-		currentQuadPos.x = origin.x;
-		currentQuadPos.y -= scale.y;
 	}
+
+	uint32_t instanceCount = instanceNo;
+	Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix(),instanceCount);
+
 	Zero::Renderer::EndScene();
 }
 
@@ -113,17 +175,7 @@ bool SandboxLayer::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 }
 
 bool SandboxLayer::OnMouseClicked(Zero::MouseButtonClickedEvent& event)
-{
-	/*
-		if (m_Positions.size() < m_MaxQuadPositions)
-		{
-			glm::vec3 newPosition = m_Camera->GetPosition();
-			m_Positions.push_back(newPosition);
-			m_Quad->SetPosition(newPosition);
-		}
-	*/
-	
-	
+{	
 	return true;
 }
 
