@@ -6,9 +6,9 @@ class Quad
 {
 private:
 	Zero::Transform m_Transform;
-	Zero::Ref<Zero::VertexArray> m_VertexArray;
-	Zero::Ref<Zero::VertexBuffer> m_VertexBuffer;
-	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
+	Zero::Ref<Zero::VertexArray> m_QuadVA;
+	Zero::Ref<Zero::VertexBuffer> m_QuadVB;
+	Zero::Ref<Zero::IndexBuffer> m_QuadIB;
 	Zero::Ref<Zero::Shader> m_Shader;
 	bool m_Enabled;
 	glm::vec4 m_Color;
@@ -49,12 +49,18 @@ private:
 
 	float m_ElapsedTime = 0.0f;
 	
-	Zero::Ref<Zero::VertexArray> m_VertexArray;
-	Zero::Ref<Zero::VertexBuffer> m_VertexBuffer;
-	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
+	Zero::Ref<Zero::VertexArray> m_MainVA;
+	Zero::Ref<Zero::VertexBuffer> m_QuadVB;
+	Zero::Ref<Zero::IndexBuffer> m_QuadIB;
 	Zero::Ref<Zero::Shader> m_Shader;
+
 	Zero::Transform m_Transform = Zero::Transform(glm::vec3(0.0f,0.0f,0.0f));
 	glm::vec3 origin = glm::vec3(0.0f,0.0f,0.0f);
+	int m_MaxQuadCount = 20;
+	glm::vec3 m_Translations[20 * 20];
+
+	Zero::Ref<Zero::VertexArray> m_InstanceVA;
+	Zero::Ref<Zero::VertexBuffer> m_InstanceVB;
 };
 
 class Sandbox : public Zero::Application

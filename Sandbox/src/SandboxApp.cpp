@@ -1,6 +1,7 @@
 #include "SandboxApp.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <glm/gtc/type_ptr.hpp>
+#include "../GLAD/include/glad/glad.h"
 
 SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer") 
 {
@@ -25,23 +26,46 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 		{"a_Position",ShaderDataType::Float3}
 	};
 
-	m_VertexArray.reset(Zero::VertexArray::Create());
+	m_MainVA.reset(Zero::VertexArray::Create());
 
-	m_VertexBuffer.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
-	m_VertexBuffer->SetLayout(quadLayout);
+	m_QuadVB.reset(Zero::VertexBuffer::Create<float>(quadVertices, sizeof(quadVertices)));
+	m_QuadVB->SetLayout(quadLayout);
 
-	m_IndexBuffer.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+	m_QuadIB.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+	m_MainVA->AddVertexBuffer(m_QuadVB);
+	m_MainVA->SetIndexBuffer(m_QuadIB);
+
+	glm::vec3 scale = glm::vec3(1.0f);
+
+	uint32_t instanceNo = 0;
+	for (int y = 0; y < m_MaxQuadCount; y++)
+	{
+		for (int x = 0; x < m_MaxQuadCount; x++)
+		{
+			m_Transform.SetScale(scale);
+			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
+			m_Translations[instanceNo] = offSet;
+			instanceNo++;
+		}
+	}
+
+	BufferLayout instanceLayout =
+	{
+		{"a_Offset",ShaderDataType::Float3}
+	};
+	m_InstanceVB.reset(Zero::VertexBuffer::Create<glm::vec3>(&m_Translations[0], sizeof(m_Translations) / sizeof(glm::vec3)));
+	m_InstanceVB->SetLayout(instanceLayout);
+
+	m_MainVA->AddVertexBuffer(m_InstanceVB);
+	glVertexAttribDivisor(2, 1);
 
 	std::string quadVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
-
+			layout(location = 1) in vec3 a_Offset;
 			uniform mat4 u_ViewProjection;
-			uniform mat4 u_TransformationMatrix;
-			uniform vec3 offsets[100];			
+			uniform mat4 u_TransformationMatrix;			
 
 			vec4 cachedPos = vec4(0.0,0.0,0.0,1.0);
 			
@@ -52,7 +76,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 
 		    void main()
 			{	
-				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,offsets[gl_InstanceID],cachedPos);
+				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,a_Offset,cachedPos);
 				gl_Position = cachedPos;
 			}
 		)";
@@ -116,22 +140,11 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 
 	m_Shader->Bind();
 	m_Shader->UploadData("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	glm::vec3 scale = glm::vec3(1.0f);
+	m_Transform.SetPosition(origin);
+	
 
-	uint32_t instanceNo = 0;
-	for (int y = 0; y < 10; y++)
-	{
-		for (int x = 0; x < 10; x++)
-		{
-			m_Transform.SetScale(scale);
-			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y,0.0f);
-			m_Shader->UploadData("offsets[" + std::to_string(instanceNo) + "]", offSet);
-			instanceNo++;
-		}
-	}
-
-	uint32_t instanceCount = instanceNo;
-	Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix(),instanceCount);
+	Zero::Renderer::Submit(m_Shader, m_MainVA, m_Transform.GetTransformationMatrix(),m_MaxQuadCount);
+	
 
 	Zero::Renderer::EndScene();
 }
@@ -207,15 +220,15 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 		{"a_Position",ShaderDataType::Float3}
 	};
 
-	m_VertexArray.reset(Zero::VertexArray::Create());
+	m_QuadVA.reset(Zero::VertexArray::Create());
 
-	m_VertexBuffer.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
-	m_VertexBuffer->SetLayout(quadLayout);
+	m_QuadVB.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
+	m_QuadVB->SetLayout(quadLayout);
 
-	m_IndexBuffer.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+	m_QuadIB.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 
-	m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-	m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+	m_QuadVA->AddVertexBuffer(m_QuadVB);
+	m_QuadVA->SetIndexBuffer(m_QuadIB);
 
 	std::string quadVS = R"(
 			#version 460 core
@@ -263,7 +276,7 @@ void Quad::DrawQuad()
 	if (m_Enabled)
 	{
 		ZERO_CLIENT_TRACE("Rendering Quad");
-		Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix());
+		Zero::Renderer::Submit(m_Shader, m_QuadVA, m_Transform.GetTransformationMatrix());
 	}
 }
 
