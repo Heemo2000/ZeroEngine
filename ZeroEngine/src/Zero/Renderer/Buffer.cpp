@@ -7,8 +7,7 @@
 
 namespace Zero
 {
-	template<typename T>
-	VertexBuffer* VertexBuffer::Create(T* vertices, uint32_t size)
+	VertexBuffer* VertexBuffer::Create(const void* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{

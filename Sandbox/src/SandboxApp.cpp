@@ -1,7 +1,6 @@
 #include "SandboxApp.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <glm/gtc/type_ptr.hpp>
-#include "../GLAD/include/glad/glad.h"
 
 SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer") 
 {
@@ -21,21 +20,8 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 		2,3,0
 	};
 
-	BufferLayout quadLayout =
-	{
-		{"a_Position",ShaderDataType::Float3}
-	};
-
-	m_MainVA.reset(Zero::VertexArray::Create());
-
-	m_QuadVB.reset(Zero::VertexBuffer::Create<float>(quadVertices, sizeof(quadVertices)));
-	m_QuadVB->SetLayout(quadLayout);
-
-	m_QuadIB.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-
-	m_MainVA->AddVertexBuffer(m_QuadVB);
-	m_MainVA->SetIndexBuffer(m_QuadIB);
-
+	m_QuadInstances.reset(new Zero::InstanceManager(&quadVertices[0], &indices[0], m_MaxQuadCount * m_MaxQuadCount));
+	m_QuadInstances->SetOrigin(glm::vec3(0.0f));
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	uint32_t instanceNo = 0;
@@ -43,57 +29,11 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 	{
 		for (int x = 0; x < m_MaxQuadCount; x++)
 		{
-			m_Transform.SetScale(scale);
 			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
-			m_Translations[instanceNo] = offSet;
+			m_QuadInstances->SetPosition(instanceNo, offSet);
 			instanceNo++;
 		}
 	}
-
-	BufferLayout instanceLayout =
-	{
-		{"a_Offset",ShaderDataType::Float3}
-	};
-	m_InstanceVB.reset(Zero::VertexBuffer::Create<glm::vec3>(&m_Translations[0], sizeof(m_Translations) / sizeof(glm::vec3)));
-	m_InstanceVB->SetLayout(instanceLayout);
-
-	m_MainVA->AddVertexBuffer(m_InstanceVB);
-	glVertexAttribDivisor(2, 1);
-
-	std::string quadVS = R"(
-			#version 460 core
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec3 a_Offset;
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_TransformationMatrix;			
-
-			vec4 cachedPos = vec4(0.0,0.0,0.0,1.0);
-			
-			void calculatePosition(in mat4 viewProjection,in mat4 transformationMatrix,in vec3 vertexPosition,in vec3 offset,out vec4 result)
-			{
-				result = viewProjection * transformationMatrix * vec4(vertexPosition + offset,1.0);
-			}
-
-		    void main()
-			{	
-				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,a_Offset,cachedPos);
-				gl_Position = cachedPos;
-			}
-		)";
-
-
-	std::string quadFS = R"(
-			#version 460 core
-			
-			uniform vec4 u_Color;
-			out vec4 outColor;
-			void main()
-			{
-				outColor = u_Color;
-			}
-	)";
-
-	m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
 }
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
@@ -137,15 +77,9 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	m_Camera->SetPosition(m_CameraPosition);
 	m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
-
-	m_Shader->Bind();
-	m_Shader->UploadData("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	m_Transform.SetPosition(origin);
 	
-
-	Zero::Renderer::Submit(m_Shader, m_MainVA, m_Transform.GetTransformationMatrix(),m_MaxQuadCount);
-	
-
+	m_QuadInstances->SetOrigin(origin);
+	m_QuadInstances->DrawInstances();
 	Zero::Renderer::EndScene();
 }
 

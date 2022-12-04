@@ -48,20 +48,12 @@ private:
 	float m_CameraRotationSpeed = 20.0f;
 
 	float m_ElapsedTime = 0.0f;
-	
-	Zero::Ref<Zero::VertexArray> m_MainVA;
-	Zero::Ref<Zero::VertexBuffer> m_QuadVB;
-	Zero::Ref<Zero::IndexBuffer> m_QuadIB;
-	Zero::Ref<Zero::Shader> m_Shader;
 
-	Zero::Transform m_Transform = Zero::Transform(glm::vec3(0.0f,0.0f,0.0f));
 	glm::vec3 origin = glm::vec3(0.0f,0.0f,0.0f);
-	int m_MaxQuadCount = 20;
-	glm::vec3 m_Translations[20 * 20];
+	uint32_t m_MaxQuadCount = 20;
 
-	Zero::Ref<Zero::VertexArray> m_InstanceVA;
-	Zero::Ref<Zero::VertexBuffer> m_InstanceVB;
-};
+	Zero::Ref<Zero::InstanceManager> m_QuadInstances;
+	};
 
 class Sandbox : public Zero::Application
 {

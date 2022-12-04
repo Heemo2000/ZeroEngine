@@ -6,7 +6,7 @@ namespace Zero
 {
 	//------------------------------VertexBuffer---------------------------------------------
 	
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* vertices, uint32_t size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		Bind();

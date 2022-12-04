@@ -170,6 +170,7 @@
     <ClInclude Include="src\Zero\Log.h" />
     <ClInclude Include="src\Zero\MouseButtonCodes.h" />
     <ClInclude Include="src\Zero\Renderer\Buffer.h" />
+    <ClInclude Include="src\Zero\Core\InstanceManager.h" />
     <ClInclude Include="src\Zero\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Zero\Renderer\RenderAPI.h" />
     <ClInclude Include="src\Zero\Renderer\RenderCommand.h" />
@@ -609,6 +610,7 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Zero\Application.cpp" />
+    <ClCompile Include="src\Zero\Core\InstanceManager.cpp" />
     <ClCompile Include="src\Zero\Core\Transform.cpp" />
     <ClCompile Include="src\Zero\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Zero\ImGui\ImGuiLayer.cpp" />

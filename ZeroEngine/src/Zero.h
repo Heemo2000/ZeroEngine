@@ -29,6 +29,7 @@
 #include "Zero/Core/Timestep.h"
 #include "Zero/Core/Transform.h"
 
+#include "Zero/Core/InstanceManager.h"
 
 //----Entry_Point---------------------------
 #include "Zero/EntryPoint.h"

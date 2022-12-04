@@ -109,8 +109,7 @@ namespace Zero
 	{
 	public:
 		
-		template<typename T>
-		static VertexBuffer* Create(T* vertices, uint32_t size);
+		static VertexBuffer* Create(const void* vertices, uint32_t size);
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual const BufferLayout& GetLayout() const = 0;
