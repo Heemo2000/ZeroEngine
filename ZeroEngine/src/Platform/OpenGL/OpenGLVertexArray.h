@@ -19,7 +19,7 @@ namespace Zero
 
 	private:
 		std::vector <Ref<VertexBuffer>> m_VertexBuffers;
-		Ref<IndexBuffer> m_QuadIB;
+		Ref<IndexBuffer> m_IndexBuffer;
 		uint32_t m_RendererID;
 	};
 }

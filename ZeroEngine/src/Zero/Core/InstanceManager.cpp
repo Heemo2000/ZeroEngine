@@ -6,38 +6,31 @@
 
 namespace Zero
 {
-	InstanceManager::InstanceManager(float* vertices, unsigned int* indices, uint32_t instanceCount) : m_InstanceCount(instanceCount)
+
+	InstanceManager::InstanceManager(std::vector<float> vertices, std::vector<uint32_t> indices, uint32_t instanceCount) : m_InstanceCount(instanceCount)
 	{
-		BufferLayout layout =
+		BufferLayout quadLayout =
 		{
-			{"a_Position",ShaderDataType::Float3},
-			{"a_Offset",ShaderDataType::Float3}
+			{"a_Position",ShaderDataType::Float3}
 		};
 
-		m_MainVA.reset(Zero::VertexArray::Create());
+		m_VertexArray.reset(Zero::VertexArray::Create());
 
-		m_ActualModelVB.reset(Zero::VertexBuffer::Create(vertices, sizeof(vertices)));
-		m_ActualModelVB->SetLayout(layout);
+		m_VertexBuffer.reset(Zero::VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float)));
+		m_VertexBuffer->SetLayout(quadLayout);
 
-		m_ActualModelIB.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		m_IndexBuffer.reset(Zero::IndexBuffer::Create(indices.data(), indices.size()));
 
-		m_MainVA->AddVertexBuffer(m_ActualModelVB);
-		m_MainVA->SetIndexBuffer(m_ActualModelIB);
+		m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+		m_VertexArray->SetIndexBuffer(m_IndexBuffer);
 
-		m_InstanceVB.reset(Zero::VertexBuffer::Create(&m_Translations[0], sizeof(m_Translations) / sizeof(glm::vec3)));
-		m_InstanceVB->SetLayout(layout);
-		m_MainVA->AddVertexBuffer(m_InstanceVB);
-		glGetError();
-		glVertexAttribDivisor(2, 1);
-
-		ZERO_CORE_INFO("Status of vertex attrib divisor : {0}",glGetError());
-
-		std::string quadVS = R"(
+		std::string instanceVS = R"(
 			#version 460 core
 			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec3 a_Offset;
+
 			uniform mat4 u_ViewProjection;
-			uniform mat4 u_TransformationMatrix;			
+			uniform mat4 u_TransformationMatrix;
+			uniform vec3 offsets[30*30];			
 
 			vec4 cachedPos = vec4(0.0,0.0,0.0,1.0);
 			
@@ -48,13 +41,13 @@ namespace Zero
 
 		    void main()
 			{	
-				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,a_Offset,cachedPos);
+				calculatePosition(u_ViewProjection,u_TransformationMatrix,a_Position,offsets[gl_InstanceID],cachedPos);
 				gl_Position = cachedPos;
 			}
 		)";
 
 
-		std::string quadFS = R"(
+		std::string instanceFS = R"(
 			#version 460 core
 			
 			uniform vec4 u_Color;
@@ -65,7 +58,8 @@ namespace Zero
 			}
 	)";
 
-		m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
+		m_Shader.reset(Zero::Shader::Create(instanceVS, instanceFS));
+		m_Shader->Bind();
 	}
 
 	void InstanceManager::SetOrigin(glm::vec3 position)
@@ -73,21 +67,32 @@ namespace Zero
 		m_Transform.SetPosition(position);
 	}
 
-	void InstanceManager::SetPosition(uint32_t instanceNo, glm::vec3 position)
+	void InstanceManager::SetOffset(uint32_t instanceNo, glm::vec3 offset)
 	{
+		
 		if (instanceNo > m_InstanceCount)
 		{
 			return;
 		}
-		ZERO_CORE_INFO("Instance no : {0}", instanceNo);
-		m_Translations[instanceNo] = position;
+		m_Shader->Bind();
+		m_Shader->UploadData("offsets[" + std::to_string(instanceNo) + "]", offset);
+	}
+
+	void InstanceManager::SetScale(glm::vec3 scale)
+	{
+		m_Transform.SetScale(scale);
+	}
+
+	void InstanceManager::SetColor(glm::vec4 color)
+	{
+		m_Shader->Bind();
+		m_Shader->UploadData("u_Color", color);
 	}
 
 	void InstanceManager::DrawInstances()
 	{
-		m_Shader->Bind();
-		m_Shader->UploadData("u_Color", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		Zero::Renderer::Submit(m_Shader, m_MainVA, m_Transform.GetTransformationMatrix(), m_InstanceCount);
+
+		Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix(), m_InstanceCount);
 	}
 
 }

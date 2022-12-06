@@ -6,7 +6,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 {
 	Zero::Renderer::Init();
 	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
-	float quadVertices[] =
+	std::vector<float> quadVertices =
 	{
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
@@ -14,26 +14,13 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 		-0.5f,  0.5f, 0.0f
 	};
 
-	unsigned int indices[] =
+	std::vector<uint32_t> indices =
 	{
 		0,1,2,
 		2,3,0
 	};
 
-	m_QuadInstances.reset(new Zero::InstanceManager(&quadVertices[0], &indices[0], m_MaxQuadCount * m_MaxQuadCount));
-	m_QuadInstances->SetOrigin(glm::vec3(0.0f));
-	glm::vec3 scale = glm::vec3(1.0f);
-
-	uint32_t instanceNo = 0;
-	for (int y = 0; y < m_MaxQuadCount; y++)
-	{
-		for (int x = 0; x < m_MaxQuadCount; x++)
-		{
-			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
-			m_QuadInstances->SetPosition(instanceNo, offSet);
-			instanceNo++;
-		}
-	}
+	m_QuadInstances = new Zero::InstanceManager(quadVertices, indices, m_N * m_N);
 }
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
@@ -78,7 +65,21 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
 	
-	m_QuadInstances->SetOrigin(origin);
+	m_QuadInstances->SetOrigin(m_Origin);
+	m_QuadInstances->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	glm::vec3 scale = glm::vec3(1.0f);
+
+	uint32_t instanceNo = 0;
+	for (int y = 0; y < m_N; y++)
+	{
+		for (int x = 0; x < m_N; x++)
+		{
+			m_QuadInstances->SetScale(scale);
+			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
+			m_QuadInstances->SetOffset(instanceNo, offSet);
+			instanceNo++;
+		}
+	}
 	m_QuadInstances->DrawInstances();
 	Zero::Renderer::EndScene();
 }

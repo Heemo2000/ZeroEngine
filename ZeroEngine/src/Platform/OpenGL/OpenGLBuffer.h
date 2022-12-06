@@ -6,7 +6,7 @@ namespace Zero
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(const void* vertices, uint32_t size);
+		OpenGLVertexBuffer(float* vertices, uint32_t size);
 		virtual void Bind() override;
 		virtual void Unbind() override;
 		inline virtual const BufferLayout& GetLayout() const override { return m_Layout; }

@@ -49,10 +49,11 @@ private:
 
 	float m_ElapsedTime = 0.0f;
 
-	glm::vec3 origin = glm::vec3(0.0f,0.0f,0.0f);
-	uint32_t m_MaxQuadCount = 20;
+	glm::vec3 m_Origin = glm::vec3(0.0f,0.0f,0.0f);
+	uint32_t m_N = 20;
 
-	Zero::Ref<Zero::InstanceManager> m_QuadInstances;
+
+	Zero::InstanceManager* m_QuadInstances;
 	};
 
 class Sandbox : public Zero::Application

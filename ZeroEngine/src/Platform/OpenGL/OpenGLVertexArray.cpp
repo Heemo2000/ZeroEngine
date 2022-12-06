@@ -42,13 +42,13 @@ namespace Zero
 	void OpenGLVertexArray::SetIndexBuffer(Ref<IndexBuffer> indexBuffer)
 	{
 		glBindVertexArray(m_RendererID);
-		m_QuadIB = indexBuffer;
-		m_QuadIB->Bind();
+		m_IndexBuffer = indexBuffer;
+		m_IndexBuffer->Bind();
 	}
 
 	Ref<IndexBuffer> OpenGLVertexArray::GetIndexBuffer() const
 	{
-		return m_QuadIB;
+		return m_IndexBuffer;
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
