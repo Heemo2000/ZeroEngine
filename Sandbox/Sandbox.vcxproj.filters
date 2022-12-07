@@ -34,5 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\quad.glsl" />
+    <None Include="src\shaders\instance.glsl" />
   </ItemGroup>
 </Project>

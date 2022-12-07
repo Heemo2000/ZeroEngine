@@ -22,7 +22,7 @@ private:
 	Zero::Ref<Zero::VertexArray> m_VertexArray;
 	Zero::Ref<Zero::VertexBuffer> m_VertexBuffer;
 	Zero::Ref<Zero::IndexBuffer> m_IndexBuffer;
-	Zero::Ref<Zero::Shader> m_Shader;
+	Zero::Ref<Zero::ShaderLibrary> m_ShaderLibrary;
 
 	Zero::Transform m_Transform = Zero::Transform(glm::vec3(0.0f, 0.0f, 0.0f));
 };

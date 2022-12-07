@@ -66,7 +66,6 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 #pragma endregion CameraControl
 	
 	m_QuadInstances->SetOrigin(m_Origin);
-	m_QuadInstances->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	glm::vec3 scale = glm::vec3(1.0f);
 
 	uint32_t instanceNo = 0;
@@ -74,6 +73,14 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	{
 		for (int x = 0; x < m_N; x++)
 		{
+			if (instanceNo % 2 == 0)
+			{
+				m_QuadInstances->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else
+			{
+				m_QuadInstances->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+			}
 			m_QuadInstances->SetScale(scale);
 			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
 			m_QuadInstances->SetOffset(instanceNo, offSet);
@@ -198,7 +205,7 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 			}
 	)";
 
-	m_Shader.reset(Zero::Shader::Create(quadVS, quadFS));
+	m_Shader = Zero::Shader::Create("quad",quadVS, quadFS);
 }
 
 bool Quad::IsEnabled()

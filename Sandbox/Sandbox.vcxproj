@@ -146,6 +146,7 @@
     <Image Include="textures\sandwich.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\shaders\instance.glsl" />
     <None Include="src\shaders\quad.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

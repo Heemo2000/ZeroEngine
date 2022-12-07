@@ -23,13 +23,26 @@ namespace Zero
 		
 		auto shaderSources = PreProcess(shaderFileContents);
 		Compile(shaderSources);
+
+		auto lastSlashPos = filePath.find_last_of("/\\");
+		int fileNameStartIndex = (lastSlashPos != std::string::npos) ? lastSlashPos + 1 : 0;
+		int dotIndex = filePath.rfind(".");
+		int fileNameLastIndex = (dotIndex != -1) ? dotIndex - 1 : filePath.size() - 1;
+		int fileNameSize = fileNameLastIndex - fileNameStartIndex + 1;
+
+		m_Name = filePath.substr(fileNameStartIndex, fileNameSize);
 	}
-	OpenGLShader::OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource)
+	OpenGLShader::OpenGLShader(const std::string& name,const std::string& vertexSource, const std::string& fragmentSource) : m_Name(name)
 	{
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSource;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSource;
 		Compile(shaderSources);
+	}
+
+	std::string OpenGLShader::GetName() const
+	{
+		return m_Name;
 	}
 
 	void OpenGLShader::Bind()
@@ -203,4 +216,5 @@ namespace Zero
 		glDeleteProgram(m_RendererID);
 	}
 
+	
 }

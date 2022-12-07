@@ -58,8 +58,11 @@ namespace Zero
 			}
 	)";
 
-		m_Shader.reset(Zero::Shader::Create(instanceVS, instanceFS));
-		m_Shader->Bind();
+		m_ShaderLibrary.reset(new Zero::ShaderLibrary());
+		
+		std::string filePath = "src/shaders/instance.glsl";
+		auto shader = m_ShaderLibrary->Load(filePath);
+		shader->Bind();
 	}
 
 	void InstanceManager::SetOrigin(glm::vec3 position)
@@ -74,8 +77,8 @@ namespace Zero
 		{
 			return;
 		}
-		m_Shader->Bind();
-		m_Shader->UploadData("offsets[" + std::to_string(instanceNo) + "]", offset);
+		auto shader = m_ShaderLibrary->Get("instance");
+		shader->UploadData("offsets[" + std::to_string(instanceNo) + "]", offset);
 	}
 
 	void InstanceManager::SetScale(glm::vec3 scale)
@@ -85,14 +88,15 @@ namespace Zero
 
 	void InstanceManager::SetColor(glm::vec4 color)
 	{
-		m_Shader->Bind();
-		m_Shader->UploadData("u_Color", color);
+		auto shader = m_ShaderLibrary->Get("instance");
+		shader->Bind();
+		shader->UploadData("u_Color", color);
 	}
 
 	void InstanceManager::DrawInstances()
 	{
-
-		Zero::Renderer::Submit(m_Shader, m_VertexArray, m_Transform.GetTransformationMatrix(), m_InstanceCount);
+		auto shader = m_ShaderLibrary->Get("instance");
+		Zero::Renderer::Submit(shader, m_VertexArray, m_Transform.GetTransformationMatrix(), m_InstanceCount);
 	}
 
 }

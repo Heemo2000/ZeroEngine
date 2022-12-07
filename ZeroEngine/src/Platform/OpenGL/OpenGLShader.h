@@ -11,7 +11,8 @@ namespace Zero
 	public:
 
 		OpenGLShader(const std::string& filePath);
-		OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
+		OpenGLShader(const std::string& name,const std::string& vertexSource, const std::string& fragmentSource);
+		virtual std::string GetName() const override;
 		virtual void Bind() override;
 		virtual void UnBind() override;
 		virtual void UploadData(std::string name,const glm::mat4& value) override;
@@ -29,5 +30,6 @@ namespace Zero
 		static GLenum ShaderTypeFromString(const std::string& type);
 	private:
 		uint32_t m_RendererID;
+		std::string m_Name;
 	};
 }
