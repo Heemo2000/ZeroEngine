@@ -10,7 +10,7 @@ namespace Zero
 	class ZERO_API VertexArray
 	{
 	public:
-		static VertexArray* Create();
+		static Zero::Ref<VertexArray> Create();
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual void AddVertexBuffer(Ref<VertexBuffer> vertexBuffer) = 0;

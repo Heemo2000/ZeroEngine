@@ -162,7 +162,7 @@ Quad::Quad(glm::vec3 worldPosition) : m_Transform(Zero::Transform(worldPosition)
 		{"a_Position",ShaderDataType::Float3}
 	};
 
-	m_QuadVA.reset(Zero::VertexArray::Create());
+	m_QuadVA = Zero::VertexArray::Create();
 
 	m_QuadVB.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
 	m_QuadVB->SetLayout(quadLayout);

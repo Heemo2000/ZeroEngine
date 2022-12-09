@@ -4,7 +4,7 @@
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 namespace Zero
 {
-	VertexArray* VertexArray::Create()
+	Zero::Ref<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -13,7 +13,7 @@ namespace Zero
 				return nullptr;
 
 			case RenderAPI::API::OpenGL:
-				return new OpenGLVertexArray();
+				return std::make_shared<OpenGLVertexArray>();
 		}
 
 		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");

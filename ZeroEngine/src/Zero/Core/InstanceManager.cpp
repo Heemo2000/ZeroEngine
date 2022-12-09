@@ -14,7 +14,7 @@ namespace Zero
 			{"a_Position",ShaderDataType::Float3}
 		};
 
-		m_VertexArray.reset(Zero::VertexArray::Create());
+		m_VertexArray = Zero::VertexArray::Create();
 
 		m_VertexBuffer.reset(Zero::VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float)));
 		m_VertexBuffer->SetLayout(quadLayout);

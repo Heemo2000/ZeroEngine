@@ -32,6 +32,6 @@
 #include "Zero/Core/InstanceManager.h"
 
 //----Entry_Point---------------------------
-#include "Zero/EntryPoint.h"
+//#include "Zero/EntryPoint.h"
 //------------------------------------------
 
