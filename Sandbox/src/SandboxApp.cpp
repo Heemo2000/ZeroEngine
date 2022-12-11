@@ -5,7 +5,7 @@
 SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer") 
 {
 	Zero::Renderer::Init();
-	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
+	//m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f,glm::vec3(0.0f,0.0f,0.0f)));
 	std::vector<float> quadVertices =
 	{
 		-0.5f, -0.5f, 0.0f,
@@ -28,7 +28,7 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 	Zero::RenderCommand::SetClearColor(m_ClearColor);
 	Zero::RenderCommand::Clear();
 	
-	Zero::Renderer::BeginScene(m_Camera);
+	//Zero::Renderer::BeginScene(m_Camera);
 	
 #pragma region CameraControl
 	if (Zero::Input::IsKeyPressed(ZERO_KEY_W))
@@ -61,8 +61,8 @@ void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 		m_CameraRotation -= m_CameraRotationSpeed * timestep.GetDeltaTimeInSec();
 	}
 	
-	m_Camera->SetPosition(m_CameraPosition);
-	m_Camera->SetRotation(m_CameraRotation);
+	//m_Camera->SetPosition(m_CameraPosition);
+	//m_Camera->SetRotation(m_CameraRotation);
 #pragma endregion CameraControl
 	
 	m_QuadInstances->SetOrigin(m_Origin);
@@ -109,7 +109,7 @@ void SandboxLayer::OnImGuiRender()
 bool SandboxLayer::OnWindowResized(Zero::WindowResizedEvent& event)
 {
 	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-	m_Camera->SetAspectRatio(aspectRatio);
+	//m_Camera->SetAspectRatio(aspectRatio);
 	return true;
 }
 
@@ -125,7 +125,7 @@ bool SandboxLayer::OnKeyTyped(Zero::KeyTypedEvent& event)
 
 bool SandboxLayer::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 {
-	m_Camera->SetScale(m_Camera->GetScale() + event.GetScrolledY());
+	//m_Camera->SetScale(m_Camera->GetScale() + event.GetScrolledY());
 	return true;
 }
 

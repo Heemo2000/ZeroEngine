@@ -1,27 +1,33 @@
 #pragma once
 #include <glm/glm.hpp>
 
-
-
 namespace Zero
 {
-	class ZERO_API OrthographicCamera
+	class OrthographicCamera
 	{
 	public:
-		static OrthographicCamera* Create(float aspectRatio,float scale, glm::vec3 position);
+		OrthographicCamera(float left,float right,float down,float up);
 
-		virtual glm::mat4 GetViewProjectionMatrix() const = 0;
-		virtual glm::vec3 GetPosition() const = 0;
-		virtual void SetPosition(const glm::vec3& position) = 0;
-		virtual float GetScale() const = 0;
-		virtual void SetScale(const float& scale) = 0;
-		virtual float GetRotation() const = 0;
-		virtual void SetRotation(const float& rotation) = 0;
-		virtual float GetAspectRatio() const = 0;
-		virtual void SetAspectRatio(const float& aspectRatio) = 0;
-		virtual ~OrthographicCamera() {}	
+		void SetProjectionMatrix(float left, float right,float down,float up);
+		
+		glm::mat4 GetViewProjectionMatrix() const;
 
-	protected:
-		virtual void RecalculateViewProjectionMatrix() = 0;
+		glm::vec3 GetPosition() const;
+		void SetPosition(const glm::vec3& position);
+		
+		float GetRotation() const;
+		void SetRotation(const float& rotation);
+		
+		~OrthographicCamera();
+
+	private:
+		void RecalculateViewProjectionMatrix();
+
+	private:
+		glm::mat4 m_View = glm::mat4(1.0f);
+		glm::mat4 m_Projection = glm::mat4(1.0f);
+
+		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
+		float m_Rotation = 0.0f;
 	};
 }

@@ -22,7 +22,7 @@ private:
 	bool OnMouseClicked(Zero::MouseButtonClickedEvent& event);
 
 private:
-	Zero::Ref<Zero::OrthographicCamera> m_Camera;
+	Zero::OrthographicCameraController m_CameraController;
 	glm::vec4 m_ClearColor;
 
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -35,6 +35,6 @@ private:
 	glm::vec3 m_Origin = glm::vec3(0.0f, 0.0f, 0.0f);
 	uint32_t m_N = 20;
 
-
 	Zero::InstanceManager* m_QuadInstances;
+	bool m_Open = true;
 };

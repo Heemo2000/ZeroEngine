@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLOrthographicCamera.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderingContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
@@ -172,6 +171,7 @@
     <ClInclude Include="src\Zero\Renderer\Buffer.h" />
     <ClInclude Include="src\Zero\Core\InstanceManager.h" />
     <ClInclude Include="src\Zero\Renderer\OrthographicCamera.h" />
+    <ClInclude Include="src\Zero\Renderer\OrthographicCameraController.h" />
     <ClInclude Include="src\Zero\Renderer\RenderAPI.h" />
     <ClInclude Include="src\Zero\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Zero\Renderer\Renderer.h" />
@@ -601,7 +601,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLOrthographicCamera.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderingContext.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
@@ -618,6 +617,7 @@
     <ClCompile Include="src\Zero\Log.cpp" />
     <ClCompile Include="src\Zero\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Zero\Renderer\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Zero\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Zero\Renderer\RenderAPI.cpp" />
     <ClCompile Include="src\Zero\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Zero\Renderer\Renderer.cpp" />

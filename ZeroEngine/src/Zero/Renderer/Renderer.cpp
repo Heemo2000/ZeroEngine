@@ -8,14 +8,18 @@ namespace Zero
 	{
 		RenderCommand::Init();
 	}
+	void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+	{
+		Zero::RenderCommand::SetViewport(0, 0, width, height);
+	}
 	void Renderer::BeginScene()
 	{
 
 	}
 
-	void Renderer::BeginScene(Ref<OrthographicCamera>& camera)
+	void Renderer::BeginScene(OrthographicCamera camera)
 	{
-		m_SceneData->ViewProjectionMatrix = camera->GetViewProjectionMatrix();
+		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}
 
 	void Renderer::Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray,const glm::mat4& transformMatrix)

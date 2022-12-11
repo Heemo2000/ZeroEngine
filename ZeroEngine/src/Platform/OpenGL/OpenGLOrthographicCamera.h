@@ -12,6 +12,8 @@ namespace Zero
 	public:
 		
 		OpenGLOrthographicCamera(float aspectRatio,float scale, glm::vec3 origin);
+		virtual void SetProjectionMatrix(glm::mat4 projection);
+
 		virtual glm::mat4 GetViewProjectionMatrix() const override;
 		virtual glm::vec3 GetPosition() const override;
 		virtual void SetPosition(const glm::vec3& position) override;

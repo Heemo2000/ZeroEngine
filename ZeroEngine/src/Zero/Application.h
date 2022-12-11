@@ -30,14 +30,17 @@ namespace Zero
 	private:
 		static Application* s_Instance;
 
+
 	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		bool OnWindowClose(WindowClosedEvent& event);
+		bool OnWindowResize(WindowResizedEvent& event);
 		LayerStack m_LayerStack;
 		float m_LastDeltaTime = 0.0f;
-		
+		bool m_Minimized = false;
+
 	};
 
 	//To be defined in client.

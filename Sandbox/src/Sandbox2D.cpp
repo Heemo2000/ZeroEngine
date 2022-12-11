@@ -1,9 +1,9 @@
 #include "Sandbox2D.h"
+#include "backends/imgui_impl_opengl3.h"
 
-Sandbox2D::Sandbox2D()
+Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(16.0f/9.0f,false))
 {
 	Zero::Renderer::Init();
-	m_Camera.reset(Zero::OrthographicCamera::Create(16.0f / 9.0f, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f)));
 	std::vector<float> quadVertices =
 	{
 		-0.5f, -0.5f, 0.0f,
@@ -34,42 +34,9 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 	Zero::RenderCommand::SetClearColor(m_ClearColor);
 	Zero::RenderCommand::Clear();
 
-	Zero::Renderer::BeginScene(m_Camera);
-
-#pragma region CameraControl
-	if (Zero::Input::IsKeyPressed(ZERO_KEY_W))
-	{
-		m_CameraPosition.y += m_CameraMoveSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	else if (Zero::Input::IsKeyPressed(ZERO_KEY_S))
-	{
-		m_CameraPosition.y -= m_CameraMoveSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	if (Zero::Input::IsKeyPressed(ZERO_KEY_A))
-	{
-		m_CameraPosition.x -= m_CameraMoveSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	else if (Zero::Input::IsKeyPressed(ZERO_KEY_D))
-	{
-		m_CameraPosition.x += m_CameraMoveSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	if (Zero::Input::IsKeyPressed(ZERO_KEY_Q))
-	{
-		m_CameraRotation += m_CameraRotationSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	else if (Zero::Input::IsKeyPressed(ZERO_KEY_E))
-	{
-		m_CameraRotation -= m_CameraRotationSpeed * timestep.GetDeltaTimeInSec();
-	}
-
-	m_Camera->SetPosition(m_CameraPosition);
-	m_Camera->SetRotation(m_CameraRotation);
-#pragma endregion CameraControl
+	Zero::Renderer::BeginScene(m_CameraController.GetCamera());
+	
+	m_CameraController.OnUpdate(timestep);
 
 	m_QuadInstances->SetOrigin(m_Origin);
 	glm::vec3 scale = glm::vec3(1.0f);
@@ -105,16 +72,19 @@ void Sandbox2D::OnEvent(Zero::Event& event)
 	eventDispatcher.Dispatch<Zero::KeyTypedEvent>(ZERO_BIND_EVENT_FN(Sandbox2D::OnKeyTyped));
 	eventDispatcher.Dispatch<Zero::MouseScrolledEvent>(ZERO_BIND_EVENT_FN(Sandbox2D::OnMouseScrolled));
 	eventDispatcher.Dispatch<Zero::MouseButtonClickedEvent>(ZERO_BIND_EVENT_FN(Sandbox2D::OnMouseClicked));
+
+	m_CameraController.OnEvent(event);
 }
 
 void Sandbox2D::OnImGuiRender()
 {
+	ImGui::Begin("Settings");
+	ImGui::ShowDemoWindow(&m_Open);
+	ImGui::End();
 }
 
 bool Sandbox2D::OnWindowResized(Zero::WindowResizedEvent& event)
 {
-	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-	m_Camera->SetAspectRatio(aspectRatio);
 	return true;
 }
 
@@ -130,7 +100,6 @@ bool Sandbox2D::OnKeyTyped(Zero::KeyTypedEvent& event)
 
 bool Sandbox2D::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 {
-	m_Camera->SetScale(m_Camera->GetScale() + event.GetScrolledY());
 	return true;
 }
 

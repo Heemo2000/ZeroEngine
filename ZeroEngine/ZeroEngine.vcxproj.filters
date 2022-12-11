@@ -1398,10 +1398,11 @@
     <ClInclude Include="src\Zero\Renderer\RenderAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
     <ClInclude Include="src\Zero\Renderer\OrthographicCamera.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLOrthographicCamera.h" />
     <ClInclude Include="src\Zero\Core\Timestep.h" />
     <ClInclude Include="src\Zero\Core\Transform.h" />
     <ClInclude Include="src\Zero\Utility\FileContentsReader.h" />
+    <ClInclude Include="src\Zero\Core\InstanceManager.h" />
+    <ClInclude Include="src\Zero\Renderer\OrthographicCameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1458,9 +1459,10 @@
     <ClCompile Include="src\Zero\Renderer\RenderAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
     <ClCompile Include="src\Zero\Renderer\OrthographicCamera.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLOrthographicCamera.cpp" />
     <ClCompile Include="src\Zero\Core\Transform.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Zero\Core\InstanceManager.cpp" />
+    <ClCompile Include="src\Zero\Renderer\OrthographicCameraController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Platform\OpenGL\Shaders\test_vert.glsl" />

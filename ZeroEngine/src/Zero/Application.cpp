@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Core/Timestep.h"
 #include <GLFW/glfw3.h>
+#include "Zero/Renderer/Renderer.h"
 namespace Zero
 {
 
@@ -33,17 +34,23 @@ namespace Zero
 			float time = glfwGetTime();
 			Timestep timestep(time - m_LastDeltaTime);
 			m_LastDeltaTime = time;
-			for (Layer* layer : m_LayerStack)
-			{
-				layer->OnUpdate(timestep);
-			}
 
+			if (!m_Minimized)
+			{
+				for (Layer* layer : m_LayerStack)
+				{
+					layer->OnUpdate(timestep);
+				}
+
+			}
+			
 			m_ImGuiLayer->Begin();
 			for (Layer* layer : m_LayerStack)
 			{
 				layer->OnImGuiRender();
 			}
 			m_ImGuiLayer->End();
+			
 			
 			m_Window->OnUpdate();
 		}
@@ -54,6 +61,7 @@ namespace Zero
 		EventDispatcher dispatcher(event);
 
 		dispatcher.Dispatch<WindowClosedEvent>(ZERO_BIND_EVENT_FN(Application::OnWindowClose));
+		dispatcher.Dispatch<WindowResizedEvent>(ZERO_BIND_EVENT_FN(Application::OnWindowResize));
 		ZERO_CORE_INFO("{0}", event.ToString());
 
 		for (Layer* layer : m_LayerStack)
@@ -99,5 +107,16 @@ namespace Zero
 	{
 		m_Running = false;
 		return true;
+	}
+	bool Application::OnWindowResize(WindowResizedEvent& event)
+	{
+		if (event.GetWidth() == 0 || event.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+		m_Minimized = false;
+		Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
+		return false;
 	}
 }

@@ -1,24 +1,58 @@
 #include "zeropch.h"
 #include "Zero/Renderer/OrthographicCamera.h"
-#include "Renderer.h"
-#include "Platform/OpenGL/OpenGLOrthographicCamera.h"
-
-
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 namespace Zero
 {
-	OrthographicCamera* OrthographicCamera::Create(float aspectRatio,float scale, glm::vec3 origin)
+	OrthographicCamera::OrthographicCamera(float left, float right, float down, float up) :
+		m_Projection(glm::ortho(left, right, down, up)), m_View(1.0f)
 	{
-		switch (Renderer::GetAPI())
-		{
-		case RenderAPI::API::None:
-			ZERO_CORE_ASSERT(false, "No Renderer API Selected!!");
-			return nullptr;
+	}
 
-		case RenderAPI::API::OpenGL:
-			return new OpenGLOrthographicCamera(aspectRatio,scale,origin);
-		}
+	void OrthographicCamera::SetProjectionMatrix(float left, float right, float down, float up)
+	{
+		m_Projection = glm::ortho(left, right, down, up, -1.0f, 1.0f);
+	}
 
-		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");
-		return nullptr;
+	void OrthographicCamera::RecalculateViewProjectionMatrix()
+	{
+		glm::mat4 transform = glm::inverse(glm::translate(glm::mat4(1.0f), m_Position)) * glm::rotate(glm::mat4(1.0f),
+			glm::radians(m_Rotation),
+			glm::vec3(0.0f, 0.0f, 1.0f));
+
+		m_View = transform;//glm::inverse(transform);
+	}
+
+	glm::mat4 OrthographicCamera::GetViewProjectionMatrix() const
+	{
+		return m_View * m_Projection;
+	}
+
+	glm::vec3 OrthographicCamera::GetPosition() const
+	{
+		return m_Position;
+	}
+
+	void OrthographicCamera::SetPosition(const glm::vec3& position)
+	{
+		m_Position = position;
+		RecalculateViewProjectionMatrix();
+	}
+
+	float OrthographicCamera::GetRotation() const
+	{
+		return m_Rotation;
+	}
+
+	void OrthographicCamera::SetRotation(const float& rotation)
+	{
+		m_Rotation = rotation;
+		RecalculateViewProjectionMatrix();
+	}
+
+
+	OrthographicCamera::~OrthographicCamera()
+	{
 	}
 }
+

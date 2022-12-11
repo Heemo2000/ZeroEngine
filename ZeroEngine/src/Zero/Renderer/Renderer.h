@@ -13,8 +13,9 @@ namespace Zero
 	{
 	public:
 		static void Init();
+		static void OnWindowResize(uint32_t width, uint32_t height);
 		static void BeginScene();
-		static void BeginScene(Ref<OrthographicCamera>& camera);
+		static void BeginScene(OrthographicCamera camera);
 		static void Submit(Ref<Shader>& shader,Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix);
 		static void Submit(Ref<Shader>& shader, Ref<VertexArray>& vertexArray, const glm::mat4& transformMatrix, uint32_t instanceCount);
 		static void EndScene();
