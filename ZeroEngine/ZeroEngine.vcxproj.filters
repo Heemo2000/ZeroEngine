@@ -1403,6 +1403,7 @@
     <ClInclude Include="src\Zero\Utility\FileContentsReader.h" />
     <ClInclude Include="src\Zero\Core\InstanceManager.h" />
     <ClInclude Include="src\Zero\Renderer\OrthographicCameraController.h" />
+    <ClInclude Include="src\Zero\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1463,6 +1464,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\Zero\Core\InstanceManager.cpp" />
     <ClCompile Include="src\Zero\Renderer\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Renderer2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Platform\OpenGL\Shaders\test_vert.glsl" />

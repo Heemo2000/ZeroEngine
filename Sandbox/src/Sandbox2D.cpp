@@ -4,6 +4,7 @@
 Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(16.0f/9.0f,false))
 {
 	Zero::Renderer::Init();
+	Zero::Renderer2D::Init();
 	std::vector<float> quadVertices =
 	{
 		-0.5f, -0.5f, 0.0f,
@@ -18,7 +19,7 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 		2,3,0
 	};
 
-	m_QuadInstances = new Zero::InstanceManager(quadVertices, indices, m_N * m_N);
+	//m_QuadInstances = new Zero::InstanceManager(quadVertices, indices, m_N * m_N);
 }
 
 void Sandbox2D::OnAttach()
@@ -35,32 +36,26 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 	Zero::RenderCommand::Clear();
 
 	Zero::Renderer::BeginScene(m_CameraController.GetCamera());
-	
+	Zero::Renderer2D::BeginScene(m_CameraController.GetCamera());
+
 	m_CameraController.OnUpdate(timestep);
 
-	m_QuadInstances->SetOrigin(m_Origin);
+	
+	
 	glm::vec3 scale = glm::vec3(1.0f);
-
-	uint32_t instanceNo = 0;
 	for (int y = 0; y < m_N; y++)
 	{
 		for (int x = 0; x < m_N; x++)
 		{
-			if (instanceNo % 2 == 0)
-			{
-				m_QuadInstances->SetColor(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-			}
-			else
-			{
-				m_QuadInstances->SetColor(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-			}
-			m_QuadInstances->SetScale(scale);
+			
 			glm::vec3 offSet = glm::vec3(x * scale.x, -y * scale.y, 0.0f);
-			m_QuadInstances->SetOffset(instanceNo, offSet);
-			instanceNo++;
+
+			Zero::Renderer2D::DrawQuad(m_Origin + offSet, scale, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 	}
-	m_QuadInstances->DrawInstances();
+	
+	
+	Zero::Renderer2D::EndScene();
 	Zero::Renderer::EndScene();
 }
 

@@ -20,9 +20,10 @@ void main()
 
 #type fragment
 #version 460 core
-			
+		
+uniform vec4 u_Color;
 out vec4 outColor;
 void main()
 {
-	outColor = vec4(1.0f,1.0f,1.0,1.0f);
+	outColor = u_Color;
 }

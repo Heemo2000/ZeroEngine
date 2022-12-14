@@ -175,6 +175,7 @@
     <ClInclude Include="src\Zero\Renderer\RenderAPI.h" />
     <ClInclude Include="src\Zero\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Zero\Renderer\Renderer.h" />
+    <ClInclude Include="src\Zero\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Zero\Renderer\RenderingContext.h" />
     <ClInclude Include="src\Zero\Renderer\Shader.h" />
     <ClInclude Include="src\Zero\Renderer\Texture.h" />
@@ -621,6 +622,7 @@
     <ClCompile Include="src\Zero\Renderer\RenderAPI.cpp" />
     <ClCompile Include="src\Zero\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Zero\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Zero\Renderer\Shader.cpp" />
     <ClCompile Include="src\Zero\Renderer\Texture.cpp" />
     <ClCompile Include="src\zeropch.cpp">

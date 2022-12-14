@@ -23,6 +23,8 @@
 
 #include "Zero/Renderer/RenderCommand.h"
 #include "Zero/Renderer/Renderer.h"
+#include "Zero/Renderer/Renderer2D.h"
+
 #include "Zero/Renderer/OrthographicCamera.h"
 #include "Zero/Renderer/OrthographicCameraController.h"
 #include "Zero/Renderer/Texture.h"
