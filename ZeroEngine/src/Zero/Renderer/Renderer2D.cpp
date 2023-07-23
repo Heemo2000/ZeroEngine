@@ -9,11 +9,26 @@
 namespace Zero
 {
 	
+	
 	struct Renderer2DStorage
 	{
-		Ref<VertexArray> QuadVA;
+		const uint32_t MaxMeshes = 1000;
+		const uint32_t MaxVertices = MaxMeshes * 4;
+		const uint32_t MaxIndices = MaxMeshes * 6;
+		
+		Ref<VertexArray> MeshVA;
+		Ref<VertexBuffer> MeshVB;
+		Ref<IndexBuffer> MeshIB;
 		Ref<Shader> FlatColorShader;
-		Transform QuadTransform = Transform(glm::vec3(0.0f,0.0f,0.0f));
+		
+		
+		
+		MeshVertex* MeshVerticesBase;
+		MeshVertex* MeshVerticesPtr;
+		
+		uint32_t MeshIndicesCount = 0;
+		uint32_t* MeshIndices;
+
 	};
 
 	static Renderer2DStorage* s_Storage;
@@ -21,39 +36,42 @@ namespace Zero
 	void Renderer2D::Init()
 	{
 		s_Storage = new Renderer2DStorage();
-		float quadVertices[] =
-		{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
-		};
-
-		unsigned int indices[] =
-		{
-			0,1,2,
-			0,2,3
-		};
 
 		BufferLayout quadLayout =
 		{
-			{"a_Position",ShaderDataType::Float3}
+			{"a_Position",ShaderDataType::Float3},
+			{"a_Color",ShaderDataType::Float4}
 		};
 
+		s_Storage->MeshVerticesBase = new MeshVertex[s_Storage->MaxVertices];
+		s_Storage->MeshVerticesPtr = s_Storage->MeshVerticesBase;
+
+		s_Storage->MeshIndices = new uint32_t[s_Storage->MaxIndices];
+		uint32_t offset = 0;
+		for (int i = 0; i < s_Storage->MaxIndices; i+= 6)
+		{
+			s_Storage->MeshIndices[i + 0] = offset + 0;
+			s_Storage->MeshIndices[i + 1] = offset + 1;
+			s_Storage->MeshIndices[i + 2] = offset + 2;
+
+			s_Storage->MeshIndices[i + 3] = offset + 2;
+			s_Storage->MeshIndices[i + 4] = offset + 3;
+			s_Storage->MeshIndices[i + 5] = offset + 0;
+
+			offset += 4;
+		}
+
+		s_Storage->MeshVA = Zero::VertexArray::Create();
 		
-		s_Storage->QuadVA = Zero::VertexArray::Create();
+		s_Storage->MeshVB.reset(Zero::VertexBuffer::Create(s_Storage->MaxVertices * sizeof(MeshVertex)));
+		s_Storage->MeshVB->SetLayout(quadLayout);
 
-		Ref<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Zero::VertexBuffer::Create(quadVertices, sizeof(quadVertices)));
-		vertexBuffer->SetLayout(quadLayout);
+		s_Storage->MeshVA->AddVertexBuffer(s_Storage->MeshVB);
 
-		Ref<IndexBuffer> indexBuffer;
-		indexBuffer.reset(Zero::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-
-		s_Storage->QuadVA->AddVertexBuffer(vertexBuffer);
-		s_Storage->QuadVA->SetIndexBuffer(indexBuffer);
-
-		s_Storage->FlatColorShader = Shader::Create("src/shaders/quad.glsl");
+		s_Storage->MeshIB.reset(Zero::IndexBuffer::Create(s_Storage->MeshIndices, s_Storage->MaxIndices));
+		s_Storage->MeshVA->SetIndexBuffer(s_Storage->MeshIB);
+		
+		s_Storage->FlatColorShader = Shader::Create("src/shaders/mesh.glsl");
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
@@ -61,10 +79,24 @@ namespace Zero
 		s_Storage->FlatColorShader->Bind();
 		s_Storage->FlatColorShader->UploadData("u_TransformationMatrix",glm::mat4(1.0f));
 		s_Storage->FlatColorShader->UploadData("u_ViewProjection", camera.GetViewProjectionMatrix());
+		
 	}
 
 	void Renderer2D::EndScene()
 	{
+		s_Storage->MeshVA->Bind();
+		s_Storage->MeshVB->Bind();
+		uint32_t size = (uint32_t)s_Storage->MeshVerticesPtr - (uint32_t)s_Storage->MeshVerticesBase;
+		std::string verticesCountString = "Total vertices :" + std::to_string(size);
+		ZERO_CORE_INFO(verticesCountString);
+		s_Storage->MeshVB->SetData(s_Storage->MeshVerticesBase, size);
+		Flush();
+	}
+
+	void Renderer2D::Flush()
+	{
+		
+		RenderCommand::DrawIndexed(s_Storage->MeshVA,s_Storage->MeshIndicesCount);
 	}
 
 	void Renderer2D::Shutdown()
@@ -72,21 +104,17 @@ namespace Zero
 		delete s_Storage;
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
+	void Renderer2D::AddMeshToBuffer(Mesh mesh)
 	{
-		DrawQuad({position.x,position.y,0.0f}, {scale.x,scale.y,0.0f}, color);
-	}
+		auto vertices = mesh.GetVertices();
+		for (int i = 0; i < vertices.size(); i++)
+		{
+			s_Storage->MeshVerticesPtr->Position = vertices[i].Position;
+			s_Storage->MeshVerticesPtr->Color = vertices[i].Color;
+			s_Storage->MeshVerticesPtr++;
+		}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec3& scale, const glm::vec4& color)
-	{
-		s_Storage->QuadTransform.SetPosition(position);
-		s_Storage->QuadTransform.SetScale(scale);
-		s_Storage->FlatColorShader->Bind();
-		s_Storage->FlatColorShader->UploadData("u_Color", color);
-		s_Storage->FlatColorShader->UploadData("u_TransformationMatrix", s_Storage->QuadTransform.GetTransformationMatrix());
-		s_Storage->QuadVA->Bind();
-		RenderCommand::DrawIndexed(s_Storage->QuadVA);
+		s_Storage->MeshIndicesCount += 6;
 	}
-
 }
 

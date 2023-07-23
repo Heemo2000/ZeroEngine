@@ -20,6 +20,7 @@ namespace Zero
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 		virtual void Clear() = 0;
 		virtual void DrawIndexed(Ref<VertexArray>& vertexArray) = 0;
+		virtual void DrawIndexed(Ref<VertexArray>& vertexArray,uint32_t count) = 0;
 		virtual void DrawInstanced(Ref<VertexArray>& vertexArray,uint32_t instanceCount) = 0;
 		static inline API GetAPI() { return s_RenderAPIType; }
 	private:

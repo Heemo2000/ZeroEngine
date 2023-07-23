@@ -109,11 +109,13 @@ namespace Zero
 	{
 	public:
 		
+		static VertexBuffer* Create(uint32_t size);
 		static VertexBuffer* Create(float* vertices, uint32_t size);
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual const BufferLayout& GetLayout() const = 0;
 		virtual void SetLayout(const BufferLayout& layout) = 0;
+		virtual void SetData(const void* data, uint32_t size) = 0;
 		virtual ~VertexBuffer() {};
 	};
 
@@ -122,7 +124,9 @@ namespace Zero
 	{
 	public:
 		static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+		static IndexBuffer* Create(uint32_t count);
 		virtual uint32_t GetCount() = 0;
+		virtual void SetData(const void* data, uint32_t size) = 0;
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 		virtual ~IndexBuffer() {};

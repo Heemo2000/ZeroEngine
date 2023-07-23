@@ -17,6 +17,7 @@
 #include "Zero/MouseButtonCodes.h"
 #include "Zero/Input.h"
 
+#include "Zero/Renderer/Mesh.h"
 #include "Zero/Renderer/Shader.h"
 #include "Zero/Renderer/Buffer.h"
 #include "Zero/Renderer/VertexArray.h"

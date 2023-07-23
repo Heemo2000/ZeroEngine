@@ -32,10 +32,6 @@ private:
 
 	float m_ElapsedTime = 0.0f;
 
-	glm::vec3 m_Origin = glm::vec3(0.0f, 0.0f, 0.0f);
-	uint32_t m_N = 50;
-
-	//Zero::InstanceManager* m_QuadInstances;
 	bool m_Open = true;
 
 };

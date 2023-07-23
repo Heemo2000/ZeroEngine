@@ -25,6 +25,12 @@ namespace Zero
 	{
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (void*)0);
 	}
+
+	void OpenGLRenderAPI::DrawIndexed(Ref<VertexArray>& vertexArray, uint32_t count)
+	{
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)0);
+	}
+
 	void OpenGLRenderAPI::DrawInstanced(Ref<VertexArray>& vertexArray,uint32_t instanceCount)
 	{
 		vertexArray->Bind();
