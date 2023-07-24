@@ -17,6 +17,9 @@ namespace Zero
 		
 		float GetRotation() const;
 		void SetRotation(const float& rotation);
+
+		glm::mat4 GetViewMatrix() const;
+		glm::mat4 GetProjectionMatrix() const;
 		
 		~OrthographicCamera();
 

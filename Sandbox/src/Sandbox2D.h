@@ -13,6 +13,9 @@ public:
 	void OnEvent(Zero::Event& event) override;
 	void OnImGuiRender() override;
 
+private:
+	void ToggleChangeVertices();
+	glm::vec3 ScreenToWorldPoint(glm::vec3 position);
 
 private:
 	bool OnWindowResized(Zero::WindowResizedEvent& event);
@@ -33,5 +36,6 @@ private:
 	float m_ElapsedTime = 0.0f;
 
 	bool m_Open = true;
-
+	bool m_Switch = false;
+	Zero::Ref<Zero::Quad> m_Quad;
 };

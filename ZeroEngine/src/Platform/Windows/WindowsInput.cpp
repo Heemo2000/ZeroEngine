@@ -51,6 +51,21 @@ namespace Zero
 		return cursorPosition;
 	}
 
+	std::pair<float, float> WindowsInput::GetMousePosNormalizedImpl() const
+	{
+		auto mousePos = GetMousePosImpl();
+		Window* window = Application::GetInstance().GetWindow();
+
+		float x = -1.0f + 2.0f * (mousePos.first / (float)window->GetWidth());
+		float y = 1.0f - 2.0f * (mousePos.second / (float)window->GetHeight());
+
+		std::pair<float, float> normalizedPosition;
+		normalizedPosition.first = x;
+		normalizedPosition.second = y;
+
+		return normalizedPosition;
+	}
+
 	float WindowsInput::GetMouseXImpl() const
 	{
 		auto [x, y] = GetMousePosImpl();
