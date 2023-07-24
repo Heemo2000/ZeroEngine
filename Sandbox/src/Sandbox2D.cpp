@@ -13,65 +13,8 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	m_ClearColor.b = 0.0f;
 	m_ClearColor.a = 1.0f;
 
-	Zero::MeshVertex v1;
-	v1.Position = { -0.5f, -0.5f, 0.0f };
-	v1.Color = {1.0f, 1.0f, 1.0f, 1.0f};
-
-	Zero::MeshVertex v2;
-	v2.Position = { 0.5f, -0.5f, 0.0f };
-	v2.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-	Zero::MeshVertex v3;
-	v3.Position = { 0.5f,  0.5f, 0.0f };
-	v3.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-	Zero::MeshVertex v4;
-	v4.Position = { -0.5f,  0.5f, 0.0f };
-	v4.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	
-
-	/*
-	std::vector<uint32_t> indices =
-	{
-		0,1,2,
-		2,3,0
-	};
-	*/
-	
-	m_Quad.reset(new Zero::Quad({v1,v2,v3,v4}));
-	Zero::Renderer2D::AddQuadToBuffer(m_Quad.get());
 }
 
-void Sandbox2D::ToggleChangeVertices()
-{
-	ZERO_CLIENT_INFO("Changing vertices");
-
-	m_Switch = !m_Switch;
-	glm::vec3 secondPos = m_Quad->GetVertices()[1].Position;
-	glm::vec3 thirdPos = m_Quad->GetVertices()[1].Position;
-	if (m_Switch == true)
-	{
-		secondPos.y = -1.8f;
-		thirdPos.y = 1.8f;
-	}
-	else
-	{
-		secondPos.y = -0.5f;
-		thirdPos.y = 0.5f;
-	}
-
-	m_Quad->SetVertexPosition(secondPos, 1);
-	m_Quad->SetVertexPosition(thirdPos, 2);
-
-	ZERO_CLIENT_INFO("Vertices after updating");
-	for (int i = 0; i < m_Quad->GetVertices().size(); i++)
-	{
-		auto position = m_Quad->GetVertices()[i].Position;
-		std::string positionInStr = "(" + std::to_string(position.x) + "," + std::to_string(position.y) + "," + std::to_string(position.z) + ")";
-		ZERO_CLIENT_INFO(positionInStr);
-	}
-	Zero::Renderer2D::UpdateQuad(m_Quad.get(), m_Quad->GetVertices());
-}
 
 glm::vec3 Sandbox2D::ScreenToWorldPoint(glm::vec3 position)
 {
@@ -94,6 +37,46 @@ glm::vec3 Sandbox2D::ScreenToWorldPoint(glm::vec3 position)
 
 }
 
+bool Sandbox2D::CreateQuad()
+{
+	if (m_Points.size() == 2)
+	{
+		//Calculate points in clockwise order.
+
+		float height = 0.5f;
+		glm::vec3 point1 = m_Points[0] - glm::vec3(0.0f, height / 2.0f, 0.0f);
+		glm::vec3 point2 = m_Points[0] + glm::vec3(0.0f, height / 2.0f, 0.0f);
+		glm::vec3 point3 = m_Points[1] + glm::vec3(0.0f, height / 2.0f, 0.0f);
+		glm::vec3 point4 = m_Points[1] - glm::vec3(0.0f, height / 2.0f, 0.0f);
+
+		Zero::MeshVertex v1;
+		v1.Position = point1;
+		v1.Color = glm::vec4(1.0f);
+
+		Zero::MeshVertex v2;
+		v2.Position = point2;
+		v2.Color = glm::vec4(1.0f);
+
+		Zero::MeshVertex v3;
+		v3.Position = point3;
+		v3.Color = glm::vec4(1.0f);
+
+		Zero::MeshVertex v4;
+		v4.Position = point4;
+		v4.Color = glm::vec4(1.0f);
+
+		Zero::Ref<Zero::Quad> quad;
+		quad.reset(new Zero::Quad({ v1,v2,v3,v4 }));
+
+		Zero::Renderer2D::AddQuadToBuffer(quad.get());
+		m_Points.clear();
+
+		return true;
+	}
+
+	return false;
+}
+
 void Sandbox2D::OnAttach()
 {
 }
@@ -111,13 +94,37 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 	Zero::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 	m_CameraController.OnUpdate(timestep);
-	m_ElapsedTime += timestep;
-	if (m_ElapsedTime >= 1.0f)
+	
+	if (Zero::Input::IsMouseButtonPressed(ZERO_MOUSE_BUTTON_LEFT))
 	{
-		ToggleChangeVertices();
-		m_ElapsedTime = 0.0f;
+		m_MouseHold = true;
+	}
+	else if(Zero::Input::IsMouseButtonReleased(ZERO_MOUSE_BUTTON_LEFT))
+	{
+		m_MouseHold = false;
 	}
 	
+	float minDistance = 2.0f;
+	auto mousePosPair = Zero::Input::GetMousePosNormalized();
+	glm::vec3 mousePos;
+	mousePos.x = mousePosPair.first;
+	mousePos.y = mousePosPair.second;
+	mousePos.z = 0;
+
+	glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
+
+	if (m_MouseHold)
+	{
+		float distance = glm::distance(previousPoint, worldPos);
+		if (distance >= minDistance)
+		{
+			m_Points.push_back(worldPos);
+			if (CreateQuad())
+			{
+				previousPoint = worldPos;
+			}
+		}
+	}
 	Zero::Renderer2D::EndScene();
 	Zero::Renderer::EndScene();
 }
@@ -166,15 +173,6 @@ bool Sandbox2D::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 
 bool Sandbox2D::OnMouseClicked(Zero::MouseButtonClickedEvent& event)
 {
-	auto mousePosPair = Zero::Input::GetMousePosNormalized();
-	glm::vec3 mousePos;
-	mousePos.x = mousePosPair.first;
-	mousePos.y = mousePosPair.second;
-	mousePos.z = 0;
-	//ZERO_CLIENT_INFO("Mouse position :(" + std::to_string(mousePos.x) + "," + std::to_string(mousePos.y) + "," + std::to_string(mousePos.z) + ")");
 
-	glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
-	ZERO_CLIENT_INFO("World position :(" + std::to_string(worldPos.x) + "," + std::to_string(worldPos.y) + "," + std::to_string(worldPos.z) + ")");
-	
 	return true;
 }

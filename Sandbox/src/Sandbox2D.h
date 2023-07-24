@@ -14,9 +14,8 @@ public:
 	void OnImGuiRender() override;
 
 private:
-	void ToggleChangeVertices();
 	glm::vec3 ScreenToWorldPoint(glm::vec3 position);
-
+	bool CreateQuad();
 private:
 	bool OnWindowResized(Zero::WindowResizedEvent& event);
 	bool OnKeyPressed(Zero::KeyPressedEvent& event);
@@ -36,6 +35,8 @@ private:
 	float m_ElapsedTime = 0.0f;
 
 	bool m_Open = true;
-	bool m_Switch = false;
-	Zero::Ref<Zero::Quad> m_Quad;
+	uint32_t m_ClickCount = 0;
+	std::vector<glm::vec3> m_Points;
+	bool m_MouseHold;
+	glm::vec3 previousPoint = glm::vec3(0.0f,0.0f,0.0f);
 };
