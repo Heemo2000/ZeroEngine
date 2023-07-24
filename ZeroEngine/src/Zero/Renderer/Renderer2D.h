@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "OrthographicCamera.h"
-#include "Mesh.h"
+#include "Quad.h"
 namespace Zero
 {
 	class Renderer2D
@@ -12,6 +12,7 @@ namespace Zero
 		static void EndScene();
 		static void Flush();
 		static void Shutdown();
-		static void AddMeshToBuffer(Mesh mesh);
+		static void AddQuadToBuffer(Quad* quad);
+		static void UpdateQuad(Quad* quad,std::vector<MeshVertex> vertices);
 	};
 }

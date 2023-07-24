@@ -21,11 +21,10 @@ namespace Zero
 		Ref<IndexBuffer> MeshIB;
 		Ref<Shader> FlatColorShader;
 		
-		
-		
 		MeshVertex* MeshVerticesBase;
 		MeshVertex* MeshVerticesPtr;
 		
+		std::unordered_map<Quad*, MeshVertex*> QuadsMap;
 		uint32_t MeshIndicesCount = 0;
 		uint32_t* MeshIndices;
 
@@ -50,7 +49,7 @@ namespace Zero
 		uint32_t offset = 0;
 		for (int i = 0; i < s_Storage->MaxIndices; i+= 6)
 		{
-			s_Storage->MeshIndices[i + 0] = offset + 0;
+			s_Storage->MeshIndices[i] = offset + 0;
 			s_Storage->MeshIndices[i + 1] = offset + 1;
 			s_Storage->MeshIndices[i + 2] = offset + 2;
 
@@ -87,8 +86,8 @@ namespace Zero
 		s_Storage->MeshVA->Bind();
 		s_Storage->MeshVB->Bind();
 		uint32_t size = (uint32_t)s_Storage->MeshVerticesPtr - (uint32_t)s_Storage->MeshVerticesBase;
-		std::string verticesCountString = "Total vertices :" + std::to_string(size);
-		ZERO_CORE_INFO(verticesCountString);
+		//std::string verticesCountString = "Total vertices :" + std::to_string(size);
+		//ZERO_CORE_INFO(verticesCountString);
 		s_Storage->MeshVB->SetData(s_Storage->MeshVerticesBase, size);
 		Flush();
 	}
@@ -104,9 +103,11 @@ namespace Zero
 		delete s_Storage;
 	}
 
-	void Renderer2D::AddMeshToBuffer(Mesh mesh)
+	void Renderer2D::AddQuadToBuffer(Quad* mesh)
 	{
-		auto vertices = mesh.GetVertices();
+		auto vertices = mesh->GetVertices();
+
+		s_Storage->QuadsMap[mesh] = s_Storage->MeshVerticesPtr;
 		for (int i = 0; i < vertices.size(); i++)
 		{
 			s_Storage->MeshVerticesPtr->Position = vertices[i].Position;
@@ -115,6 +116,21 @@ namespace Zero
 		}
 
 		s_Storage->MeshIndicesCount += 6;
+	}
+	void Renderer2D::UpdateQuad(Quad* quad, std::vector<MeshVertex> vertices)
+	{
+		auto location = s_Storage->QuadsMap.find(quad);
+		if (location != s_Storage->QuadsMap.end())
+		{
+			ZERO_CORE_INFO("Updating quad vertices");
+			for (int i = 0; i < 4; i++)
+			{
+				uint32_t verticesStartIndex = (uint32_t)location->second - (uint32_t)s_Storage->MeshVerticesBase;
+				//std::string message = "vertices start index : " + std::to_string(verticesStartIndex);
+				//ZERO_CORE_INFO(message);
+				(s_Storage->MeshVerticesBase + verticesStartIndex + i)->Position = vertices[i].Position;
+			}
+		}
 	}
 }
 

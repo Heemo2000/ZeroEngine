@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+
 namespace Zero
 {
 	struct MeshVertex
@@ -8,12 +9,12 @@ namespace Zero
 		glm::vec4 Color;
 	};
 
-	class Mesh
+	class Quad
 	{
 	public:
-		Mesh(std::vector<MeshVertex> vertices, std::vector<uint32_t> indices);
+		Quad(std::vector<MeshVertex> vertices);
 		inline std::vector<MeshVertex> GetVertices() const { return m_Vertices; };
-		inline std::vector<uint32_t> GetIndices() const { return m_Indices; };
+		void SetVertexPosition(glm::vec3 position, uint32_t index);
 	private:
 		std::vector<MeshVertex> m_Vertices;
 		std::vector<uint32_t> m_Indices;
