@@ -140,7 +140,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Zero\Renderer\Mesh.h" />
+    <ClInclude Include="src\Zero\Renderer\Quad.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderAPI.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRenderingContext.h" />
@@ -602,7 +602,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Zero\Renderer\Mesh.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Quad.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderAPI.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRenderingContext.cpp" />

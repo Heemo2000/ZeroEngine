@@ -116,6 +116,8 @@ namespace Zero
 		}
 
 		s_Storage->MeshIndicesCount += 6;
+
+		ZERO_CORE_INFO("Meshes Count after adding mesh: " + std::to_string(s_Storage->QuadsMap.size()));
 	}
 	void Renderer2D::UpdateQuad(Quad* quad, std::vector<MeshVertex> vertices)
 	{

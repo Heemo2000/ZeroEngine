@@ -44,10 +44,25 @@ bool Sandbox2D::CreateQuad()
 		//Calculate points in clockwise order.
 
 		float height = 0.5f;
-		glm::vec3 point1 = m_Points[0] - glm::vec3(0.0f, height / 2.0f, 0.0f);
-		glm::vec3 point2 = m_Points[0] + glm::vec3(0.0f, height / 2.0f, 0.0f);
-		glm::vec3 point3 = m_Points[1] + glm::vec3(0.0f, height / 2.0f, 0.0f);
-		glm::vec3 point4 = m_Points[1] - glm::vec3(0.0f, height / 2.0f, 0.0f);
+
+		glm::vec3 direction1 = glm::normalize(m_Points[1] - m_Points[0]);
+		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
+		glm::vec3 crossVector1 = glm::cross(direction1, forward);
+
+		glm::vec3 backward = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 crossVector2 = glm::cross(direction1, backward);
+
+		glm::vec3 point1 = m_Points[0] + crossVector1 * height / 2.0f;
+		glm::vec3 point2 = m_Points[0] + crossVector2 * height / 2.0f;
+
+		glm::vec3 direction2 = glm::normalize(m_Points[0] - m_Points[1]);
+		glm::vec3 crossVector3 = glm::cross(direction2, forward);
+
+		glm::vec3 crossVector4 = glm::cross(direction2, backward);
+
+
+		glm::vec3 point3 = m_Points[1] + crossVector3 * height / 2.0f;
+		glm::vec3 point4 = m_Points[1] + crossVector4 * height / 2.0f;
 
 		Zero::MeshVertex v1;
 		v1.Position = point1;
@@ -104,17 +119,17 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 		m_MouseHold = false;
 	}
 	
-	float minDistance = 2.0f;
-	auto mousePosPair = Zero::Input::GetMousePosNormalized();
-	glm::vec3 mousePos;
-	mousePos.x = mousePosPair.first;
-	mousePos.y = mousePosPair.second;
-	mousePos.z = 0;
-
-	glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
-
 	if (m_MouseHold)
 	{
+		float minDistance = 1.0f;
+		auto mousePosPair = Zero::Input::GetMousePosNormalized();
+		glm::vec3 mousePos;
+		mousePos.x = mousePosPair.first;
+		mousePos.y = mousePosPair.second;
+		mousePos.z = 0;
+
+		glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
+
 		float distance = glm::distance(previousPoint, worldPos);
 		if (distance >= minDistance)
 		{
@@ -125,6 +140,8 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 			}
 		}
 	}
+	
+	
 	Zero::Renderer2D::EndScene();
 	Zero::Renderer::EndScene();
 }
