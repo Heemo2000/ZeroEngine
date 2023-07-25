@@ -14,5 +14,6 @@ namespace Zero
 		static void Shutdown();
 		static void AddQuadToBuffer(Quad* quad);
 		static void UpdateQuad(Quad* quad,std::vector<MeshVertex> vertices);
+		static void ClearBuffer();
 	};
 }

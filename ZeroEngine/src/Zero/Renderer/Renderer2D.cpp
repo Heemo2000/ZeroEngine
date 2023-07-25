@@ -134,5 +134,11 @@ namespace Zero
 			}
 		}
 	}
+	void Renderer2D::ClearBuffer()
+	{
+		s_Storage->MeshVerticesPtr = s_Storage->MeshVerticesBase;
+		s_Storage->MeshIndicesCount = 0;
+		s_Storage->QuadsMap.clear();
+	}
 }
 

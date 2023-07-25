@@ -13,6 +13,11 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	m_ClearColor.b = 0.0f;
 	m_ClearColor.a = 1.0f;
 
+	m_BrushColor[0] = 1.0f;
+	m_BrushColor[1] = 1.0f;
+	m_BrushColor[2] = 1.0f;
+	m_BrushColor[3] = 1.0f;
+
 }
 
 
@@ -43,7 +48,7 @@ bool Sandbox2D::CreateQuad()
 	{
 		//Calculate points in clockwise order.
 
-		float height = 0.5f;
+		float height = m_BrushThickness;
 
 		glm::vec3 direction1 = glm::normalize(m_Points[1] - m_Points[0]);
 		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -64,21 +69,22 @@ bool Sandbox2D::CreateQuad()
 		glm::vec3 point3 = m_Points[1] + crossVector3 * height / 2.0f;
 		glm::vec3 point4 = m_Points[1] + crossVector4 * height / 2.0f;
 
+		glm::vec4 vertexColor = glm::vec4(m_BrushColor[0], m_BrushColor[1], m_BrushColor[2], m_BrushColor[3]);
 		Zero::MeshVertex v1;
 		v1.Position = point1;
-		v1.Color = glm::vec4(1.0f);
+		v1.Color = vertexColor;
 
 		Zero::MeshVertex v2;
 		v2.Position = point2;
-		v2.Color = glm::vec4(1.0f);
+		v2.Color = vertexColor;
 
 		Zero::MeshVertex v3;
 		v3.Position = point3;
-		v3.Color = glm::vec4(1.0f);
+		v3.Color = vertexColor;
 
 		Zero::MeshVertex v4;
 		v4.Position = point4;
-		v4.Color = glm::vec4(1.0f);
+		v4.Color = vertexColor;
 
 		Zero::Ref<Zero::Quad> quad;
 		quad.reset(new Zero::Quad({ v1,v2,v3,v4 }));
@@ -121,7 +127,7 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 	
 	if (m_MouseHold)
 	{
-		float minDistance = 1.0f;
+		
 		auto mousePosPair = Zero::Input::GetMousePosNormalized();
 		glm::vec3 mousePos;
 		mousePos.x = mousePosPair.first;
@@ -130,14 +136,24 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 
 		glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
 
-		float distance = glm::distance(previousPoint, worldPos);
-		if (distance >= minDistance)
+		float distance = glm::distance(m_PreviousPoint, worldPos);
+		float clearQuadVecDistance = 2 * m_QuadDrawMinDistance;
+		
+		if (distance >= clearQuadVecDistance && m_Points.size() == 1)
+		{
+			m_Points.clear();
+		}
+		else if (distance >= m_QuadDrawMinDistance)
 		{
 			m_Points.push_back(worldPos);
+			glm::vec3 direction = glm::normalize(worldPos - m_PreviousPoint);
+			m_PreviousPoint = worldPos;
 			if (CreateQuad())
 			{
-				previousPoint = worldPos;
+				//We are doing this to avoid showing vacant spaces between lines.
+				m_Points.push_back(worldPos - direction * 0.1f);
 			}
+
 		}
 	}
 	
@@ -160,12 +176,18 @@ void Sandbox2D::OnEvent(Zero::Event& event)
 
 void Sandbox2D::OnImGuiRender()
 {
-	/*
-	ImGui::Begin("Settings");
-	ImGui::ShowDemoWindow(&m_Open);
+	ImGuiWindowFlags windowFlags = 0;
+	windowFlags |= ImGuiWindowFlags_NoResize;
+	ImGui::Begin("Settings",&m_Open, windowFlags);
+	ImGui::ColorPicker4("Brush Color :", m_BrushColor);
+	ImGui::Text("Clear the shapes:");
+	if (ImGui::Button("Clear"))
+	{
+		Zero::Renderer2D::ClearBuffer();
+	}
+	ImGui::SliderFloat("Brush Width", &m_BrushThickness, 0.2f, 1.0f,"%.3f", ImGuiSliderFlags_AlwaysClamp);
 	ImGui::End();
-	*/
-	
+	ImGui::ShowDemoWindow(&m_Open);
 }
 
 bool Sandbox2D::OnWindowResized(Zero::WindowResizedEvent& event)

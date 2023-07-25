@@ -38,5 +38,8 @@ private:
 	uint32_t m_ClickCount = 0;
 	std::vector<glm::vec3> m_Points;
 	bool m_MouseHold;
-	glm::vec3 previousPoint = glm::vec3(0.0f,0.0f,0.0f);
+	glm::vec3 m_PreviousPoint = glm::vec3(0.0f,0.0f,0.0f);
+	float m_QuadDrawMinDistance = 1.0f;
+	float m_BrushColor[4];
+	float m_BrushThickness = 0.5f;
 };
