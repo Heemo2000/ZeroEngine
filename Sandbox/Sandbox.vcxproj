@@ -146,10 +146,12 @@
   <ItemGroup>
     <Image Include="textures\logo.jpg" />
     <Image Include="textures\sandwich.png" />
+    <Image Include="textures\smily.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\instance.glsl" />
     <None Include="src\shaders\mesh.glsl" />
+    <None Include="src\shaders\textured_mesh.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

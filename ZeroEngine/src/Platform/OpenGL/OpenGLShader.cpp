@@ -121,6 +121,19 @@ namespace Zero
 		glUniform3f(uniformLocation, value.x, value.y, value.z);
 	}
 
+	void OpenGLShader::UploadData(std::string name, const int& size, const int *value)
+	{
+		GLint uniformLocation = GetUniformLocation(name);
+
+		if (uniformLocation == -1)
+		{
+			std::string errorLog = "Not able to upload int* data of size " + std::to_string(size) + " to location named " + name;
+			ZERO_CORE_ASSERT(false, errorLog);
+			return;
+		}
+		glUniform1iv(uniformLocation, size, value);
+	}
+
 	GLint OpenGLShader::GetUniformLocation(std::string name)
 	{
 		return glGetUniformLocation(m_RendererID, name.c_str());

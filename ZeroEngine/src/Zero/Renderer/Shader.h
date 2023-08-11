@@ -18,6 +18,7 @@ namespace Zero
 		virtual void UploadData(std::string name, const int& value) = 0;
 		virtual void UploadData(std::string name, const glm::vec4& value) = 0;
 		virtual void UploadData(std::string name, const glm::vec3& value) = 0;
+		virtual void UploadData(std::string name, const int& size, const int* value) = 0;
 
 		~Shader() {};
 	};

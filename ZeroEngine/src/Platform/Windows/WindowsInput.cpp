@@ -54,10 +54,10 @@ namespace Zero
 	std::pair<float, float> WindowsInput::GetMousePosNormalizedImpl() const
 	{
 		auto mousePos = GetMousePosImpl();
-		Window* window = Application::GetInstance().GetWindow();
+		auto resolution = GetResolutionImpl();
 
-		float x = -1.0f + 2.0f * (mousePos.first / (float)window->GetWidth());
-		float y = 1.0f - 2.0f * (mousePos.second / (float)window->GetHeight());
+		float x = -1.0f + 2.0f * (mousePos.first / (float)resolution.first);
+		float y = 1.0f - 2.0f * (mousePos.second / (float)resolution.second);
 
 		std::pair<float, float> normalizedPosition;
 		normalizedPosition.first = x;
@@ -76,5 +76,15 @@ namespace Zero
 	{
 		auto [x, y] = GetMousePosImpl();
 		return y;
+	}
+	std::pair<int, int> WindowsInput::GetResolutionImpl() const
+	{
+		GLFWwindow* nativeWindow = static_cast<GLFWwindow*>(Application::GetInstance().GetWindow()->GetNativeWindow());
+
+		int width, height;
+
+		glfwGetWindowSize(nativeWindow, &width, &height);
+
+		return std::pair<int, int>(width, height);
 	}
 }

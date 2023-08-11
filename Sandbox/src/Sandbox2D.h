@@ -1,6 +1,48 @@
 #pragma once
 #include <Zero.h>
 #include <glm/glm.hpp>
+#include "backends/imgui_impl_opengl3.h"
+
+
+struct BrushData
+{
+	std::string BrushName;
+	std::string BrushTexFilePath;
+	Zero::Ref<Zero::Texture2D> BrushTex;
+	float BrushTexSlot;
+	float BrushColor[4];
+	float BrushThickness = 0.5f;
+
+
+	BrushData(std::string brushName, std::string brushTexFilePath,float textureSlot,
+		float brushColor[4], float brushThickness)
+	{
+		BrushName = brushName;
+		BrushTexFilePath = brushTexFilePath;
+		BrushTex.reset(Zero::Texture2D::Create(brushTexFilePath, (int)textureSlot));
+		BrushTexSlot = textureSlot;
+		for (int i = 0; i < 4; i++)
+		{
+			BrushColor[i] = brushColor[i];
+		}
+
+		BrushThickness = brushThickness;
+	}
+
+	BrushData(std::string brushName, uint32_t eachPixelData, float textureSlot, float brushColor[4], float brushThickness)
+	{
+		BrushName = brushName;
+		BrushTexFilePath = "";
+		BrushTex.reset(Zero::Texture2D::Create(eachPixelData, (int)textureSlot));
+		BrushTexSlot = textureSlot;
+		for (int i = 0; i < 4; i++)
+		{
+			BrushColor[i] = brushColor[i];
+		}
+
+		BrushThickness = brushThickness;
+	}
+};
 
 
 class Sandbox2D : public Zero::Layer
@@ -15,7 +57,7 @@ public:
 
 private:
 	glm::vec3 ScreenToWorldPoint(glm::vec3 position);
-	bool CreateQuad();
+	void CreateQuad(glm::vec3 position);
 private:
 	bool OnWindowResized(Zero::WindowResizedEvent& event);
 	bool OnKeyPressed(Zero::KeyPressedEvent& event);
@@ -35,11 +77,13 @@ private:
 	float m_ElapsedTime = 0.0f;
 
 	bool m_Open = true;
-	uint32_t m_ClickCount = 0;
-	std::vector<glm::vec3> m_Points;
 	bool m_MouseHold;
 	glm::vec3 m_PreviousPoint = glm::vec3(0.0f,0.0f,0.0f);
-	float m_QuadDrawMinDistance = 1.0f;
-	float m_BrushColor[4];
-	float m_BrushThickness = 0.5f;
+	float m_QuadDrawMinDistance = 0.5f;
+
+	std::vector<Zero::Ref<BrushData>> m_Brushes;
+	Zero::Ref<BrushData> m_CurrentBrush;
+	float m_ZIndex = -990.0f;
+	const uint32_t BrushesPerLine = 3;
+
 };

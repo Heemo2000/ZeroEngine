@@ -4,14 +4,14 @@
 #include <glm/gtc/type_ptr.hpp>
 namespace Zero
 {
-	OrthographicCamera::OrthographicCamera(float left, float right, float down, float up) :
-		m_Projection(glm::ortho(left, right, down, up)), m_View(1.0f)
+	OrthographicCamera::OrthographicCamera(float left, float right, float down, float up,float zNear, float zFar) :
+		m_Projection(glm::ortho(left, right, down, up, zNear, zFar)), m_View(1.0f)
 	{
 	}
 
-	void OrthographicCamera::SetProjectionMatrix(float left, float right, float down, float up)
+	void OrthographicCamera::SetProjectionMatrix(float left, float right, float down, float up, float zNear, float zFar)
 	{
-		m_Projection = glm::ortho(left, right, down, up, -1.0f, 1.0f);
+		m_Projection = glm::ortho(left, right, down, up, zNear, zFar);
 	}
 
 	void OrthographicCamera::RecalculateViewProjectionMatrix()

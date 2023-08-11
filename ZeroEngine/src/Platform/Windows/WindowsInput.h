@@ -17,6 +17,6 @@ namespace Zero
 		virtual std::pair<float, float> GetMousePosNormalizedImpl() const override;
 		virtual float GetMouseXImpl() const override;
 		virtual float GetMouseYImpl() const override;
-		
+		virtual std::pair<int, int> GetResolutionImpl() const override;
 	};
 }

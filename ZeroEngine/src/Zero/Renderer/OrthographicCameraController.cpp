@@ -4,10 +4,13 @@
 #include "Zero/Core/Timestep.h"
 #include "Zero/Input.h"
 
-Zero::OrthographicCameraController::OrthographicCameraController(float aspectRatio,bool allowRotation) :
+Zero::OrthographicCameraController::OrthographicCameraController(float aspectRatio,bool allowRotation, float zNear,
+																 float zFar) :
 	m_AspectRatio(aspectRatio),
 	m_AllowRotation(allowRotation),
-	m_Camera(-aspectRatio * m_ZoomLevel,aspectRatio * m_ZoomLevel,-m_ZoomLevel,m_ZoomLevel)
+	m_ZNear(zNear),
+	m_ZFar(zFar),
+	m_Camera(-aspectRatio * m_ZoomLevel,aspectRatio * m_ZoomLevel,-m_ZoomLevel,m_ZoomLevel,zNear,zFar)
 {
 }
 
@@ -65,10 +68,10 @@ bool Zero::OrthographicCameraController::OnMouseScrolled(Zero::MouseScrolledEven
 	if (m_ZoomLevel - amount >= 0.25f)
 	{
 		m_ZoomLevel -= amount;
-		
+		ZERO_CORE_INFO("Changing Zoom level");
 	}
 	
-	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel,m_ZNear, m_ZFar);
 	return false;
 }
 
@@ -77,6 +80,6 @@ bool Zero::OrthographicCameraController::OnWindowResized(Zero::WindowResizedEven
 	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
 	
 	m_AspectRatio = aspectRatio;
-	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, m_ZNear, m_ZFar);
 	return false;
 }

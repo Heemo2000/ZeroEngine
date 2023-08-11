@@ -6,21 +6,25 @@
 #include "Zero/Renderer/Buffer.h"
 #include "Zero/Renderer/Shader.h"
 #include "Zero/Core/Transform.h"
+#include "Zero/Renderer/Texture.h"
+
 namespace Zero
 {
 	
 	
 	struct Renderer2DStorage
 	{
-		const uint32_t MaxMeshes = 1000;
-		const uint32_t MaxVertices = MaxMeshes * 4;
-		const uint32_t MaxIndices = MaxMeshes * 6;
-		
+		static const uint32_t MaxMeshes = 5000;
+		static const uint32_t MaxVertices = MaxMeshes * 4;
+		static const uint32_t MaxIndices = MaxMeshes * 6;
+		static const uint32_t MaxTextureSlots = 32;
 		Ref<VertexArray> MeshVA;
 		Ref<VertexBuffer> MeshVB;
 		Ref<IndexBuffer> MeshIB;
-		Ref<Shader> FlatColorShader;
-		
+		Ref<Shader> TexturedQuadShader;
+		std::array<int, MaxTextureSlots> Samplers;
+		std::array<Ref<Texture2D>, MaxTextureSlots> Textures;
+
 		MeshVertex* MeshVerticesBase;
 		MeshVertex* MeshVerticesPtr;
 		
@@ -39,7 +43,9 @@ namespace Zero
 		BufferLayout quadLayout =
 		{
 			{"a_Position",ShaderDataType::Float3},
-			{"a_Color",ShaderDataType::Float4}
+			{"a_Color",ShaderDataType::Float4},
+			{"a_TexCoord", ShaderDataType::Float2},
+			{"a_TexIndex", ShaderDataType::Float}
 		};
 
 		s_Storage->MeshVerticesBase = new MeshVertex[s_Storage->MaxVertices];
@@ -70,14 +76,23 @@ namespace Zero
 		s_Storage->MeshIB.reset(Zero::IndexBuffer::Create(s_Storage->MeshIndices, s_Storage->MaxIndices));
 		s_Storage->MeshVA->SetIndexBuffer(s_Storage->MeshIB);
 		
-		s_Storage->FlatColorShader = Shader::Create("src/shaders/mesh.glsl");
+
+		for (int i = 0; i < s_Storage->MaxTextureSlots; i++)
+		{
+			s_Storage->Samplers[i] = i;
+		}
+
+		s_Storage->TexturedQuadShader = Shader::Create("src/shaders/textured_mesh.glsl");
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
 	{
-		s_Storage->FlatColorShader->Bind();
-		s_Storage->FlatColorShader->UploadData("u_TransformationMatrix",glm::mat4(1.0f));
-		s_Storage->FlatColorShader->UploadData("u_ViewProjection", camera.GetViewProjectionMatrix());
+		s_Storage->TexturedQuadShader->Bind();
+		s_Storage->TexturedQuadShader->UploadData("u_TransformationMatrix",glm::mat4(1.0f));
+		s_Storage->TexturedQuadShader->UploadData("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		
+		s_Storage->TexturedQuadShader->UploadData("u_TexUnits",s_Storage->Samplers.size(), s_Storage->Samplers.data());
 		
 	}
 
@@ -85,10 +100,21 @@ namespace Zero
 	{
 		s_Storage->MeshVA->Bind();
 		s_Storage->MeshVB->Bind();
+
+		for (uint32_t i = 0; i < s_Storage->MaxTextureSlots; i++)
+		{
+			if (s_Storage->Textures[i] != nullptr)
+			{
+				//std::string textureInfo = "Binding texture " + std::to_string(i);
+				//ZERO_CORE_INFO(textureInfo);
+				s_Storage->Textures[i]->Bind();
+			}
+		}
 		uint32_t size = (uint32_t)s_Storage->MeshVerticesPtr - (uint32_t)s_Storage->MeshVerticesBase;
 		//std::string verticesCountString = "Total vertices :" + std::to_string(size);
 		//ZERO_CORE_INFO(verticesCountString);
 		s_Storage->MeshVB->SetData(s_Storage->MeshVerticesBase, size);
+		
 		Flush();
 	}
 
@@ -103,7 +129,7 @@ namespace Zero
 		delete s_Storage;
 	}
 
-	void Renderer2D::AddQuadToBuffer(Quad* mesh)
+	void Renderer2D::AddQuadToBuffer(Quad* mesh,Ref<Texture2D> texture = nullptr)
 	{
 		auto vertices = mesh->GetVertices();
 
@@ -112,10 +138,22 @@ namespace Zero
 		{
 			s_Storage->MeshVerticesPtr->Position = vertices[i].Position;
 			s_Storage->MeshVerticesPtr->Color = vertices[i].Color;
+			s_Storage->MeshVerticesPtr->Uv = vertices[i].Uv;
+			s_Storage->MeshVerticesPtr->TexIndex = vertices[i].TexIndex;
 			s_Storage->MeshVerticesPtr++;
 		}
 
 		s_Storage->MeshIndicesCount += 6;
+
+		for (int i = 0; i < s_Storage->MaxTextureSlots; i++)
+		{
+			if (texture->GetTextureSlot() == i)
+			{
+				ZERO_CORE_INFO("Applied texture to texture array");
+				s_Storage->Textures[i] = texture;
+				break;
+			}
+		}
 
 		ZERO_CORE_INFO("Meshes Count after adding mesh: " + std::to_string(s_Storage->QuadsMap.size()));
 	}

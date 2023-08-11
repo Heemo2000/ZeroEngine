@@ -28,6 +28,8 @@ namespace Zero
 
 		virtual float GetMouseXImpl() const = 0;
 		virtual float GetMouseYImpl() const = 0;
+
+		virtual std::pair<int, int> GetResolutionImpl() const = 0;
 	
 	private:
 		static Input* s_Instance;

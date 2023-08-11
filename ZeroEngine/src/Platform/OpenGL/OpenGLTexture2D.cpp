@@ -14,7 +14,7 @@ namespace Zero
 
 		m_Width = width;
 		m_Height = height;
-
+		m_TextureSlot = textureSlot;
 		if (!imageData)
 		{
 			ZERO_CORE_ASSERT(false, "Image loading failed!!");
@@ -41,8 +41,8 @@ namespace Zero
 		glActiveTexture(GL_TEXTURE0 + textureSlot);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -53,6 +53,27 @@ namespace Zero
 		stbi_image_free(imageData);
 
 		glActiveTexture(GL_TEXTURE0 + textureSlot);
+	}
+
+	OpenGLTexture2D::OpenGLTexture2D(const uint32_t& singlePixelData, const uint32_t& textureSlot) : m_Width(1), m_Height(1), m_TextureSlot(textureSlot)
+	{
+		GLenum dataFormat = GL_RGBA;
+		GLenum internalFormat = GL_RGBA8;
+
+		//Now, generate texture.
+		glGenTextures(1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, &singlePixelData);
+		//glActiveTexture(GL_TEXTURE0 + textureSlot);
 	}
 
 	void OpenGLTexture2D::Bind()

@@ -13,7 +13,7 @@ namespace Zero
 	class OrthographicCameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool allowRotation);
+		OrthographicCameraController(float aspectRatio, bool allowRotation, float zNear = -1000.0f, float zfar = 1000.0f);
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
@@ -25,6 +25,8 @@ namespace Zero
 	private:
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
+		float m_ZNear;
+		float m_ZFar;
 		OrthographicCamera m_Camera;
 
 		bool m_AllowRotation;

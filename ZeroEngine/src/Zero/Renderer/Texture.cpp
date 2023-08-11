@@ -23,4 +23,20 @@ namespace Zero
 		return nullptr;
 	}
 
+	Texture2D* Texture2D::Create(const uint32_t& singlePixelData, const uint32_t& textureSlot)
+	{
+		switch (RenderAPI::GetAPI())
+		{
+		case RenderAPI::API::None:
+			ZERO_CORE_ASSERT(false, "No Renderer API Selected!!");
+			return nullptr;
+
+		case RenderAPI::API::OpenGL:
+			return new OpenGLTexture2D(singlePixelData, textureSlot);
+		}
+
+		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");
+		return nullptr;
+	}
+
 }

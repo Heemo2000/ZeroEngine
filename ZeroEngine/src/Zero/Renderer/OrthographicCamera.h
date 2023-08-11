@@ -6,9 +6,9 @@ namespace Zero
 	class OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left,float right,float down,float up);
+		OrthographicCamera(float left,float right,float down,float up, float zNear, float zFar);
 
-		void SetProjectionMatrix(float left, float right,float down,float up);
+		void SetProjectionMatrix(float left, float right,float down,float up, float zNear, float zFar);
 		
 		glm::mat4 GetViewProjectionMatrix() const;
 

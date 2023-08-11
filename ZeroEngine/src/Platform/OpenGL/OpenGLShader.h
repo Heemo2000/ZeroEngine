@@ -20,6 +20,7 @@ namespace Zero
 		virtual void UploadData(std::string name, const int& value) override;
 		virtual void UploadData(std::string name, const glm::vec4& value) override;
 		virtual void UploadData(std::string name, const glm::vec3& value) override;
+		virtual void UploadData(std::string name, const int& size, const int *value) override;
 		~OpenGLShader();
 
 	private:
