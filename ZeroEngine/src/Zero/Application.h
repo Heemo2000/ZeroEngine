@@ -18,6 +18,7 @@ namespace Zero
 		Application();
 		virtual ~Application();
 		void Run();
+		void Close();
 		void OnEvent(Event& event);
 		void PushLayer(Layer* layer);
 		void PopLayer(Layer* layer);

@@ -58,6 +58,10 @@ public:
 private:
 	glm::vec3 ScreenToWorldPoint(glm::vec3 position);
 	void CreateQuad(glm::vec3 position);
+
+	void SceneSection(bool* show);
+	void OptionsSection(bool* show);
+
 private:
 	bool OnWindowResized(Zero::WindowResizedEvent& event);
 	bool OnKeyPressed(Zero::KeyPressedEvent& event);
@@ -76,14 +80,14 @@ private:
 
 	float m_ElapsedTime = 0.0f;
 
-	bool m_Open = true;
+	
 	bool m_MouseHold;
 	glm::vec3 m_PreviousPoint = glm::vec3(0.0f,0.0f,0.0f);
 	float m_QuadDrawMinDistance = 0.5f;
 
 	std::vector<Zero::Ref<BrushData>> m_Brushes;
 	Zero::Ref<BrushData> m_CurrentBrush;
-	float m_ZIndex = -990.0f;
+	Zero::Ref<Zero::Framebuffer> m_Framebuffer;
 	const uint32_t BrushesPerLine = 3;
 
 };

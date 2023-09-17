@@ -17,7 +17,10 @@ namespace Zero
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
+	public:
 		OrthographicCamera GetCamera();
+		inline float GetAspectRatio() const { return m_AspectRatio; };
+		void SetAspectRatio(float aspectRatio);
 	private:
 		bool OnMouseScrolled(Zero::MouseScrolledEvent& e);
 		bool OnWindowResized(Zero::WindowResizedEvent& e);

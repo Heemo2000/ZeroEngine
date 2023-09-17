@@ -1,0 +1,18 @@
+[Window][Debug##Default]
+Pos=60,60
+Size=400,400
+Collapsed=0
+
+[Window][Settings]
+ViewportPos=197,226
+ViewportId=0x1C33C293
+Size=1182,1024
+Collapsed=0
+
+[Window][Dear ImGui Demo]
+Pos=650,20
+Size=550,680
+Collapsed=0
+
+[Docking][Data]
+

@@ -147,6 +147,7 @@
     <Image Include="textures\logo.jpg" />
     <Image Include="textures\sandwich.png" />
     <Image Include="textures\smily.png" />
+    <Image Include="textures\white_texture.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\instance.glsl" />

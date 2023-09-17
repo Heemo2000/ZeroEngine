@@ -1405,6 +1405,8 @@
     <ClInclude Include="src\Zero\Renderer\OrthographicCameraController.h" />
     <ClInclude Include="src\Zero\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Zero\Renderer\Quad.h" />
+    <ClInclude Include="src\Zero\Renderer\Framebuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFramebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1467,6 +1469,8 @@
     <ClCompile Include="src\Zero\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Zero\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Zero\Renderer\Quad.cpp" />
+    <ClCompile Include="src\Zero\Renderer\Framebuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFramebuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Platform\OpenGL\Shaders\test_vert.glsl" />

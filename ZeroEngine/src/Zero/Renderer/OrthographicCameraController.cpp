@@ -62,6 +62,12 @@ Zero::OrthographicCamera Zero::OrthographicCameraController::GetCamera()
 	return m_Camera;
 }
 
+void Zero::OrthographicCameraController::SetAspectRatio(float aspectRatio)
+{
+	m_AspectRatio = aspectRatio;
+	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, m_ZNear, m_ZFar);
+}
+
 bool Zero::OrthographicCameraController::OnMouseScrolled(Zero::MouseScrolledEvent& e)
 {
 	float amount = e.GetScrolledY();
@@ -78,8 +84,6 @@ bool Zero::OrthographicCameraController::OnMouseScrolled(Zero::MouseScrolledEven
 bool Zero::OrthographicCameraController::OnWindowResized(Zero::WindowResizedEvent& event)
 {
 	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-	
-	m_AspectRatio = aspectRatio;
-	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel, m_ZNear, m_ZFar);
+	OrthographicCameraController::SetAspectRatio(aspectRatio);
 	return false;
 }

@@ -40,6 +40,9 @@
     <Image Include="textures\smily.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="textures\white_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\mesh.glsl" />

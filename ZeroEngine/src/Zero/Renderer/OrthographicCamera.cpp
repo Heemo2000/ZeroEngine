@@ -50,6 +50,7 @@ namespace Zero
 		RecalculateViewProjectionMatrix();
 	}
 
+
 	glm::mat4 OrthographicCamera::GetViewMatrix() const
 	{
 		return m_View;
