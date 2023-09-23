@@ -7,17 +7,23 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	Zero::Renderer::Init();
 	Zero::Renderer2D::Init();
 
-	m_ClearColor.r = 0.0f;
-	m_ClearColor.g = 0.0f;
-	m_ClearColor.b = 0.0f;
-	m_ClearColor.a = 1.0f;
+	m_MainWindowClearColor.r = 1.0f;
+	m_MainWindowClearColor.g = 1.0f;
+	m_MainWindowClearColor.b = 1.0f;
+	m_MainWindowClearColor.a = 1.0f;
+
+	m_FramebufferClearColor.r = 1.0f;
+	m_FramebufferClearColor.g = 0.0f;
+	m_FramebufferClearColor.b = 0.0f;
+	m_FramebufferClearColor.a = 1.0f;
+
 
 	Zero::Ref<BrushData> whiteBrushData;
 	whiteBrushData.reset(new BrushData(
 							"White Brush",
 							"F://Projects_and_program_files/ZeroEngine/Sandbox/textures/white_texture.png",
 							0.0f,
-							new float[4] {1.0f, 1.0f, 1.0f, 1.0f},
+							new float[4] {0.0f, 0.0f, 0.0f, 1.0f},
 							0.5f)
 						);
 
@@ -50,12 +56,12 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 
 	Zero::FramebufferSpecification framebufferSpec;
 	
-	framebufferSpec.Width = Zero::Application::GetInstance().GetWindow()->GetWidth() * 2.0f/3.0f;
-	framebufferSpec.Height = Zero::Application::GetInstance().GetWindow()->GetHeight();
+	framebufferSpec.Width = Zero::Application::GetInstance().GetWindow()->GetWidth() * 2.0f/3.0f - 40.0f;
+	framebufferSpec.Height = Zero::Application::GetInstance().GetWindow()->GetHeight() - 40.0f;
 	framebufferSpec.ColorAttachment = 0;
 	m_Framebuffer = Zero::Framebuffer::Create(framebufferSpec);
-
-	ImGuiIO io = ImGui::GetIO();
+	
+	ImGuiIO& io = ImGui::GetIO();
 
 	io.WantSaveIniSettings = true;
 	io.LogFilename = "ImGui Log.log";
@@ -134,18 +140,18 @@ void Sandbox2D::SceneSection(bool* show)
 {
 	int currentId = 0;
 
-	//Main Section window configuration.
+	//Scene Section window configuration.
 
 
 	ImGuiWindowFlags sceneSectionWindowFlags = 0;
-	sceneSectionWindowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
+	//sceneSectionWindowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
 	sceneSectionWindowFlags |= ImGuiWindowFlags_NoCollapse;
 	sceneSectionWindowFlags |= ImGuiWindowFlags_NoBackground;
 	sceneSectionWindowFlags |= ImGuiWindowFlags_NoDocking;
+	sceneSectionWindowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
 
-
-	ImGui::Begin("Scene Section", show, sceneSectionWindowFlags);
+	ImGui::Begin("Scene Section");
 	//ImGui::PushID(currentId);
 	currentId++;
 	ImVec2 size = ImVec2(m_Framebuffer->GetFramebufferSpecification().Width, m_Framebuffer->GetFramebufferSpecification().Height);
@@ -154,7 +160,7 @@ void Sandbox2D::SceneSection(bool* show)
 
 	ImVec4 border_col = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 	ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImGui::Image((void*)(ImTextureID)(m_Framebuffer->GetFramebufferTexID()), size, uv0, uv1, tint_col, border_col);
+	ImGui::Image((void*)(m_Framebuffer->GetFramebufferTexID()), size, uv0, uv1, tint_col, border_col);
 	//ImGui::PopID();
 	ImGui::End();
 }
@@ -165,13 +171,14 @@ void Sandbox2D::OptionsSection(bool* show)
 	//Option section configuration.
 
 	ImGuiWindowFlags optionSectionWindowFlags = 0;
-	optionSectionWindowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
+	//optionSectionWindowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
 	optionSectionWindowFlags |= ImGuiWindowFlags_NoCollapse;
 	optionSectionWindowFlags |= ImGuiWindowFlags_NoBackground;
 	optionSectionWindowFlags |= ImGuiWindowFlags_NoDocking;
+	optionSectionWindowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
 
-	ImGui::Begin("Option Section", show, optionSectionWindowFlags);
+	ImGui::Begin("Option Section");
 
 	ImGui::ColorPicker4("Brush Color", m_CurrentBrush->BrushColor);
 	ImGui::Text("Clear the shapes:");
@@ -227,48 +234,58 @@ void Sandbox2D::OnDetach()
 
 void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 {
-	Zero::RenderCommand::SetClearColor(m_ClearColor);
+	Zero::RenderCommand::SetClearColor(m_FramebufferClearColor);
 	Zero::RenderCommand::Clear();
 
 	Zero::Renderer::BeginScene(m_CameraController.GetCamera());
 	Zero::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 	m_CameraController.OnUpdate(timestep);
-	
+
 	if (Zero::Input::IsMouseButtonPressed(ZERO_MOUSE_BUTTON_LEFT))
 	{
 		m_MouseHold = true;
 	}
-	else if(Zero::Input::IsMouseButtonReleased(ZERO_MOUSE_BUTTON_LEFT))
+	else if (Zero::Input::IsMouseButtonReleased(ZERO_MOUSE_BUTTON_LEFT))
 	{
 		m_MouseHold = false;
 	}
-	
+
 	if (m_MouseHold)
 	{
-		
+
 		auto mousePosPair = Zero::Input::GetMousePosNormalized();
 		glm::vec3 mousePos;
-		
+
 		mousePos = glm::vec3(mousePosPair.first, mousePosPair.second, 0);
 
 		glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
 		float distance = glm::distance(m_PreviousPoint, worldPos);
 		float clearQuadVecDistance = 2 * m_QuadDrawMinDistance;
-		
+
 		if (distance >= m_QuadDrawMinDistance)
 		{
 			glm::vec3 direction = glm::normalize(worldPos - m_PreviousPoint);
 			m_PreviousPoint = worldPos;
 			CreateQuad(worldPos);
 		}
+	}	
+	/*
+	if (m_FramebufferEnable)
+	{
+		ZERO_CLIENT_INFO("Framebuffer is active...");
+		m_Framebuffer->Invalidate();
 	}
-	//m_Framebuffer->Bind();
+	*/
+
+	m_Framebuffer->Bind();
 	m_Framebuffer->Invalidate();
-	//m_Framebuffer->Unbind();
-	
+	Zero::RenderCommand::SetClearColor(m_MainWindowClearColor);
+	Zero::RenderCommand::Clear();
+
 	Zero::Renderer2D::EndScene();
 	Zero::Renderer::EndScene();
+	m_Framebuffer->Unbind();
 }
 
 void Sandbox2D::OnEvent(Zero::Event& event)
@@ -287,117 +304,15 @@ void Sandbox2D::OnEvent(Zero::Event& event)
 void Sandbox2D::OnImGuiRender()
 {
 	
-	static bool showSceneSection= false;
-	static bool showOptionSection = true;
-	/*
-	static bool showDockspaceWindow = true;
-	static bool showMainWindow = true;
-	*/
+	//ImGuiIO io = ImGui::GetIO();
 
-	/*
-	static bool useDockSpaceOverViewport = true;
-
-	if (useDockSpaceOverViewport)
-	{
-		ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-		SceneSection(&showSceneSection);
-		OptionsSection(&showOptionSection);
-		return;
-	}
-	static bool opt_fullscreen = false;
-	static bool opt_padding = false;
-	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-	if (opt_fullscreen)
-	{
-		const ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-		ImGui::SetNextWindowPos(viewport->WorkPos);
-		ImGui::SetNextWindowSize(viewport->WorkSize);
-		ImGui::SetNextWindowViewport(viewport->ID);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		//window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		//window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-	}
-	else
-	{
-		dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
-	}
-
-	// When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background
-	// and handle the pass-thru hole, so we ask Begin() to not render a background.
-	if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-		window_flags |= ImGuiWindowFlags_NoBackground;
-
-	// Important: note that we proceed even if Begin() returns false (aka window is collapsed).
-	// This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
-	// all active windows docked into it will lose their parent and become undocked.
-	// We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
-	// any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-	if (!opt_padding)
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("DockSpace Demo", &showDockspaceWindow, window_flags);
-	if (!opt_padding)
-		ImGui::PopStyleVar();
-
-	if (opt_fullscreen)
-		ImGui::PopStyleVar(2);
-
-	// Submit the DockSpace
-	ImGuiIO& io = ImGui::GetIO();
-	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-	{
-		ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-		ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-	}
-
-
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-
-			if (ImGui::MenuItem("Exit", NULL, false))
-			{
-				showDockspaceWindow = false;
-				Zero::Application::GetInstance().Close();
-			}
-
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-
-	SceneSection(&showSceneSection);
-	OptionsSection(&showOptionSection);
-	ImGui::End();
-	ImGuiWindowFlags mainSectionWindowFlags = 0;
-	mainSectionWindowFlags |= ImGuiWindowFlags_AlwaysAutoResize;
-	//mainSectionWindowFlags |= ImGuiWindowFlags_NoBackground;
-	mainSectionWindowFlags |= ImGuiWindowFlags_NoDocking;
-
-	ImGui::Begin("Main Section", &showMainWindow, mainSectionWindowFlags);
-	ImGui::SetWindowSize("Main Section", ImVec2(1280, 720));
-	ImGui::End();
-
-	*/
-
-	//ZERO_CLIENT_TRACE("Doing ImGui Render...");
-	//static bool showDemoWindow = true;
-	//ImGui::ShowDemoWindow(&showDemoWindow);
-	ImGuiIO io = ImGui::GetIO();
-
-	ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode;
-	
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
 	windowFlags |= ImGuiWindowFlags_NoTitleBar;
 	windowFlags |= ImGuiWindowFlags_NoCollapse;
 	windowFlags |= ImGuiWindowFlags_NoResize;
-	windowFlags |= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
-	windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	windowFlags |= ImGuiWindowFlags_NoMove;
+	windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	windowFlags |= ImGuiWindowFlags_NoNavFocus;
 	windowFlags |= ImGuiWindowFlags_NoBackground;
 	
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -413,19 +328,18 @@ void Sandbox2D::OnImGuiRender()
 
 	ImGuiID dockspaceID =  ImGui::GetID("MainWindowDockSpace");
 	
-	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), dockspaceFlags);
-	ImGui::Begin("Test1");
-	ImGui::Text("fdkdfldfjgdfkgdfglkjsdgldfgldglslglsdgdjal;gjldf;");
+	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+	
 	ImGui::End();
 
-	ImGui::Begin("Test2");
-	ImGui::Text("fdkdfldfjgdfkgdfglkjsdgldfgldglslglsdgdjal;gjldf;");
-	ImGui::End();
-	ImGui::End();
+	SceneSection(nullptr);
+	OptionsSection(nullptr);
 
-	//SceneSection(&showSceneSection);
-	//OptionsSection(&showOptionSection);
-
+	/*
+	ImGui::Begin("Testing");
+	ImGui::Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. \nMauris in sodales orci. \nNullam sed magna lorem. \nCurabitur sodales finibus risus eget sollicitudin. \nNulla ut tellus sodales, auctor mi sed, dapibus elit. \nProin feugiat felis at justo semper lacinia. Aliquam et lorem eget eros varius placerat. \nDonec fringilla consequat volutpat. Proin dictum justo sit amet lectus dictum, vel pellentesque tortor condimentum. \nInterdum et malesuada fames ac ante ipsum primis in faucibus. Sed sodales ipsum sed dui ornare sollicitudin. Maecenas in lobortis lacus, nec pulvinar leo. In ac erat semper mi suscipit elementum. Nam leo massa, tempus ac diam nec, ultrices accumsan felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. \nUt accumsan orci eget elit tempor, in facilisis lorem volutpat. ");
+	ImGui::End();
+	*/
 	
 }
 bool Sandbox2D::OnWindowResized(Zero::WindowResizedEvent& event)
@@ -437,6 +351,21 @@ bool Sandbox2D::OnWindowResized(Zero::WindowResizedEvent& event)
 
 bool Sandbox2D::OnKeyPressed(Zero::KeyPressedEvent& event)
 {
+	/*
+	if (event.GetKeyCode() == ZERO_KEY_F)
+	{
+		m_FramebufferEnable = !m_FramebufferEnable;
+	}
+	if (m_FramebufferEnable)
+	{
+		m_Framebuffer->Bind();
+	}
+	else
+	{
+		m_Framebuffer->Unbind();
+	}
+	*/
+	
 	return true;
 }
 

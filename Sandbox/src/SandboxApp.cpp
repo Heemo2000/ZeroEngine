@@ -20,7 +20,7 @@ SandboxLayer::SandboxLayer() : Zero::Layer("SandboxLayer")
 
 void SandboxLayer::OnUpdate(Zero::Timestep timestep)
 {
-	Zero::RenderCommand::SetClearColor(m_ClearColor);
+	Zero::RenderCommand::SetClearColor(m_MainWindowClearColor);
 	Zero::RenderCommand::Clear();
 	
 	//Zero::Renderer::BeginScene(m_Camera);

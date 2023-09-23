@@ -20,7 +20,7 @@ private:
 
 private:
 	//Zero::Ref<Zero::OrthographicCamera> m_Camera;
-	glm::vec4 m_ClearColor;
+	glm::vec4 m_MainWindowClearColor;
 	
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
 	float m_CameraMoveSpeed = 1.0f;

@@ -71,7 +71,9 @@ private:
 
 private:
 	Zero::OrthographicCameraController m_CameraController;
-	glm::vec4 m_ClearColor;
+	glm::vec4 m_MainWindowClearColor;
+	glm::vec4 m_FramebufferClearColor;
+
 
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 1.0f);
 	float m_CameraMoveSpeed = 1.0f;
@@ -84,10 +86,12 @@ private:
 	bool m_MouseHold;
 	glm::vec3 m_PreviousPoint = glm::vec3(0.0f,0.0f,0.0f);
 	float m_QuadDrawMinDistance = 0.5f;
+	bool m_FramebufferEnable = false;
 
 	std::vector<Zero::Ref<BrushData>> m_Brushes;
 	Zero::Ref<BrushData> m_CurrentBrush;
 	Zero::Ref<Zero::Framebuffer> m_Framebuffer;
 	const uint32_t BrushesPerLine = 3;
 
+	
 };
