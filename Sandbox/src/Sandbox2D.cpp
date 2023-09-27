@@ -12,9 +12,9 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	m_MainWindowClearColor.b = 1.0f;
 	m_MainWindowClearColor.a = 1.0f;
 
-	m_FramebufferClearColor.r = 1.0f;
-	m_FramebufferClearColor.g = 0.0f;
-	m_FramebufferClearColor.b = 0.0f;
+	m_FramebufferClearColor.r = 0.5f;
+	m_FramebufferClearColor.g = 0.5f;
+	m_FramebufferClearColor.b = 0.5f;
 	m_FramebufferClearColor.a = 1.0f;
 
 
@@ -54,13 +54,6 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	m_Brushes.push_back(sandwichBrushData);
 	m_CurrentBrush = m_Brushes[0];
 
-	Zero::FramebufferSpecification framebufferSpec;
-	
-	framebufferSpec.Width = Zero::Application::GetInstance().GetWindow()->GetWidth() * 2.0f/3.0f - 40.0f;
-	framebufferSpec.Height = Zero::Application::GetInstance().GetWindow()->GetHeight() - 40.0f;
-	framebufferSpec.ColorAttachment = 0;
-	m_Framebuffer = Zero::Framebuffer::Create(framebufferSpec);
-	
 	ImGuiIO& io = ImGui::GetIO();
 
 	io.WantSaveIniSettings = true;
@@ -68,6 +61,9 @@ Sandbox2D::Sandbox2D() : m_CameraController(Zero::OrthographicCameraController(1
 	io.IniFilename = "ImGui Config.ini";
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.WantCaptureMouse = true;
+
+	//ZERO_CLIENT_INFO(Zero::Renderer2D::GetFramebuffer()->GetFramebufferDetails());
 }
 
 
@@ -76,69 +72,93 @@ glm::vec3 Sandbox2D::ScreenToWorldPoint(glm::vec3 position)
 	glm::mat4 viewProjectionMatrix = m_CameraController.GetCamera().GetProjectionMatrix();
 	glm::mat4 invertedMatrix = glm::inverse(viewProjectionMatrix);
 
-	float w = 1.0f;
+	//float w = 1.0f;
 	glm::vec4 temp;
 	temp.x = position.x;
 	temp.y = position.y;
 	temp.z = position.z;
-	temp.w = w;
+	temp.w = 1.0f;
 
 	glm::vec4 result = invertedMatrix * temp;
-	result.x /= w;
-	result.y /= w;
-	result.z /= w;
+	result.x /= temp.w;
+	result.y /= temp.w;
+	result.z /= temp.w;
 
 	return glm::vec3(result.x, result.y, result.z);
 
 }
 
-void Sandbox2D::CreateQuad(glm::vec3 position)
+bool Sandbox2D::CreateQuad()
 {
-	//Calculate points in clockwise order.
+	if (m_Points.size() == 2)
+	{
+		//Calculate points in clockwise order.
+
+		float height = m_CurrentBrush->BrushThickness;
+
+		glm::vec3 direction1 = glm::normalize(m_Points[1] - m_Points[0]);
+		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
+		glm::vec3 crossVector1 = glm::cross(direction1, forward);
+
+		glm::vec3 backward = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 crossVector2 = glm::cross(direction1, backward);
+
+		glm::vec3 point1 = m_Points[0] + crossVector1 * height / 2.0f;
+		glm::vec3 point2 = m_Points[0] + crossVector2 * height / 2.0f;
+
+		glm::vec3 direction2 = glm::normalize(m_Points[0] - m_Points[1]);
+		glm::vec3 crossVector3 = glm::cross(direction2, forward);
+
+		glm::vec3 crossVector4 = glm::cross(direction2, backward);
 
 
-	glm::vec3 point1 = position + glm::vec3(-1.0f, -1.0f, 0.0f) * m_CurrentBrush->BrushThickness;
-	glm::vec3 point2 = position + glm::vec3(-1.0f, 1.0f, 0.0f) * m_CurrentBrush->BrushThickness;
-	glm::vec3 point3 = position + glm::vec3(1.0f, 1.0f, 0.0f) * m_CurrentBrush->BrushThickness;
-	glm::vec3 point4 = position + glm::vec3(1.0f, -1.0f, 0.0f) * m_CurrentBrush->BrushThickness;
+		glm::vec3 point3 = m_Points[1] + crossVector3 * height / 2.0f;
+		glm::vec3 point4 = m_Points[1] + crossVector4 * height / 2.0f;
 
-	glm::vec4 vertexColor = glm::vec4(m_CurrentBrush->BrushColor[0], 
-									  m_CurrentBrush->BrushColor[1], 
-									  m_CurrentBrush->BrushColor[2], 
-									  m_CurrentBrush->BrushColor[3]);
-	Zero::MeshVertex v1;
-	v1.Position = point1;
-	v1.Color = vertexColor;
-	v1.Uv = glm::vec2(0.0f, 0.0f);
-	v1.TexIndex = m_CurrentBrush->BrushTexSlot;
+		glm::vec4 vertexColor = glm::vec4(m_CurrentBrush->BrushColor[0],
+										  m_CurrentBrush->BrushColor[1],
+										  m_CurrentBrush->BrushColor[2],
+										  m_CurrentBrush->BrushColor[3]);
+		Zero::MeshVertex v1;
+		v1.Position = point1;
+		v1.Color = vertexColor;
+		v1.Uv = glm::vec2(0.0f, 0.0f);
+		v1.TexIndex = m_CurrentBrush->BrushTexSlot;
 
-	Zero::MeshVertex v2;
-	v2.Position = point2;
-	v2.Color = vertexColor;
-	v2.Uv = glm::vec2(0.0f, 1.0f);
-	v2.TexIndex = m_CurrentBrush->BrushTexSlot;
+		Zero::MeshVertex v2;
+		v2.Position = point2;
+		v2.Color = vertexColor;
+		v2.Uv = glm::vec2(0.0f, 1.0f);
+		v2.TexIndex = m_CurrentBrush->BrushTexSlot;
 
-	Zero::MeshVertex v3;
-	v3.Position = point3;
-	v3.Color = vertexColor;
-	v3.Uv = glm::vec2(1.0f, 1.0f);
-	v3.TexIndex = m_CurrentBrush->BrushTexSlot;
+		Zero::MeshVertex v3;
+		v3.Position = point3;
+		v3.Color = vertexColor;
+		v3.Uv = glm::vec2(1.0f, 1.0f);
+		v3.TexIndex = m_CurrentBrush->BrushTexSlot;
 
-	Zero::MeshVertex v4;
-	v4.Position = point4;
-	v4.Color = vertexColor;
-	v4.Uv = glm::vec2(1.0f, 0.0f);
-	v4.TexIndex = m_CurrentBrush->BrushTexSlot;
+		Zero::MeshVertex v4;
+		v4.Position = point4;
+		v4.Color = vertexColor;
+		v4.Uv = glm::vec2(1.0f, 0.0f);
+		v4.TexIndex = m_CurrentBrush->BrushTexSlot;
 
-	Zero::Ref<Zero::Quad> quad;
-	quad.reset(new Zero::Quad({ v1,v2,v3,v4 }));
+		Zero::Ref<Zero::Quad> quad;
+		auto vertices = std::vector<Zero::MeshVertex>{ v1,v2,v3,v4 };
+		quad.reset(new Zero::Quad(vertices));
 
-	Zero::Renderer2D::AddQuadToBuffer(quad.get(),m_CurrentBrush->BrushTex);
+		Zero::Renderer2D::AddQuadToBuffer(quad.get(), m_CurrentBrush->BrushTex);
+		m_Points.clear();
+
+		return true;
+	}
+
+	return false;
 }
 
 void Sandbox2D::SceneSection(bool* show)
 {
-	int currentId = 0;
+	//int currentId = 0;
 
 	//Scene Section window configuration.
 
@@ -150,24 +170,52 @@ void Sandbox2D::SceneSection(bool* show)
 	sceneSectionWindowFlags |= ImGuiWindowFlags_NoDocking;
 	sceneSectionWindowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
-
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 	ImGui::Begin("Scene Section");
-	//ImGui::PushID(currentId);
-	currentId++;
-	ImVec2 size = ImVec2(m_Framebuffer->GetFramebufferSpecification().Width, m_Framebuffer->GetFramebufferSpecification().Height);
+	//ZERO_CLIENT_INFO("Scene Section \\/");
+
+	ImVec2 availSize =  ImGui::GetContentRegionAvail();
+	
+	if (m_SceneWindowSize != (*(glm::vec2*)&availSize))
+	{
+		Zero::FramebufferSpecification framebufferSpec = Zero::Renderer2D::GetFramebuffer()->GetFramebufferSpecification();
+		framebufferSpec.Width = (uint32_t)availSize.x;
+		framebufferSpec.Height = (uint32_t)availSize.y;
+
+		Zero::Renderer2D::GetFramebuffer()->SetFramebufferSpecification(framebufferSpec);
+
+
+		float aspectRatio = availSize.x / availSize.y;
+		m_CameraController.SetAspectRatio(aspectRatio);
+
+		m_SceneWindowSize.x = availSize.x;
+		m_SceneWindowSize.y = availSize.y;
+
+	}
+	auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+	auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+	auto viewportOffset = ImGui::GetWindowPos();
+
+	m_ViewportBounds[0] = {viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+	m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
+	
+
 	ImVec2 uv0 = ImVec2(-1.0f, 1.0f); //Bottom-Left
 	ImVec2 uv1 = ImVec2(0.0f, 0.0f);
 
 	ImVec4 border_col = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
 	ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	ImGui::Image((void*)(m_Framebuffer->GetFramebufferTexID()), size, uv0, uv1, tint_col, border_col);
+
+	ImGui::Image((void*)(Zero::Renderer2D::GetFramebuffer()->GetFramebufferTexID()), availSize, uv0, uv1, tint_col, border_col);
+	ImGui::PopStyleVar();
 	//ImGui::PopID();
 	ImGui::End();
 }
 
 void Sandbox2D::OptionsSection(bool* show)
 {
-	int currentId = 0;
+	//int currentId = 0;
 	//Option section configuration.
 
 	ImGuiWindowFlags optionSectionWindowFlags = 0;
@@ -178,7 +226,8 @@ void Sandbox2D::OptionsSection(bool* show)
 	optionSectionWindowFlags |= ImGuiWindowFlags_NoSavedSettings;
 
 
-	ImGui::Begin("Option Section");
+	ImGui::Begin("Option Section");	
+
 
 	ImGui::ColorPicker4("Brush Color", m_CurrentBrush->BrushColor);
 	ImGui::Text("Clear the shapes:");
@@ -213,7 +262,7 @@ void Sandbox2D::OptionsSection(bool* show)
 		{
 			m_CurrentBrush = brushData;
 		}
-		currentId++;
+		//currentId++;
 		ImGui::SameLine();
 		//ImGui::PopID();
 		brushesInRow++;
@@ -240,52 +289,118 @@ void Sandbox2D::OnUpdate(Zero::Timestep timestep)
 	Zero::Renderer::BeginScene(m_CameraController.GetCamera());
 	Zero::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
+	
+	Zero::FramebufferSpecification framebufferSpec = Zero::Renderer2D::GetFramebuffer()->GetFramebufferSpecification();
+
+	/*
+	float aspectRatio = (float)framebufferSpec.Width / (float)framebufferSpec.Height;
+	m_CameraController.SetAspectRatio(aspectRatio);
+	*/
+
 	m_CameraController.OnUpdate(timestep);
 
-	if (Zero::Input::IsMouseButtonPressed(ZERO_MOUSE_BUTTON_LEFT))
+	/*
+	if (Zero::Input::IsKeyPressed(ZERO_MOUSE_BUTTON_1))
 	{
 		m_MouseHold = true;
 	}
-	else if (Zero::Input::IsMouseButtonReleased(ZERO_MOUSE_BUTTON_LEFT))
+	else if (Zero::Input::IsKeyReleased(ZERO_MOUSE_BUTTON_1))
 	{
 		m_MouseHold = false;
 	}
-
+	*/
+	
+	m_MouseHold = ImGui::IsMouseDown(ImGuiMouseButton_Left);
+	/*
 	if (m_MouseHold)
 	{
+		ZERO_CLIENT_INFO("Left Mouse Button is Holded.");
+	}
+	*/
+	
+	
+	/*
+	auto mousePosPair = Zero::Input::GetMousePosNormalized(m_SceneWindowSize.x,
+														   m_SceneWindowSize.y);
+	m_MousePos = glm::vec3(mousePosPair.first, mousePosPair.second, 0);
+	*/
+	
+	;
 
-		auto mousePosPair = Zero::Input::GetMousePosNormalized();
-		glm::vec3 mousePos;
+	auto temp = ImGui::GetMousePos();
+	m_MousePos.x = temp.x;
+	m_MousePos.y = temp.y;
+	m_MousePos.z = 0.0f;
 
-		mousePos = glm::vec3(mousePosPair.first, mousePosPair.second, 0);
+	m_MousePos.x -= m_ViewportBounds[0].x;
+	m_MousePos.y -= m_ViewportBounds[0].y;
 
-		glm::vec3 worldPos = ScreenToWorldPoint(mousePos);
+	
+	glm::vec2 viewPortSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+	//m_MousePos.y = viewPortSize.y - m_MousePos.y;
+
+	uint32_t mouseX = (uint32_t)m_MousePos.x;
+	uint32_t mouseY = (uint32_t)m_MousePos.y;
+	//ZERO_CLIENT_INFO("Mouse X: " + std::to_string(mouseX) + ", Mouse Y: " + std::to_string(mouseY));
+
+	bool isMousePosInBounds = mouseX >= 0 && mouseY >= 0 && mouseX < viewPortSize.x && mouseY < viewPortSize.y;
+	
+	if (m_MouseHold && isMousePosInBounds)
+	{
+		
+		//ZERO_CLIENT_INFO(Zero::Renderer2D::GetFramebuffer()->GetFramebufferDetails());
+		
+		glm::vec3 normalizedMousePos;
+		normalizedMousePos.x = -1.0f + 2.0f * (m_MousePos.x/ framebufferSpec.Width);
+		normalizedMousePos.y = 1.0f - 2.0f * (m_MousePos.y / (float)framebufferSpec.Height);
+		normalizedMousePos.z = m_MousePos.z;
+		glm::vec3 worldPos = ScreenToWorldPoint(normalizedMousePos);
+		
+		ZERO_CLIENT_INFO("World Position: " 
+						  + std::to_string(worldPos.x) + ", " 
+						  + std::to_string(worldPos.y) + ", " 
+						  + std::to_string(worldPos.z));
+		
+		
+
 		float distance = glm::distance(m_PreviousPoint, worldPos);
 		float clearQuadVecDistance = 2 * m_QuadDrawMinDistance;
 
-		if (distance >= m_QuadDrawMinDistance)
+		
+		if (distance >= clearQuadVecDistance && m_Points.size() == 1)
 		{
+			ZERO_CLIENT_INFO("Clearing points array");
+			m_Points.clear();
+		}
+		else if (distance >= m_QuadDrawMinDistance)
+		{
+			m_Points.push_back(worldPos);
 			glm::vec3 direction = glm::normalize(worldPos - m_PreviousPoint);
 			m_PreviousPoint = worldPos;
-			CreateQuad(worldPos);
-		}
-	}	
-	/*
-	if (m_FramebufferEnable)
-	{
-		ZERO_CLIENT_INFO("Framebuffer is active...");
-		m_Framebuffer->Invalidate();
-	}
-	*/
+			if (CreateQuad())
+			{
+				ZERO_CLIENT_INFO("Drawing Quad");
+				//We are doing this to avoid showing vacant spaces between lines.
+				m_Points.push_back(worldPos - direction * 0.1f);
+			}
 
-	m_Framebuffer->Bind();
-	m_Framebuffer->Invalidate();
+		}
+		
+		
+	}	
+	
+	Zero::Renderer2D::UpdateFramebuffer();
+	//std::string pixelInfo = "Pixel Color: " + Zero::RenderCommand::ReadPixel(mousePos.x, mousePos.y, framebufferSpec.Width, framebufferSpec.Height);
+	//ZERO_CLIENT_INFO(pixelInfo);
+	//Zero::RenderCommand::SetViewport(0, 0, framebufferSpec.Width, framebufferSpec.Height);
+
+
 	Zero::RenderCommand::SetClearColor(m_MainWindowClearColor);
 	Zero::RenderCommand::Clear();
 
 	Zero::Renderer2D::EndScene();
 	Zero::Renderer::EndScene();
-	m_Framebuffer->Unbind();
+	
 }
 
 void Sandbox2D::OnEvent(Zero::Event& event)
@@ -303,9 +418,6 @@ void Sandbox2D::OnEvent(Zero::Event& event)
 
 void Sandbox2D::OnImGuiRender()
 {
-	
-	//ImGuiIO io = ImGui::GetIO();
-
 	ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking;
 	windowFlags |= ImGuiWindowFlags_NoTitleBar;
 	windowFlags |= ImGuiWindowFlags_NoCollapse;
@@ -334,52 +446,31 @@ void Sandbox2D::OnImGuiRender()
 
 	SceneSection(nullptr);
 	OptionsSection(nullptr);
-
-	/*
-	ImGui::Begin("Testing");
-	ImGui::Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. \nMauris in sodales orci. \nNullam sed magna lorem. \nCurabitur sodales finibus risus eget sollicitudin. \nNulla ut tellus sodales, auctor mi sed, dapibus elit. \nProin feugiat felis at justo semper lacinia. Aliquam et lorem eget eros varius placerat. \nDonec fringilla consequat volutpat. Proin dictum justo sit amet lectus dictum, vel pellentesque tortor condimentum. \nInterdum et malesuada fames ac ante ipsum primis in faucibus. Sed sodales ipsum sed dui ornare sollicitudin. Maecenas in lobortis lacus, nec pulvinar leo. In ac erat semper mi suscipit elementum. Nam leo massa, tempus ac diam nec, ultrices accumsan felis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. \nUt accumsan orci eget elit tempor, in facilisis lorem volutpat. ");
-	ImGui::End();
-	*/
 	
 }
 bool Sandbox2D::OnWindowResized(Zero::WindowResizedEvent& event)
 {
-	float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
-	m_CameraController.SetAspectRatio(aspectRatio);
+	//float aspectRatio = (float)event.GetWidth() / (float)event.GetHeight();
+	//m_CameraController.SetAspectRatio(aspectRatio);
 	return true;
 }
 
 bool Sandbox2D::OnKeyPressed(Zero::KeyPressedEvent& event)
 {
-	/*
-	if (event.GetKeyCode() == ZERO_KEY_F)
-	{
-		m_FramebufferEnable = !m_FramebufferEnable;
-	}
-	if (m_FramebufferEnable)
-	{
-		m_Framebuffer->Bind();
-	}
-	else
-	{
-		m_Framebuffer->Unbind();
-	}
-	*/
-	
-	return true;
+	return false;
 }
 
 bool Sandbox2D::OnKeyTyped(Zero::KeyTypedEvent& event)
 {
-	return true;
+	return false;
 }
 
 bool Sandbox2D::OnMouseScrolled(Zero::MouseScrolledEvent& event)
 {
-	return true;
+	return false;
 }
 
 bool Sandbox2D::OnMouseClicked(Zero::MouseButtonClickedEvent& event)
 {
-	return true;
+	return false;
 }

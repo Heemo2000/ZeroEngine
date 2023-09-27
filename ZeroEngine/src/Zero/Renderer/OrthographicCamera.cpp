@@ -35,6 +35,8 @@ namespace Zero
 
 	void OrthographicCamera::SetPosition(const glm::vec3& position)
 	{
+		//ZERO_CORE_INFO("Camera is moving");
+		//ZERO_CORE_INFO(std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z));
 		m_Position = position;
 		RecalculateViewProjectionMatrix();
 	}

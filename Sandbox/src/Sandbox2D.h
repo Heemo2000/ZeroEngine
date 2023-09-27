@@ -57,7 +57,8 @@ public:
 
 private:
 	glm::vec3 ScreenToWorldPoint(glm::vec3 position);
-	void CreateQuad(glm::vec3 position);
+	bool CreateQuad();
+
 
 	void SceneSection(bool* show);
 	void OptionsSection(bool* show);
@@ -86,11 +87,14 @@ private:
 	bool m_MouseHold;
 	glm::vec3 m_PreviousPoint = glm::vec3(0.0f,0.0f,0.0f);
 	float m_QuadDrawMinDistance = 0.5f;
-	bool m_FramebufferEnable = false;
+	uint32_t m_ClickCount = 0;
+	std::vector<glm::vec3> m_Points;
+	glm::vec3 m_MousePos;
+	glm::vec2 m_SceneWindowSize;
+	std::array<glm::vec2, 2> m_ViewportBounds = { glm::vec2(0.0f), glm::vec2(0.0f)};
 
 	std::vector<Zero::Ref<BrushData>> m_Brushes;
 	Zero::Ref<BrushData> m_CurrentBrush;
-	Zero::Ref<Zero::Framebuffer> m_Framebuffer;
 	const uint32_t BrushesPerLine = 3;
 
 	

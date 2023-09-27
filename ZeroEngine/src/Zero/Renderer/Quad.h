@@ -19,7 +19,7 @@ namespace Zero
 		void SetVertexPosition(glm::vec3 position, uint32_t index);
 	private:
 		std::vector<MeshVertex> m_Vertices;
-		std::vector<uint32_t> m_Indices;
+		//std::vector<uint32_t> m_Indices;
 	};
 }
 

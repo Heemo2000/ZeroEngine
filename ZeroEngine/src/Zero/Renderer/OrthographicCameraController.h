@@ -36,8 +36,10 @@ namespace Zero
 
 		glm::vec3 m_Position = {0.0f,0.0f,0.0f};
 		float m_Rotation = 0.0f;
-		float m_MoveSpeed = 1.0f;
+		float m_MoveSpeed = 2.0f;
 		float m_RotateSpeed = 1.0f;
+		float m_MinZoomLevel = 0.25f;
+		float m_MaxZoomLevel = 10.0f;
 		
 	};
 }

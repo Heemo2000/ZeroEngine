@@ -1,5 +1,5 @@
 #pragma once
-
+#include<string>
 
 namespace Zero
 {
@@ -22,6 +22,7 @@ namespace Zero
 	public:
 		inline FramebufferSpecification GetFramebufferSpecification() { return m_Spec; }
 		inline void SetFramebufferSpecification(FramebufferSpecification spec) { m_Spec = spec; }
+		std::string GetFramebufferDetails();
 	protected:
 		FramebufferSpecification m_Spec;
 	};

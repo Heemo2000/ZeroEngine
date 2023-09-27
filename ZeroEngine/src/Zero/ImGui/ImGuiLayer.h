@@ -16,6 +16,7 @@ namespace Zero
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnImGuiRender() override;
+		virtual void OnEvent(Event& event) override;
 
 		void Begin();
 		void End();
@@ -23,6 +24,7 @@ namespace Zero
 	private:
 		float m_Time = 0.0f;
 		Window* m_Window;
+		bool m_BlockEvents = true;
 	};
 }
 

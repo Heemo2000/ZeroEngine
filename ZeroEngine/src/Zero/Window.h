@@ -12,7 +12,7 @@ namespace Zero
 		unsigned int Width;
 		unsigned int Height;
 
-		WindowProps(const std::string& title = "Zero Engine", unsigned int width = 1280, unsigned int height = 720)
+		WindowProps(const std::string& title = "Zero Engine", unsigned int width = 1336, unsigned int height = 768)
 			: Title(title), Width(width) , Height(height) {}
 
 	};

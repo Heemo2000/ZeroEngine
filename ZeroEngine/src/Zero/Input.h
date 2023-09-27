@@ -12,6 +12,7 @@ namespace Zero
 		 inline static bool IsMouseButtonReleased(int button) { return s_Instance->IsMouseButtonReleasedImpl(button); }
 		 inline static std::pair<float,float> GetMousePos() { return s_Instance->GetMousePosImpl(); }
 		 inline static std::pair<float, float> GetMousePosNormalized() {	 return s_Instance->GetMousePosNormalizedImpl();}
+		 inline static std::pair<float, float> GetMousePosNormalized(int width, int height) { return s_Instance->GetMousePosNormalizedImpl(width, height); }
 		 inline static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
 		 inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
 		 
@@ -25,6 +26,7 @@ namespace Zero
 
 		virtual std::pair<float, float> GetMousePosImpl() const = 0;
 		virtual std::pair<float, float> GetMousePosNormalizedImpl() const = 0;
+		virtual std::pair<float, float> GetMousePosNormalizedImpl(int width, int height) const = 0;
 
 		virtual float GetMouseXImpl() const = 0;
 		virtual float GetMouseYImpl() const = 0;

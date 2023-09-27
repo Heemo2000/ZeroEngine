@@ -17,7 +17,6 @@ namespace Zero
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glBindTexture(GL_TEXTURE_2D, 0);
-
 	}
 
 	void OpenGLFramebuffer::Invalidate()
@@ -27,9 +26,13 @@ namespace Zero
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	
+
 	void OpenGLFramebuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		//glReadBuffer(GL_COLOR_ATTACHMENT0 + m_Spec.ColorAttachment);
+		glViewport(0, 0, m_Spec.Width, m_Spec.Height);
 	}
 
 	void OpenGLFramebuffer::Unbind()

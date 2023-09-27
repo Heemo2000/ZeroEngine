@@ -71,12 +71,13 @@ void Zero::OrthographicCameraController::SetAspectRatio(float aspectRatio)
 bool Zero::OrthographicCameraController::OnMouseScrolled(Zero::MouseScrolledEvent& e)
 {
 	float amount = e.GetScrolledY();
-	if (m_ZoomLevel - amount >= 0.25f)
+	if ((m_ZoomLevel - amount) >= m_MinZoomLevel && (m_ZoomLevel - amount) <= m_MaxZoomLevel)
 	{
 		m_ZoomLevel -= amount;
 		ZERO_CORE_INFO("Changing Zoom level");
 	}
 	
+	ZERO_CORE_INFO("Zoom Level : " + std::to_string(m_ZoomLevel));
 	m_Camera.SetProjectionMatrix(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel,m_ZNear, m_ZFar);
 	return false;
 }

@@ -4,6 +4,7 @@
 
 namespace Zero
 {
+	
 	//Should add ZERO_API macro in the future.
 	class ZERO_API Texture
 	{

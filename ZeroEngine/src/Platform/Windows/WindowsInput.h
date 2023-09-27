@@ -15,6 +15,7 @@ namespace Zero
 		virtual bool IsMouseButtonReleasedImpl(int button) const override;
 		virtual std::pair<float,float> GetMousePosImpl() const override;
 		virtual std::pair<float, float> GetMousePosNormalizedImpl() const override;
+		virtual std::pair<float, float> GetMousePosNormalizedImpl(int width, int height) const override;
 		virtual float GetMouseXImpl() const override;
 		virtual float GetMouseYImpl() const override;
 		virtual std::pair<int, int> GetResolutionImpl() const override;

@@ -7,6 +7,8 @@
 #include "Zero/Renderer/Shader.h"
 #include "Zero/Core/Transform.h"
 #include "Zero/Renderer/Texture.h"
+#include "Zero/Renderer/Framebuffer.h"
+#include "Zero/Application.h"
 
 namespace Zero
 {
@@ -31,7 +33,8 @@ namespace Zero
 		std::unordered_map<Quad*, MeshVertex*> QuadsMap;
 		uint32_t MeshIndicesCount = 0;
 		uint32_t* MeshIndices;
-
+		
+		Ref<Framebuffer> Framebuffer;
 	};
 
 	static Renderer2DStorage* s_Storage;
@@ -83,6 +86,15 @@ namespace Zero
 		}
 
 		s_Storage->TexturedQuadShader = Shader::Create("src/shaders/textured_mesh.glsl");
+
+		Zero::FramebufferSpecification framebufferSpec;
+
+		framebufferSpec.Width = Zero::Application::GetInstance().GetWindow()->GetWidth() * 2.0f / 3.0f - 40.0f;
+		framebufferSpec.Height = Zero::Application::GetInstance().GetWindow()->GetHeight() - 40.0f;
+		framebufferSpec.ColorAttachment = 0;
+
+		s_Storage->Framebuffer = Zero::Framebuffer::Create(framebufferSpec);
+
 	}
 
 	void Renderer2D::BeginScene(const OrthographicCamera& camera)
@@ -93,8 +105,19 @@ namespace Zero
 
 		
 		s_Storage->TexturedQuadShader->UploadData("u_TexUnits",s_Storage->Samplers.size(), s_Storage->Samplers.data());
-		
+		s_Storage->Framebuffer->Bind();
 	}
+
+	void Renderer2D::UpdateFramebuffer()
+	{
+		s_Storage->Framebuffer->Invalidate();
+	}
+
+	Ref<Framebuffer>& Renderer2D::GetFramebuffer()
+	{
+		return s_Storage->Framebuffer;
+	}
+
 
 	void Renderer2D::EndScene()
 	{
@@ -122,6 +145,7 @@ namespace Zero
 	{
 		
 		RenderCommand::DrawIndexed(s_Storage->MeshVA,s_Storage->MeshIndicesCount);
+		s_Storage->Framebuffer->Unbind();
 	}
 
 	void Renderer2D::Shutdown()

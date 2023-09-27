@@ -18,6 +18,36 @@ namespace Zero
 	{
 		glViewport(x, y, width, height);
 	}
+
+	std::string OpenGLRenderAPI::ReadPixel(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		std::string pixelInfo;
+		if (x <= width && y <= height)
+		{
+			unsigned char temp[4];
+
+			glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, temp);
+
+			pixelInfo.append("R: ");
+			pixelInfo.append("" + std::to_string(temp[0]));
+
+
+			pixelInfo.append(",G: ");
+			pixelInfo.append("" + std::to_string(temp[1]));
+
+			pixelInfo.append(",B: ");
+			pixelInfo.append("" + std::to_string(temp[2]));
+
+			pixelInfo.append(",A: ");
+			pixelInfo.append("" + std::to_string(temp[3]));
+		}
+		else
+		{
+			pixelInfo = "Invalid position for reading a pixel";
+		}
+
+		return pixelInfo;
+	}
 	void OpenGLRenderAPI::Clear()
 	{
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

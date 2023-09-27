@@ -66,6 +66,19 @@ namespace Zero
 		return normalizedPosition;
 	}
 
+	std::pair<float, float> WindowsInput::GetMousePosNormalizedImpl(int width, int height) const
+	{
+		auto mousePos = GetMousePosImpl();
+		float x = -1.0f + 2.0f * (mousePos.first / (float)width);
+		float y = 1.0f - 2.0f * (mousePos.second / (float)height);
+
+		std::pair<float, float> normalizedPosition;
+		normalizedPosition.first = x;
+		normalizedPosition.second = y;
+
+		return normalizedPosition;
+	}
+
 	float WindowsInput::GetMouseXImpl() const
 	{
 		auto [x, y] = GetMousePosImpl();

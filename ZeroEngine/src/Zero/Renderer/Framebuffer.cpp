@@ -20,5 +20,15 @@ namespace Zero
 		ZERO_CORE_ASSERT(false, "Unknown Renderer API!!");
 		return nullptr;
 	}
+	std::string Framebuffer::GetFramebufferDetails()
+	{
+		std::string result = "";
+		result += "Framebuffer Details::\n";
+		result += "Width: " + std::to_string(m_Spec.Width) + "\n";
+		result += "Height: " + std::to_string(m_Spec.Height) + "\n";
+		result += "Color Attachment: " + std::to_string(m_Spec.ColorAttachment);
+
+		return result;
+	}
 }
 
