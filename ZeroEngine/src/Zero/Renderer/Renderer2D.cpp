@@ -29,8 +29,7 @@ namespace Zero
 
 		MeshVertex* MeshVerticesBase;
 		MeshVertex* MeshVerticesPtr;
-		
-		std::unordered_map<Quad*, MeshVertex*> QuadsMap;
+
 		uint32_t MeshIndicesCount = 0;
 		uint32_t* MeshIndices;
 		
@@ -156,8 +155,6 @@ namespace Zero
 	void Renderer2D::AddQuadToBuffer(Quad* mesh,Ref<Texture2D> texture = nullptr)
 	{
 		auto vertices = mesh->GetVertices();
-
-		s_Storage->QuadsMap[mesh] = s_Storage->MeshVerticesPtr;
 		for (int i = 0; i < vertices.size(); i++)
 		{
 			s_Storage->MeshVerticesPtr->Position = vertices[i].Position;
@@ -178,29 +175,11 @@ namespace Zero
 				break;
 			}
 		}
-
-		ZERO_CORE_INFO("Meshes Count after adding mesh: " + std::to_string(s_Storage->QuadsMap.size()));
-	}
-	void Renderer2D::UpdateQuad(Quad* quad, std::vector<MeshVertex> vertices)
-	{
-		auto location = s_Storage->QuadsMap.find(quad);
-		if (location != s_Storage->QuadsMap.end())
-		{
-			ZERO_CORE_INFO("Updating quad vertices");
-			for (int i = 0; i < 4; i++)
-			{
-				uint32_t verticesStartIndex = (uint32_t)location->second - (uint32_t)s_Storage->MeshVerticesBase;
-				//std::string message = "vertices start index : " + std::to_string(verticesStartIndex);
-				//ZERO_CORE_INFO(message);
-				(s_Storage->MeshVerticesBase + verticesStartIndex + i)->Position = vertices[i].Position;
-			}
-		}
 	}
 	void Renderer2D::ClearBuffer()
 	{
 		s_Storage->MeshVerticesPtr = s_Storage->MeshVerticesBase;
 		s_Storage->MeshIndicesCount = 0;
-		s_Storage->QuadsMap.clear();
 	}
 }
 

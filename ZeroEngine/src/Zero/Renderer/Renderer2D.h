@@ -18,7 +18,6 @@ namespace Zero
 		static void Flush();
 		static void Shutdown();
 		static void AddQuadToBuffer(Quad* quad,Ref<Texture2D> texture);
-		static void UpdateQuad(Quad* quad,std::vector<MeshVertex> vertices);
 		static void ClearBuffer();
 	};
 }
